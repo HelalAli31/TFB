@@ -1,0 +1,69 @@
+# 🚀 Node.js & npm
+node_modules/
+npm-debug.log
+package-lock.json
+yarn.lock
+
+# 🚀 Angular
+/dist/
+/.out-tsc/
+/coverage/
+/.angular/
+
+# 🚀 Logs & Temporary Files
+*.log
+logs/
+*.gz
+*.zip
+*.rar
+*.tar
+.DS_Store
+Thumbs.db
+
+# 🚀 Environment Variables (Security)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+/config.json
+
+# 🚀 Database & Data Dumps
+*.sqlite
+*.sqlite3
+*.db
+*.mdb
+*.sql
+*.bak
+*.csv
+/dump/
+
+# 🚀 IDE & Editor Files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.class
+
+# 🚀 Build & Output Files
+/public/
+/bin/
+/obj/
+/out/
+/dist/
+/tmp/
+/cache/
+/build/
+
+# 🚀 Git Large File Storage (LFS)
+TFB.zip
+*.lfs
+*.psd
+*.mp4
+*.avi
+*.mov
+*.iso
+*.exe
