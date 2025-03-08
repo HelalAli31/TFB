@@ -1,0 +1,20 @@
+.Main_BottomSide {
+  background-color: #f8f9fa !important;
+  width: 101%;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.BottomSentence {
+  font-size: 5px;
+}
+.icon {
+  font-size: 205%;
+  width: 16%;
+  height: 10%;
+}

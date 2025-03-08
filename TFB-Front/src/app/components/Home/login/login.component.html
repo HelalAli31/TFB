@@ -1,0 +1,26 @@
+<div class="Login_Main">
+  <div><h1>כניסה לחשבון</h1></div>
+  <div>
+    <div mat-dialog-content>
+      <p>טלפון</p>
+      <mat-form-field appearance="fill">
+        <mat-label>מספר טלפון</mat-label>
+        <input matInput [(ngModel)]="phone" />
+      </mat-form-field>
+    </div>
+    <div mat-dialog-content>
+      <p>סיסמה</p>
+      <mat-form-field appearance="fill">
+        <mat-label>סיסמה</mat-label>
+        <input matInput [(ngModel)]="password" />
+      </mat-form-field>
+    </div>
+  </div>
+  <div>
+    <button mat-button class="mr-2" (click)="openDialog()">
+      יצירת חשבון חדש
+    </button>
+    <button mat-raised-button (click)="login()">כניסה</button>
+  </div>
+  <div class="mt-2">{{ serverMsg }}</div>
+</div>

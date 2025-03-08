@@ -1,0 +1,11 @@
+.Logo {
+  width: 100px;
+  height: 60px;
+  font-size: 90px !important;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  width: 128%;
+  border-radius: 18%;
+  box-shadow: -15px 10px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on the left */
+  margin-left: 5%;
+}

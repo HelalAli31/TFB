@@ -1,0 +1,127 @@
+<div class="Products_Container">
+  <h2 class="Products_Title">All Products</h2>
+
+  <div class="Filter_Bar">
+    <div class="Search_Wrapper">
+      <input
+        type="text"
+        [(ngModel)]="searchValue"
+        (input)="searchProducts()"
+        placeholder="Search Products..."
+        class="Search_Input"
+      />
+      <i class="fas fa-search Search_Icon"></i>
+    </div>
+
+    <!-- Sort By Dropdown -->
+    <div class="Sort_Container">
+      <label for="sortBy">Sort By:</label>
+      <select [(ngModel)]="sortBy" id="sortBy" (change)="changeSorting()">
+        <option value="name">Name</option>
+        <option value="price">Price (Low to High)</option>
+        <option value="price_desc">Price (High to Low)</option>
+        <option value="stock">Stock (Low to High)</option>
+        <option value="stock_desc">Stock (High to Low)</option>
+      </select>
+    </div>
+
+    <div class="Sort_Container">
+      <label for="categoryFilter">Category:</label>
+      <select
+        [(ngModel)]="selectedCategory"
+        id="categoryFilter"
+        (change)="filterByCategory()"
+      >
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <div class="Sort_Container">
+      <label for="brandFilter">Brand:</label>
+      <select
+        [(ngModel)]="selectedBrand"
+        id="brandFilter"
+        (change)="filterByBrand()"
+      >
+        <option *ngFor="let brand of brands" [value]="brand">
+          {{ brand }}
+        </option>
+      </select>
+    </div>
+
+    <div class="Sort_Container">
+      <label>Customer Type:</label>
+      <select
+        [(ngModel)]="selectedCustomerType"
+        (change)="filterByCustomerType()"
+      >
+        <option value="All">All</option>
+        <option value="New">New</option>
+        <option value="Normal">Normal</option>
+        <option value="High Level">High Level</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="Product_Grid">
+    <div *ngFor="let product of products" class="Product_Card">
+      <div class="Product_Card_Content">
+        <div
+          *ngIf="product.quantity < 5"
+          class="Stock_Badge"
+          [ngClass]="{
+            Out_Of_Stock: product.quantity === 0,
+            Low_Stock: product.quantity > 0
+          }"
+        >
+          {{ product.quantity === 0 ? "Out of Stock" : "Low Stock" }}
+        </div>
+
+        <img
+          [src]="'assets/products/' + product.image + '.jpg'"
+          class="Product_Image"
+          alt="{{ product.name }}"
+        />
+
+        <div class="Product_Details">
+          <h3 class="Product_Name">{{ product.name }}</h3>
+
+          <div class="Product_Info">
+            <p class="Product_Brand">{{ product.brand }}</p>
+            <span class="Separator">|</span>
+            <p class="Product_Price">{{ product.price }} ₪</p>
+          </div>
+
+          <button
+            class="View_Button"
+            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+            [disabled]="product.quantity === 0"
+          >
+            {{ product.quantity === 0 ? "Unavailable" : "Add to Cart" }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📌 Pagination -->
+  <div class="Pagination">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+      ⬅ Prev
+    </button>
+    <input
+      type="range"
+      min="1"
+      [max]="totalPages"
+      [(ngModel)]="currentPage"
+      (change)="loadProducts()"
+    />
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+    >
+      Next ➡
+    </button>
+  </div>
+</div>

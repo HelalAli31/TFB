@@ -1,0 +1,145 @@
+
+ORDER:
+1. getOrder(cartId: string) (USER/ADMIN)
+   Example:
+   const getOrder = { cartId: "64a1b3c9e123456789abcd12" };
+
+2. addOrder(order: any) (ADMIN ONLY)
+   Example:
+   const orderData = { 
+       user_id: '64a1b3c9e123456789abcd12', 
+       cart_id: '64a1b3c9e123456789abcd34', 
+       order_delivery_date: '2025-01-15', 
+       total_price: 120.50, 
+       city: 'New York',
+       street: '5th Avenue',
+       last_visa_number: 1234 
+   };
+
+3. getAllOrders(userId?: string) (ADMIN ONLY)
+   - The `userId` is optional. If provided, it fetches orders for the user. Otherwise, it fetches all orders.
+   Example:
+   { "userId": "64a1b3c9e123456789abcd12" }
+
+4. deleteOrder(orderId: string) (ADMIN ONLY)
+   Example:
+   { "orderId": "64a1b3c9e123456789abcd56" }
+
+5. updateOrder(orderId: string, updateData: any) (ADMIN ONLY)
+   Example:
+   { 
+       "orderId": "64a1b3c9e123456789abcd56",
+       "updateData": { 
+           "order_delivery_date": "2025-02-01",
+           "city": "Los Angeles", 
+           "street": "Hollywood Blvd" 
+       }
+   }
+
+CART:
+1. getCart(userId: string) (USER/ADMIN)
+   Example:
+   const getCart = { userId: "64a1b3c9e123456789abcd12" };
+
+2. updateCartStatus(cartId: string) (USER/ADMIN)
+   Example:
+   const updateCartStatus = { cartId: "64a1b3c9e123456789abcd34" };
+
+3. addCart(userId: string) (USER/ADMIN)
+   Example:
+   const addCart = { userId: "64a1b3c9e123456789abcd12" };
+
+4. getCartItems(cartId: string) (USER/ADMIN)
+   Example:
+   { "cartId": "64a1b3c9e123456789abcd34" }
+
+5. addItemToCart(item: any) (USER/ADMIN)
+   Example:
+   const itemData = {
+       product_id: '64a1b3c9e123456789abcd56',
+       cart_id: '64a1b3c9e123456789abcd34',
+       amount: 2,
+       full_price: 200
+   };
+
+6. deleteItemFromCart(itemId: string) (USER/ADMIN)
+   Example:
+   { "itemId": "64a1b3c9e123456789abcd78" }
+
+7. clearCart(cartId: string) (USER/ADMIN)
+   Example:
+   { "cartId": "64a1b3c9e123456789abcd34" }
+
+8. editItemAmount(itemId: string, amount: number, fullPrice: number) (USER/ADMIN)
+   Example:
+   { 
+       "data": { 
+           "itemId": "64a1b3c9e123456789abcd78",
+           "amount": 5,
+           "fullPrice": 250
+       }
+   }
+
+CATEGORY:
+1. getCategories() (USER/ADMIN)
+   No additional data required.
+
+2. getCategoryById(categoryId: string) (USER/ADMIN)
+   Example:
+   { "categoryId": "64a1b3c9e123456789abcd34" }
+
+3. addCategory(categoryName: string) (ADMIN ONLY)
+   Example:
+   { "categoryName": "New Category" }
+
+4. updateCategory(categoryId: string, name: string) (ADMIN ONLY)
+   Example:
+   { "categoryId": "64a1b3c9e123456789abcd34", "name": "Updated Category Name" }
+
+5. deleteCategory(categoryId: string) (ADMIN ONLY)
+   Example:
+   { "categoryId": "64a1b3c9e123456789abcd34" }
+
+PRODUCT:
+1. getProducts(from: number = 0, limit: number = 10, keyName?: string, valueName?: string) (USER/ADMIN)
+   Example:
+   const params = { from: 0, limit: 10, keyName: "category", valueName: "electronics" };
+
+2. addProduct(product: any) (ADMIN ONLY)
+   Example:
+   const productData = {
+       name: "New Product",
+       category_id: "64a1b3c9e123456789abcd34",
+       price: 99.99,
+       stock: 100
+   };
+
+3. updateProduct(product: any) (ADMIN ONLY)
+   Example:
+   { "product": { "productId": "64a1b3c9e123456789abcd56", "name": "Updated Product Name", "price": 120 } }
+
+4. deleteProduct(productId: string) (ADMIN ONLY)
+   Example:
+   { "productId": "64a1b3c9e123456789abcd56" }
+
+5. getProductsNumber() (USER/ADMIN)
+   No additional data required.
+
+USER:
+1. getUser(userId: string) (ADMIN ONLY)
+   Example:
+   { "userId": "64a1b3c9e123456789abcd12" }
+
+2. getAllUsers() (ADMIN ONLY)
+   No additional data required.
+
+3. updateUser(userId: string, updateData: any) (ADMIN ONLY)
+   Example:
+   { 
+       "userId": "64a1b3c9e123456789abcd12",
+       "updateData": { "email": "newemail@example.com", "phone": "123456789" }
+   }
+
+4. deleteUser(userId: string) (ADMIN ONLY)
+   Example:
+   { "userId": "64a1b3c9e123456789abcd12" }

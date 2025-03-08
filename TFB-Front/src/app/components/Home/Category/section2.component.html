@@ -1,0 +1,16 @@
+<div class="Section2_Main">
+  <h1 class="mt-5 Section2_Title">Categories</h1>
+  <div class="Section2_Grid">
+    <ng-container *ngFor="let c of cate; let i = index">
+      <div class="Section2_Content">
+        <div class="Category_Story" (click)="filterByCategory(c.name)">
+          <img
+            src="assets/categories/{{ c.name }}.jpg"
+            class="Category_Image"
+          />
+          <h4 class="Category_Name">{{ c.name }}</h4>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

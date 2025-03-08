@@ -1,0 +1,49 @@
+.Main_Content {
+  text-align: right;
+  font-size: 16px;
+}
+
+.Home_Image {
+  background-image: url("/assets/homepage.jpg"); /* ✅ Add leading slash */
+  height: 550px;
+  width: 100%;
+  background-position: center; /* Adjust for better positioning */
+  background-repeat: no-repeat; /* Prevent repeating */
+  background-size: cover; /* Make sure the image covers the entire area */
+  background-attachment: fixed; /* Enables parallax scrolling effect */
+  position: relative;
+}
+
+.Home_Title {
+  position: absolute;
+  top: 29%;
+  left: 5%;
+}
+
+.Title {
+  color: #34b814;
+  font-family: "Cinzel", serif;
+  font-size: 40px;
+  font-weight: bold;
+}
+/* Contact Section Styling */
+.Contact_Section {
+  width: 100%;
+  margin: auto;
+  padding: 50px 0;
+  text-align: center;
+  border: double black 10px;
+  background: linear-gradient(to right, #f7f7f7, #e3e3e3);
+  padding: 50px 0;
+  border-radius: 12px;
+}
+.Contact_Title {
+  text-align: center;
+  font-family: "Cinzel", serif;
+  font-weight: bold;
+  margin-bottom: 3%;
+  font-size: 275%;
+  color: #cc00ff;
+  margin-right: 5%;
+  text-shadow: 1px 1px 2px grey, 0 0 1em grey, 0 0 0.2em grey;
+}

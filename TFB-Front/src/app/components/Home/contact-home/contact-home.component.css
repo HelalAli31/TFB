@@ -1,0 +1,131 @@
+/* Contact Container */
+.Contact_Container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Left Side - Contact Info */
+.Contact_Info {
+  width: 40%;
+  text-align: left;
+}
+
+.Contact_Info h3 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.Contact_Info p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.Contact_Detail {
+  display: flex;
+  flex-direction: column; /* Stacks items vertically */
+  align-items: center; /* Centers them */
+}
+mat-icon {
+  margin-bottom: -3%;
+  color: #34b814;
+}
+
+.Contact_Detail i {
+  font-size: 18px;
+  color: #cc00ff;
+  margin-right: 10px;
+}
+
+/* Social Media Icons */
+.Social_Media {
+  margin-top: 20px;
+}
+
+.Social_Media a {
+  font-size: 20px;
+  color: #cc00ff;
+  margin-right: 10px;
+  transition: 0.3s ease-in-out;
+}
+
+.Social_Media a:hover {
+  color: #a000cc;
+}
+
+/* Right Side - Contact Form */
+.Contact_Form {
+  width: 50%;
+}
+
+.Input_Group {
+  margin-bottom: 15px;
+}
+
+.Input_Group input,
+.Input_Group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  outline: none;
+}
+
+.Input_Group textarea {
+  resize: none;
+  height: 120px;
+}
+
+/* Send Button */
+.Send_Button {
+  width: 100%;
+  padding: 12px;
+  background: #cc00ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.Send_Button:hover {
+  background: #a000cc;
+}
+.Contact_Title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #cc00ff;
+  text-shadow: 1px 1px 2px grey;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  display: inline-block; /* Makes the element fit its content */
+  padding-bottom: 8px; /* Space between text and line */
+}
+.img {
+  width: 17%;
+}
+.New_Row {
+  width: 100%; /* Ensures it takes full width */
+  text-align: center;
+}
+
+/* Underline effect */
+.Contact_Title::after {
+  content: "";
+  display: block;
+  width: 100%; /* Matches text width */
+  height: 4px; /* Line thickness */
+  background-color: #cc00ff; /* Line color */
+  margin: 5px auto 0; /* Centers the line */
+}

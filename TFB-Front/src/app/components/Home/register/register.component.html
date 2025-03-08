@@ -1,0 +1,47 @@
+<div class="Register_Main">
+  <div><h1>יצירת חשבון חדש</h1></div>
+  <form [formGroup]="userForm">
+    <ng-template>תמלא את כל הפרטים בבקשה</ng-template>
+    <mat-form-field>
+      <mat-label>טלפון</mat-label>
+      <input
+        matInput
+        placeholder=" מספר טלפון"
+        formControlName="phone"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>שם</mat-label>
+      <input
+        matInput
+        placeholder="שם פרטי"
+        type="name"
+        formControlName="first_name"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label> משפחה</mat-label>
+      <input
+        matInput
+        placeholder="שם משפחה"
+        type="name"
+        formControlName="last_name"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>סיסמה</mat-label>
+      <input matInput placeholder="סיסמה" formControlName="password" required />
+    </mat-form-field>
+
+    <div>
+      <button mat-raised-button (click)="signUp()">הרשמה</button>
+      <button mat-raised-button (click)="closeDialog()" class="mr-2">
+        יציאה
+      </button>
+    </div>
+  </form>
+  <h3 class="mt-2" *ngIf="messageServer?.length">* {{ messageServer }}</h3>
+</div>
