@@ -1,0 +1,20 @@
+<div class="Main">
+  <div class="row">
+    <div class="col-4" *ngFor="let cate of categories">
+      <h2>{{ cate.name }}</h2>
+    </div>
+  </div>
+
+  <div class="row button ml-5">
+    <button mat-raised-button class="col-4 mt-2 Button" (click)="addCategory()">
+      Add category
+    </button>
+    <button
+      mat-raised-button
+      class="col-4 mt-2 ml-5 Button"
+      (click)="editCategoryName()"
+    >
+      Edit category name
+    </button>
+  </div>
+</div>

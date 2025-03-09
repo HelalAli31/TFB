@@ -1,0 +1,26 @@
+.MainDiv {
+  width: 900px;
+  height: 100%;
+  max-height: 500px;
+
+  overflow: hidden;
+}
+.Items {
+  height: 500px;
+  overflow-y: scroll;
+}
+.DetailsDiv {
+  /* width: 100%; */
+  border-right: 1px solid rgb(179, 165, 165);
+  width: 400px !important;
+  height: 600px;
+  margin-top: 10%;
+}
+.SearchIcon {
+  font-size: 17px;
+  margin-top: 30px;
+}
+.BuyButton {
+  background: rgba(133, 128, 128, 0.2);
+  backdrop-filter: blur(40px);
+}

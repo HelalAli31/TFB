@@ -1,0 +1,11 @@
+.Icon {
+  justify-content: center;
+  justify-items: center;
+  margin: auto auto;
+  font-size: 70px;
+  margin-left: 35%;
+  color: #e0bba9b4;
+}
+#PrintMe {
+  display: none;
+}

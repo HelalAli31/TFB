@@ -1,0 +1,17 @@
+<div>
+  <h1>Hello {{ userName.firstName }} {{ userName.lastName }}</h1>
+  <a mat-raised-button *ngIf="cartIsOpen" (click)="NavigateClick()">
+    Resume Cart
+  </a>
+  <a mat-raised-button *ngIf="!cartIsOpen" (click)="openCart()"> Start Cart </a>
+  <h2 *ngIf="OpenedCartDetails.date">
+    your cart has been open since {{ OpenedCartDetails.date }} , total price is :
+    {{ OpenedCartDetails.totalPrice | number: "1.2-2" }}
+  </h2>
+  <h2 *ngIf="lastOrderDate.length">
+    last order has done in :{{ lastOrderDate }}
+  </h2>
+  <h2 *ngIf="NewUser.length">
+    {{ NewUser }}
+  </h2>
+</div>

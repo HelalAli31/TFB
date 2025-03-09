@@ -1,0 +1,13 @@
+.MainDiv {
+  min-width: 400px;
+  height: 350px;
+}
+
+.Items {
+  overflow: scroll;
+  height: 250px;
+}
+
+button {
+  background-color: #e0bba9;
+}

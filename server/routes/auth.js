@@ -8,7 +8,7 @@ const getValidationFunction = require("../validations/userValidation");
 const router = express.Router();
 const { signJWT, verifyJWT } = require("../controller/JWT/jwt");
 const logger = require("../logger/index");
-
+console.log("LOGIN");
 const allowUserOrAdmin = async (req, res, next) => {
   try {
     const clientJwt = req.headers.authorization; // Get the token directly
@@ -39,21 +39,24 @@ router.post(
   "/login",
   getValidationFunction("login"),
   async (req, res, next) => {
+    console.log("Incoming Request Body:", req.body); // Add this for debugging
+
     const { username, password } = req.body;
-    if (!username || !password) res.send("error");
-    logger.info(`${username} is trying to loggin`);
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
+    }
+
+    logger.info(`${username} is trying to login`);
 
     const result = await isUserRegistered(username, password);
     if (result?.length) {
-      {
-        const userToken = await signJWT(result);
-        return res.json({
-          userToken,
-        });
-      }
+      const userToken = await signJWT(result);
+      return res.json({ userToken });
     } else {
-      logger.error(`login failed by user:${username} and password:${password}`);
-      return res.json(`Login Failed`);
+      logger.error(`Login failed for user: ${username}`);
+      return res.status(401).json({ message: "Login Failed" });
     }
   }
 );

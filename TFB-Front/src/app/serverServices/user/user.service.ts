@@ -7,11 +7,12 @@ const USER_URL = 'http://localhost:5000/Auth/';
 })
 export class UserService {
   constructor(private httpService: HttpClient) {}
-  login(phone: string, password: string) {
-    console.log(phone, password);
+  login(username: string, password: string) {
+    console.log(username, password);
     const result = this.httpService
-      .post(`${USER_URL}login`, { values: { phone, password } })
+      .post(`${USER_URL}login`, { username, password })
       .toPromise();
+
     return result;
   }
   signUP(userForm: any) {

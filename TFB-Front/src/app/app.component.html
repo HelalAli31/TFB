@@ -113,7 +113,7 @@
         </div>
       </div>
 
-      <a class="navbar-brand" href="/cart">
+      <a *ngIf="token" class="navbar-brand" href="/cart">
         <mat-icon fontIcon="shopping_cart"></mat-icon> Cart
       </a>
 
@@ -129,6 +129,7 @@
     <!-- Right Side - Login -->
     <div class="Login_Container">
       <div *ngIf="token" class="LoginDiv">
+        <a class="navbar-brand ml-2">Sign Out</a>
         <img
           class="LoginImage"
           src="../assets/exit.svg"
@@ -137,7 +138,6 @@
           (click)="logOut()"
           style="cursor: pointer"
         />
-        <a class="navbar-brand ml-2">Sign Out</a>
       </div>
       <div *ngIf="!token" class="LoginDiv">
         <a class="navbar-brand">Login</a>

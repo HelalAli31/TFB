@@ -1,0 +1,26 @@
+<div>
+  <h1 *ngIf="statusResult.length" class="Main">
+    {{ statusResult }}
+    <br />
+    <mat-icon class="Icon">check_circle</mat-icon>
+  </h1>
+  <h1 *ngIf="!statusResult">
+    something went wwrong
+    <br />
+    <mat-icon>error</mat-icon>
+  </h1>
+  <br />
+  <div *ngIf="this.data.PrintOrderDetails">
+    <div class="row">
+      <button class="col-6" mat-button printSectionId="PrintMe" ngxPrint>
+        Print Now!
+      </button>
+      <button class="col-6" mat-button mat-dialog-close>Okay!</button>
+    </div>
+    <div id="PrintMe">
+      <app-print-order
+        [OrderDetails]="this.data.PrintOrderDetails"
+      ></app-print-order>
+    </div>
+  </div>
+</div>

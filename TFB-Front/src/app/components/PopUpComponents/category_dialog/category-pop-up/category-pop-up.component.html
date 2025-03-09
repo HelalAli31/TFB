@@ -1,0 +1,22 @@
+<div *ngIf="data?.category">
+  <mat-form-field>
+    <mat-select
+      name="category"
+      placeholder="category"
+      [(value)]="SelectedCategory"
+    >
+      <mat-option
+        *ngFor="let category of data?.category"
+        [value]="category._id"
+      >
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div>
+  <input matInput placeholder="category name" [(ngModel)]="categoryName" />
+  <button mat-raised-button style="margin-left: 120px" (click)="Close()">
+    {{ ActionName }}
+  </button>
+</div>

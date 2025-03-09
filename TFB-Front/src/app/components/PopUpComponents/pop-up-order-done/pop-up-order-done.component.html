@@ -1,0 +1,23 @@
+<div class="row">
+  <button class="col-6" mat-raised-button mat-dialog-close="true">
+    > New Cart
+  </button>
+  <button
+    class="col-6"
+    mat-button
+    mat-dialog-close="false"
+    style="color: dodgerblue"
+  >
+    Sign Out
+  </button>
+
+  <h1 *ngIf="!translation.length" style="margin-left: 10px; margin-top: 10px">
+    you will sign out if you dont create a new cart
+    <mat-icon>tag_faces</mat-icon>
+  </h1>
+  <h1 *ngIf="translation.length">
+    {{ translation }} <mat-icon>tag_faces</mat-icon>
+  </h1>
+  <button mat-button (click)="English()">English</button>
+  <button mat-button (click)="translate()">עברית</button>
+</div>

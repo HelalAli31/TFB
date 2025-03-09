@@ -1,0 +1,51 @@
+<div class="row MainDiv">
+  <img
+    src="{{ this.basePath }}/{{ data.image }}"
+    class="Image row-4"
+    style="width: 150px; height: 200px"
+  />
+
+  <div class="col-8">
+    <h1 style="font-family: 'Kalam', cursive; margin-top: 20px">
+      {{ data.title }}
+    </h1>
+    <h3 style="font-family: 'Kalam', cursive; margin-top: 20px">
+      {{ data.price | number : "1.2-2" }}₪
+    </h3>
+    <h3 style="font-family: 'Kalam', cursive; margin-top: 20px">
+      {{ data.description }}
+    </h3>
+  </div>
+  <div class="row col-12 mt-4 ActionButton">
+    <div class="col-1">
+      <mat-icon
+        *ngIf="amount > 1"
+        (click)="amount = amount - 1"
+        class="IconCircle"
+        >remove_circle_outline</mat-icon
+      >
+    </div>
+
+    <mat-slider
+      class="col-1 ml-1"
+      thumbLabel
+      tickInterval="100"
+      [step]="step"
+      min="1"
+      [max]="max"
+      [(ngModel)]="amount"
+      aria-label="units"
+    ></mat-slider>
+    <div class="cl-1">
+      <mat-icon (click)="amount = amount + 1" class="IconCircle"
+        >add_circle_outline</mat-icon
+      >
+    </div>
+    <div class="col-3 mt-1">
+      <h2>{{ amount }} {{ unitsName }}</h2>
+    </div>
+    <button class="SaveButton col-3 ml-2" mat-button (click)="SaveAmount()">
+      Save
+    </button>
+  </div>
+</div>

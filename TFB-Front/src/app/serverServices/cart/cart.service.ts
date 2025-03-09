@@ -1,74 +1,106 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+const CART_URL = 'http://localhost:5000/cart';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  private apiUrl = 'http://localhost:5000/cart';
+  public subject = new Subject<any>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private httpService: HttpClient) {}
+  getCart(userId: string) {
+    let token = localStorage.getItem('token');
+    if (!token) {
+      console.error('🚨 No token found in localStorage!');
+      throw new Error('Missing Authorization Token');
+    }
 
-  private getAuthHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      Authorization: localStorage.getItem('token') || '',
-    });
+    token = token.replace(/^"(.*)"$/, '$1'); // ✅ Remove surrounding double quotes
+
+    console.log(`📤 Sending request with token: ${token}`);
+
+    return this.httpService
+      .post(
+        `${CART_URL}?userId=${userId}`,
+        {}, // Empty request body
+        {
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${token}`, // ✅ Ensure correct format
+          }),
+        }
+      )
+      .toPromise();
   }
 
-  getCart(userId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const params = { userId };
-    return this.http.post(`${this.apiUrl}/`, {}, { headers, params });
+  async getCartItems(cartId: string): Promise<any[]> {
+    const token = localStorage.getItem('token');
+    if (!token) return [];
+
+    try {
+      const result = await this.httpService
+        .get<any[]>(`${CART_URL}/getItems?cartId=${cartId}`, {
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+          }),
+        })
+        .toPromise();
+
+      return Array.isArray(result) ? result : [];
+    } catch (error) {
+      console.error('❌ Error fetching cart items:', error);
+      return [];
+    }
   }
 
-  updateCartStatus(cartId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const params = { cartId };
-    return this.http.post(
-      `${this.apiUrl}/updateOpenedCartStatus`,
-      {},
-      { headers, params }
-    );
+  editItemAmount(itemId: string, amount: number, fullPrice: number) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('🚨 Missing token! Cannot update item quantity.');
+      return;
+    }
+
+    return this.httpService
+      .post(
+        `${CART_URL}/editItemAmount`,
+        { data: { fullPrice, amount, itemId } }, // Ensure correct payload
+        {
+          headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
+        }
+      )
+      .toPromise()
+      .then((response) => {
+        console.log('✅ Quantity Updated in Backend:', response);
+        return response;
+      })
+      .catch((error) => console.error('❌ Update Failed:', error));
   }
 
-  addCart(userId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const params = { userId };
-    return this.http.post(`${this.apiUrl}/addCart`, {}, { headers, params });
-  }
+  deleteItemFromCart(itemId: string) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('🚨 Missing token! Cannot delete item.');
+      return;
+    }
 
-  getCartItems(cartId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { cartId };
-    return this.http.post(`${this.apiUrl}/getItems`, body, { headers });
-  }
-
-  addItemToCart(item: any): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { item };
-    return this.http.put(`${this.apiUrl}/AddItems`, body, { headers });
-  }
-
-  deleteItemFromCart(itemId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const params = { itemId };
-    return this.http.put(`${this.apiUrl}/deleteItem`, {}, { headers, params });
-  }
-
-  clearCart(cartId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const params = { cartId };
-    return this.http.put(`${this.apiUrl}/clearCart`, {}, { headers, params });
-  }
-
-  editItemAmount(
-    itemId: string,
-    amount: number,
-    fullPrice: number
-  ): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { data: { itemId, amount, fullPrice } };
-    return this.http.post(`${this.apiUrl}/editItemAmount`, body, { headers });
+    return this.httpService
+      .put(
+        `${CART_URL}/deleteItem?itemId=${itemId}`,
+        {}, // Empty body
+        {
+          headers: new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+          }),
+          responseType: 'json',
+        }
+      )
+      .toPromise()
+      .then((response) => {
+        console.log('✅ Item Deleted:', response);
+        this.subject.next(response);
+      })
+      .catch((error) => console.error('❌ Delete Failed:', error));
   }
 }

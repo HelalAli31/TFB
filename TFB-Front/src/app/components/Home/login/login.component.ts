@@ -38,9 +38,9 @@ export class LoginComponent implements OnInit {
     this.loginFailed = '';
     this.token = await this.userService.login(this.phone, this.password);
     this.serverMsg = this.token.msg;
-    console.log(this.token);
-    if (this.token.token) {
-      localStorage.setItem('token', JSON.stringify(this.token['token']));
+    console.log('token', this.token);
+    if (this.token.userToken) {
+      localStorage.setItem('token', this.token.userToken); // ✅ Store token as raw string (not JSON.stringify)
       this.dialogRef.close();
       window.location.reload();
     } else this.loginFailed = this.token;

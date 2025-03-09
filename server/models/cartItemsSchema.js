@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
 const cartItemsSchema = new mongoose.Schema({
-  product_id: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-  cart_id: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" },
+  product_id: { type: mongoose.Schema.Types.ObjectId, ref: "Product" }, // ✅ Ensure it references "Product"
+  cart_id: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" }, // ✅ Ensure it references "Cart"
   amount: { type: Number, required: true },
   full_price: { type: Number, required: true },
 });
 
-// ✅ Check if model already exists, then use it; otherwise, create it
+// ✅ Ensure the model is created only once
 const CartItemModel =
-  mongoose.models.cartItems || mongoose.model("cartItems", cartItemsSchema);
+  mongoose.models.CartItem || mongoose.model("CartItem", cartItemsSchema);
 
 module.exports = CartItemModel;

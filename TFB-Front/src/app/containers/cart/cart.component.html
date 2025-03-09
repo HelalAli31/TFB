@@ -1,0 +1,71 @@
+<div class="cart-container">
+  <h2 class="cart-title">My Cart 🛒</h2>
+
+  <!-- Empty Cart Message -->
+  <div *ngIf="cartItems.length === 0" class="empty-cart">
+    <p>Your cart is empty. 😞</p>
+  </div>
+
+  <!-- Cart Items Loop -->
+  <div *ngFor="let item of cartItems; let i = index" class="cart-item">
+    <!-- Product Image -->
+    <div class="cart-image-container">
+      <img
+        [src]="
+          item.product_id?.image
+            ? 'assets/products/' + item.product_id.image + '.jpg'
+            : 'assets/products/default.jpg'
+        "
+        class="cart-image"
+        alt="{{ item.product_id?.name || 'Product' }}"
+      />
+    </div>
+
+    <!-- Product Details -->
+    <div class="cart-details">
+      <h3 class="cart-name">
+        {{ item.product_id?.name || "Unnamed Product" }}
+      </h3>
+      <p class="cart-brand">Brand: {{ item.product_id?.brand || "Unknown" }}</p>
+
+      <!-- Price Section -->
+      <p class="cart-price">
+        💰 <b>Unit Price:</b> {{ item.product_id?.price || 0 }} ₪<br />
+        🔹 <b>Total Price:</b>
+        {{ (item.product_id?.price || 0) * item.amount }} ₪
+      </p>
+    </div>
+
+    <div class="quantity-control">
+      <button
+        class="quantity-btn left-arrow"
+        (click)="decreaseQuantity(i)"
+        [disabled]="item.amount <= 1"
+      >
+        <span class="material-icons">remove</span>
+        <!-- ✅ Material Minus -->
+      </button>
+
+      <div class="quantity-box">{{ item.amount }}</div>
+
+      <button class="quantity-btn right-arrow" (click)="increaseQuantity(i)">
+        <span class="material-icons">add</span>
+        <!-- ✅ Material Plus -->
+      </button>
+    </div>
+
+    <!-- Remove Button -->
+    <button class="remove-button" (click)="removeItem(i)">🗑 Remove</button>
+  </div>
+
+  <!-- Cart Summary -->
+  <!-- Cart Summary -->
+  <div class="cart-summary">
+    <h3>
+      <span class="total-price">Total:{{ getTotalPrice() }} ₪</span>
+    </h3>
+
+    <!-- Buy Now Button -->
+    <button class="buy-now-button">🛒 Buy Now</button>
+  </div>
+</div>

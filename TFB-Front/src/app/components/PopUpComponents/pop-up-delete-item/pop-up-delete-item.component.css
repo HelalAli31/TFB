@@ -1,0 +1,13 @@
+.Yes {
+  background-color: #e0bba9;
+}
+
+span {
+  color: #7a6458;
+}
+.Actions {
+  display: flex;
+  align-content: flex-end;
+  justify-content: space-evenly;
+  align-items: baseline;
+}

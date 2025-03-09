@@ -1,0 +1,96 @@
+<div class="MainDiv row">
+  <div class="col-6 DetailsDiv">
+    <h1 style="color: #c02a3e">Order Details</h1>
+
+    <!-- 📅 Date Picker -->
+    <mat-form-field appearance="outline" style="width: 300px !important">
+      <mat-label>Delivery Date</mat-label>
+      <input
+        matInput
+        [min]="minDate"
+        [(ngModel)]="deliveryDate"
+        [matDatepicker]="picker"
+        [matDatepickerFilter]="InvalidDatesFilter"
+        placeholder="Select Delivery Date"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- 💳 Visa Number -->
+    <mat-form-field appearance="outline" style="width: 300px">
+      <mat-label>Visa Number</mat-label>
+      <input
+        matInput
+        type="number"
+        placeholder="Enter last 4 digits"
+        [(ngModel)]="visaNumber"
+      />
+    </mat-form-field>
+
+    <!-- 🏡 Address Fields -->
+    <mat-form-field appearance="outline" style="width: 300px">
+      <mat-label>City</mat-label>
+      <input matInput placeholder="Enter city" [(ngModel)]="city" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 300px">
+      <mat-label>Street</mat-label>
+      <input matInput placeholder="Enter street" [(ngModel)]="street" />
+    </mat-form-field>
+
+    <div>
+      <button mat-raised-button color="primary" (click)="updatePrice('true')">
+        Delivery
+      </button>
+      <img [src]="images.delivery" width="30px" height="30px" /> /
+      <button mat-raised-button color="accent" (click)="updatePrice('false')">
+        Pick Up
+      </button>
+      <img [src]="images.pickUp" width="30px" height="30px" />
+    </div>
+
+    <br />
+    <button mat-raised-button color="warn" (click)="buyNow()">Buy Now!</button>
+    <button mat-button mat-dialog-close>Back</button>
+  </div>
+
+  <!-- 🛍 Order Summary -->
+  <div class="col-5 Items ml-2">
+    <mat-icon>search</mat-icon>
+    <input
+      matInput
+      placeholder="Search"
+      [(ngModel)]="filterModel"
+      (keyup)="filterOperation()"
+    />
+
+    <div class="row mt-4">
+      <div class="col-8">
+        <h3>Price: {{ fullPrice | number : "1.2-2" }}₪</h3>
+        <h3>Delivery: {{ deliveryPrice | number : "1.2-2" }}₪</h3>
+      </div>
+      <h1 style="font-weight: bolder; color: #c02a3e">
+        Total: {{ totalPrice | number : "1.2-2" }}₪
+      </h1>
+    </div>
+
+    <hr />
+
+    <div class="row mt-1">
+      <h3 class="col-5">Product</h3>
+      <h3 class="col-2 ml-4">Qty</h3>
+      <h3 class="col-3 ml-3">Price</h3>
+    </div>
+    <hr />
+
+    <div *ngFor="let item of filteredItems; index as pIndex">
+      <div class="row">
+        <div class="col-6">{{ pIndex + 1 }}. {{ item.product_id.title }}</div>
+        <div class="col-2">{{ item.amount }}</div>
+        <div class="col-4">{{ item.full_price | number : "1.2-2" }}₪</div>
+      </div>
+      <br />
+    </div>
+  </div>
+</div>

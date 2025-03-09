@@ -1,0 +1,41 @@
+<div class="MainDiv">
+  <div>
+    <mat-form-field>
+      <mat-select
+        name="type"
+        placeholder="order date"
+        [(value)]="selectedCart"
+        (selectionChange)="filterDates(selectedCart)"
+      >
+        <mat-option
+          *ngFor="let date of dates; index as pIndex"
+          value="{{ pIndex }}"
+          >{{ date.date }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="Items" *ngIf="selectedCart.length">
+    <table style="width: 100%">
+      <tr>
+        <th>Name</th>
+        <th>Amount (units/kg)</th>
+        <th>Price (₪)</th>
+      </tr>
+
+      <tr *ngFor="let item of filterItems; index as pIndex">
+        <td>{{ item.product_id.title }}</td>
+        <td>{{ item.amount }}</td>
+        <td>{{ item.full_price | number: "1.2-2" }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="row mt-2">
+    <h2 class="col-8">Total price: {{ totalPrice | number: "1.2-2" }}₪</h2>
+    <button class="col-4" mat-raised-button (click)="ItemsSelected()">
+      Select
+    </button>
+  </div>
+</div>

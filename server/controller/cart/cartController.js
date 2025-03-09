@@ -26,22 +26,23 @@ async function updateCartStatus(cartId) {
 
 async function getCartItems(cartId) {
   try {
-    let result = [];
-    if (Array.isArray(cartId)) {
-      for (let index = 0; index < cartId.length; index++) {
-        let data = await cartItemsModel
-          .find({ cart_id: cartId[index].cartId }, { __v: false })
-          .populate("product_id", productModel);
-        result.push(data);
-      }
-    } else {
-      result = await cartItemsModel
-        .find({ cart_id: cartId }, { __v: false })
-        .populate("product_id", productModel);
+    let result = await cartItemsModel
+      .find({ cart_id: cartId }, { __v: false })
+      .populate({
+        path: "product_id",
+        model: productModel, // ✅ Explicitly define model to populate
+      });
+
+    if (!result || result.length === 0) {
+      console.warn("⚠️ No cart items found in DB for cartId:", cartId);
+      return [];
     }
+
+    console.log("✅ Cart items fetched:", result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Error fetching cart items:", error);
+    return [];
   }
 }
 
@@ -75,13 +76,22 @@ async function deleteItemFromCart(itemId) {
 }
 async function editAmount(itemId, amount, fullPrice) {
   try {
-    const result = await cartItemsModel.updateOne(
+    const result = await cartItemsModel.findOneAndUpdate(
       { _id: itemId },
-      { amount: amount, full_price: fullPrice }
+      { $set: { amount: amount, full_price: fullPrice } }, // ✅ Ensure correct field names
+      { new: true, runValidators: true } // ✅ Returns the updated document
     );
+
+    if (!result) {
+      console.error(`🚨 Item with ID ${itemId} not found in DB!`);
+      return null;
+    }
+
+    console.log("✅ Item successfully updated in DB:", result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Error updating item amount in DB:", error);
+    throw error;
   }
 }
 

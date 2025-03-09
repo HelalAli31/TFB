@@ -24,7 +24,16 @@ import { BottomSideComponent } from './components/Home/BottomSide/bottom-side.co
 import { FilterByCategoryPipe } from './pipes/filter-by-category.pipe';
 import { ContactHomeComponent } from './components/Home/contact-home/contact-home.component';
 import { ProductsComponent } from './containers/products/products.component';
-
+import { CartComponent } from './containers/cart/cart.component';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { FilterPipe } from './components/pipe/filter.pipe';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,21 +49,34 @@ import { ProductsComponent } from './containers/products/products.component';
     FilterByCategoryPipe,
     ContactHomeComponent,
     ProductsComponent,
+    CartComponent,
+    FilterPipe,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    MatCardModule,
-    MaterialModule,
-    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
     NgxMaterialTimepickerModule,
+    MatIconModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatDialogModule,
+    CommonModule,
+    FormsModule, // ✅ Fixes ngModel errors
+    MatIconModule, // ✅ Fixes <mat-icon> errors
+    MatSliderModule, // ✅ Fixes <mat-slider> errors
+    MatFormFieldModule, // ✅ Fixes <mat-form-field> errors
+    MatInputModule, // ✅ Fixes <mat-input> errors
+    MatDatepickerModule, // ✅ Fixes <mat-datepicker> errors
+    MatNativeDateModule, // ✅ Required for DatePicker
+    MatDialogModule, // ✅ Fixes Material Dialog issues
+    MatTableModule, // ✅ Fixes Material Tables
   ],
-  providers: [],
+  providers: [MatDatepickerModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
 })
