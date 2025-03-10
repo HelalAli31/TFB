@@ -25,6 +25,7 @@ export class ProductsComponent implements OnInit {
   selectedCategory: string = 'All';
   selectedBrand: string = 'All';
   selectedCustomerType: string = 'All';
+  searchResults: any[] = []; // ✅ Store search results separately
 
   constructor(
     private productService: ProductService,
@@ -41,53 +42,13 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  async fetchAllProducts() {
+  fetchAllProducts() {
     this.productService.getProducts().subscribe((data: any) => {
       this.allProducts = data.products;
       this.extractFilters();
       this.loadProducts();
     });
   }
-
-  // Load products and check if they are in the cart
-  async loadProducts() {
-    try {
-      const cartItems = await this.cartService.getCartItems();
-      console.log('🛒 Current Cart Items:', cartItems);
-
-      // Log the cart items properly
-      cartItems.forEach((item: any) => {
-        console.log(
-          '🛍 Cart Item - ID:',
-          item.product_id?._id || item.product_id,
-          'Name:',
-          item.name
-        );
-      });
-
-      this.products = this.allProducts.map((product) => {
-        const isInCart = cartItems.some(
-          (item: any) =>
-            String(item.product_id?._id || item.product_id) ===
-            String(product._id)
-        );
-
-        console.log(
-          `📦 Product: ${product.name} (ID: ${product._id}), isInCart: ${isInCart}`
-        );
-
-        return {
-          ...product,
-          isInCart,
-        };
-      });
-
-      console.log('✅ Updated Products with Cart Status:', this.products);
-    } catch (error) {
-      console.error('❌ Error loading products:', error);
-    }
-  }
-
   openQuantityDialog(product: any) {
     console.log(
       `📌 Opening Quantity Dialog for: ${product.name}, isInCart: ${product.isInCart}`
@@ -95,14 +56,17 @@ export class ProductsComponent implements OnInit {
 
     const dialogRef = this.dialog.open(QuantityDialogComponent, {
       width: '300px',
-      data: { product },
+      data: {
+        product,
+        existingQuantity: product.cartQuantity || 0, // ✅ Ensure correct quantity is passed
+      },
     });
 
     dialogRef.afterClosed().subscribe((selectedQuantity) => {
-      console.log(
-        `📩 Selected Quantity: ${selectedQuantity} for ${product.name}`
-      );
-      if (selectedQuantity) {
+      if (selectedQuantity !== undefined && selectedQuantity !== null) {
+        console.log(
+          `📩 Selected Quantity: ${selectedQuantity} for ${product.name}`
+        );
         this.addToCart(product, selectedQuantity);
       }
     });
@@ -122,60 +86,39 @@ export class ProductsComponent implements OnInit {
         return;
       }
 
-      // Fetch current cart items
       const cartItems = await this.cartService.getCartItems();
-      console.log('🔍 Cart Items Before Operation:', cartItems);
-
-      // Find if the product is already in the cart
       const existingCartItem = cartItems.find(
-        (item: any) =>
+        (item) =>
           String(item.product_id?._id || item.product_id) ===
           String(product._id)
       );
 
-      let finalPrice = product.price;
-      if (product.sale?.isOnSale) {
-        const currentDate = new Date();
-        if (
-          new Date(product.sale.saleStartDate) <= currentDate &&
-          new Date(product.sale.saleEndDate) >= currentDate
-        ) {
-          finalPrice = product.sale.salePrice;
-        }
-      }
-
-      console.log(
-        `🛒 Processing ${quantity}x ${product.name} (ID: ${product._id})`
-      );
+      let finalPrice =
+        product.sale?.isOnSale &&
+        new Date(product.sale.saleStartDate) <= new Date() &&
+        new Date(product.sale.saleEndDate) >= new Date()
+          ? product.sale.salePrice
+          : product.price;
 
       if (existingCartItem) {
-        // If the product already exists in the cart, update its quantity
-        const totalQuantity = quantity; // Set the quantity to the selected amount
+        // ✅ If the item is already in the cart, update its quantity
+        console.log(
+          `✏ Editing Cart Item for ${product.name} (ID: ${product._id})`
+        );
 
-        if (totalQuantity <= product.quantity) {
-          existingCartItem.amount = totalQuantity;
-          existingCartItem.full_price = finalPrice * totalQuantity;
+        existingCartItem.amount = quantity;
+        existingCartItem.full_price = finalPrice * quantity;
 
-          await this.cartService.editItemAmount(
-            existingCartItem._id,
-            existingCartItem.amount,
-            existingCartItem.full_price
-          );
+        await this.cartService.editItemAmount(
+          existingCartItem._id,
+          existingCartItem.amount,
+          existingCartItem.full_price
+        );
 
-          alert(
-            `✅ Updated ${product.name} quantity to ${totalQuantity} in cart!`
-          );
-        } else {
-          alert(
-            `❌ You cannot add more than ${product.quantity} of ${product.name}.`
-          );
-        }
+        alert(`✅ Updated ${product.name} quantity to ${quantity} in cart!`);
       } else {
-        // If the product is not in the cart, add it
-        if (quantity > product.quantity) {
-          quantity = product.quantity;
-          alert(`❌ Maximum ${product.quantity} of ${product.name} allowed.`);
-        }
+        // ✅ If the item is NOT in the cart, add it
+        console.log(`🛒 Adding New Item to Cart: ${product.name}`);
 
         const cartItem = {
           cart_id: cartId,
@@ -185,18 +128,14 @@ export class ProductsComponent implements OnInit {
           full_price: finalPrice * quantity,
         };
 
-        console.log('🛒 Adding to cart:', cartItem);
-
         await this.cartService.addItemToCart(cartItem);
         alert(`✅ ${quantity}x ${product.name} added to cart!`);
       }
 
-      // Refresh cart and update product statuses
       await this.cartService.refreshCart();
-      this.loadProducts();
+      this.loadProducts(); // ✅ Refresh products after update
     } catch (error) {
-      console.error('❌ Failed to process cart operation:', error);
-      alert('❌ Failed to update cart.');
+      console.error('❌ Failed to update cart:', error);
     }
   }
 
@@ -212,16 +151,118 @@ export class ProductsComponent implements OnInit {
       ),
     ];
   }
-  debugButtonClick(product: any) {
-    console.log(
-      `🖱 Button Clicked: ${product.name} (ID: ${product._id}), isInCart: ${product.isInCart}`
-    );
-    this.openQuantityDialog(product);
+  async loadProducts() {
+    try {
+      const cartItems = await this.cartService.getCartItems();
+      console.log('🛒 Current Cart Items:', cartItems);
+
+      let filteredProducts =
+        this.searchResults.length > 0
+          ? [...this.searchResults]
+          : [...this.allProducts]; // Use searchResults if they exist
+
+      // Apply filters only when not searching
+      if (this.searchValue.trim() === '') {
+        if (this.selectedCategory !== 'All') {
+          filteredProducts = filteredProducts.filter(
+            (product) => product.category?.name === this.selectedCategory
+          );
+        }
+
+        if (this.selectedBrand !== 'All') {
+          filteredProducts = filteredProducts.filter(
+            (product) =>
+              product.brand?.toLowerCase() === this.selectedBrand.toLowerCase()
+          );
+        }
+
+        if (this.selectedCustomerType !== 'All') {
+          filteredProducts = filteredProducts.filter((product) => {
+            if (this.selectedCustomerType === 'New')
+              return product.newCustomerDiscount;
+            if (this.selectedCustomerType === 'High Level')
+              return product.highLevelExclusive;
+            return true;
+          });
+        }
+      }
+
+      // Apply sorting
+      filteredProducts.sort((a, b) => {
+        if (this.sortBy === 'name') {
+          return this.order === 'asc'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        } else if (this.sortBy === 'price') {
+          return this.order === 'asc' ? a.price - b.price : b.price - a.price;
+        } else if (this.sortBy === 'stock') {
+          return this.order === 'asc'
+            ? a.quantity - b.quantity
+            : b.quantity - a.quantity;
+        }
+        return 0;
+      });
+
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      this.products = filteredProducts
+        .slice(startIndex, startIndex + this.itemsPerPage)
+        .map((product) => {
+          const cartItem = cartItems.find(
+            (item) =>
+              String(item.product_id?._id || item.product_id) ===
+              String(product._id)
+          );
+
+          console.log(
+            `📦 Product: ${product.name} (ID: ${product._id}), In Cart: ${
+              cartItem ? '✅ YES' : '❌ NO'
+            }, Cart Quantity: ${cartItem ? cartItem.amount : 0}`
+          );
+
+          return {
+            ...product,
+            isInCart: !!cartItem, // ✅ True if product exists in cart
+            cartQuantity: cartItem ? cartItem.amount : 0, // ✅ Store existing cart quantity
+          };
+        });
+
+      console.log(
+        '✅ Products loaded with updated cart status:',
+        this.products
+      );
+    } catch (error) {
+      console.error('❌ Error loading products:', error);
+    }
   }
 
   searchProducts() {
-    this.currentPage = 1;
-    this.loadProducts();
+    if (this.searchValue.trim()) {
+      console.log(`🔍 Searching for: ${this.searchValue}`);
+
+      this.productService
+        .getProducts(1, 1000, this.sortBy, this.order, 'name', this.searchValue)
+        .subscribe((data: any) => {
+          if (data.products.length === 0) {
+            console.warn(
+              '❌ No products found for search term:',
+              this.searchValue
+            );
+            alert('❌ No products match your search.');
+            return;
+          }
+
+          this.searchResults = data.products; // ✅ Store search results separately
+          this.currentPage = 1; // ✅ Reset to first page
+          this.totalPages = Math.ceil(
+            this.searchResults.length / this.itemsPerPage
+          );
+          this.loadProducts();
+        });
+    } else {
+      console.log('🔄 Clearing search, restoring all products');
+      this.searchResults = []; // ✅ Clear search results when search is cleared
+      this.fetchAllProducts(); // ✅ Reload full product list
+    }
   }
 
   changeSorting() {

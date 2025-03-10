@@ -127,7 +127,7 @@
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
             [disabled]="product.quantity === 0"
-            (click)="debugButtonClick(product)"
+            (click)="openQuantityDialog(product)"
           >
             {{
               product.quantity === 0

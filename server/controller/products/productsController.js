@@ -7,31 +7,45 @@ async function getTopProducts() {
     const topProducts = await TopProductsModel.find()
       .populate({
         path: "product_id",
-        model: productModel, // Ensure this is correctly imported
-        select: "name image price brand category",
+        model: productModel,
+        select: "name image price brand category quantity sale", // ✅ Ensure "sale" is included
         populate: {
           path: "category",
-          model: categoryModel, // Ensure this is correctly imported
-          select: "name", // Get only the category name
+          model: categoryModel,
+          select: "name",
         },
       })
-      .lean(); // Converts Mongoose documents to plain JS objects
+      .lean();
 
-    console.log("Fetched Top Products:", topProducts); // Debugging
+    // ✅ Filter out out-of-stock products and apply sale pricing
+    return topProducts
+      .filter((item) => item.product_id.quantity > 0) // ✅ Exclude out-of-stock
+      .map((item) => {
+        let finalPrice = item.product_id.price; // Default price
+        if (item.product_id.sale?.isOnSale) {
+          const currentDate = new Date();
+          if (
+            new Date(item.product_id.sale.saleStartDate) <= currentDate &&
+            new Date(item.product_id.sale.saleEndDate) >= currentDate
+          ) {
+            finalPrice = item.product_id.sale.salePrice; // ✅ Apply sale price
+          }
+        }
 
-    return topProducts.map((item) => {
-      console.log("Product Category:", item.product_id.category); // Debugging
-      return {
-        _id: item.product_id._id,
-        name: item.product_id.name,
-        image: item.product_id.image,
-        price: item.product_id.price,
-        brand: item.product_id.brand,
-        category: item.product_id.category
-          ? item.product_id.category.name
-          : "Unknown", // Ensure it's properly populated
-      };
-    });
+        return {
+          _id: item.product_id._id,
+          name: item.product_id.name,
+          image: item.product_id.image,
+          price: finalPrice, // ✅ Ensure correct price is sent
+          brand: item.product_id.brand,
+          category: item.product_id.category
+            ? item.product_id.category.name
+            : "Unknown",
+          quantity: item.product_id.quantity,
+          originalPrice: item.product_id.price, // ✅ Keep original price for UI
+          sale: item.product_id.sale, // ✅ Pass sale details
+        };
+      });
   } catch (error) {
     console.error("Error fetching top products:", error);
     return [];
@@ -44,7 +58,8 @@ async function getAllProducts(
   page = 1,
   limit = 50,
   sortBy = "name",
-  order = "asc"
+  order = "asc",
+  isSearch = false // ✅ New parameter to control pagination behavior
 ) {
   try {
     console.log(
@@ -59,28 +74,37 @@ async function getAllProducts(
       "SortBy:",
       sortBy,
       "Order:",
-      order
+      order,
+      "isSearch:",
+      isSearch
     );
 
     const query = {};
-    if (key && value) {
-      if (key === "_id" || key === "category._id") {
-        query[key] = value;
-      } else {
-        query[key] = { $regex: value, $options: "i" }; // Case-insensitive search
-      }
+
+    // 🔹 If searching, apply regex-based search on `name`, `brand`, or `category`
+    if (value) {
+      query["$or"] = [
+        { name: { $regex: value, $options: "i" } },
+        { brand: { $regex: value, $options: "i" } },
+        { "category.name": { $regex: value, $options: "i" } },
+      ];
     }
 
     const sortOption = {};
     sortOption[sortBy] = order === "desc" ? -1 : 1;
 
     const totalProducts = await productModel.countDocuments(query);
-    const products = await productModel
+    let productsQuery = productModel
       .find(query, { __v: false })
       .populate("category", "name", categoryModel)
-      .sort(sortOption)
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .sort(sortOption);
+
+    // ✅ If searching, do NOT apply pagination
+    if (!isSearch) {
+      productsQuery = productsQuery.skip((page - 1) * limit).limit(limit);
+    }
+
+    const products = await productsQuery;
 
     return { products, totalProducts };
   } catch (error) {

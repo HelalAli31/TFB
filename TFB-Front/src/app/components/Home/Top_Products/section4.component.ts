@@ -10,8 +10,8 @@ import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quan
   styleUrls: ['./section4.component.css'],
 })
 export class Section4Component implements OnInit {
-  public products: any[] = [];
-  public groupedProducts: { [category: string]: any[] } = {}; // Grouped products by category
+  public topProducts: any[] = [];
+  public groupedProducts: { [category: string]: any[] } = {}; // Grouped top products by category
   public cartItems: any[] = []; // Store cart items to check if a product is in the cart
 
   constructor(
@@ -19,25 +19,34 @@ export class Section4Component implements OnInit {
     private cartService: CartService,
     public dialog: MatDialog
   ) {}
-
-  async get_products() {
-    this.productService.getProducts().subscribe(
+  async getTopProducts() {
+    this.productService.getTopProducts().subscribe(
       async (result: any) => {
-        if (!result || !Array.isArray(result.products)) {
-          console.error('❌ Products data is not an array:', result);
-          this.products = [];
+        if (!result || !Array.isArray(result)) {
+          console.error('❌ Top Products data is not an array:', result);
+          this.topProducts = [];
           return;
         }
 
-        this.products = result.products;
-        console.log('✅ Products:', JSON.stringify(this.products, null, 2));
+        this.topProducts = result;
+        console.log(
+          '✅ Top Products:',
+          JSON.stringify(this.topProducts, null, 2)
+        );
 
-        // Fetch cart items to update isInCart flag
+        // 🔹 Log price to ensure sale price is received correctly
+        this.topProducts.forEach((product) => {
+          console.log(
+            `📦 Product: ${product.name}, Price: ${product.price}, Original: ${product.originalPrice}, On Sale: ${product.sale?.isOnSale}`
+          );
+        });
+
+        // Fetch cart items to update `isInCart`
         await this.loadCartItems();
 
-        // ✅ Group products by category
-        this.groupedProducts = this.products.reduce((acc, product) => {
-          let categoryName = product.category?.name || 'Uncategorized';
+        // ✅ Group top products by category
+        this.groupedProducts = this.topProducts.reduce((acc, product) => {
+          let categoryName = product.category || 'Uncategorized';
 
           if (!acc[categoryName]) {
             acc[categoryName] = [];
@@ -55,10 +64,10 @@ export class Section4Component implements OnInit {
           return acc;
         }, {});
 
-        console.log('✅ Grouped Products:', this.groupedProducts);
+        console.log('✅ Grouped Top Products:', this.groupedProducts);
       },
       (error: any) => {
-        console.error('❌ Error fetching products:', error);
+        console.error('❌ Error fetching top products:', error);
       }
     );
   }
@@ -131,7 +140,7 @@ export class Section4Component implements OnInit {
       );
 
       if (existingCartItem) {
-        const totalQuantity = quantity; // Update quantity
+        const totalQuantity = quantity;
 
         if (totalQuantity <= product.quantity) {
           existingCartItem.amount = totalQuantity;
@@ -173,7 +182,7 @@ export class Section4Component implements OnInit {
 
       await this.cartService.refreshCart();
       await this.loadCartItems();
-      await this.get_products();
+      await this.getTopProducts();
     } catch (error) {
       console.error('❌ Failed to process cart operation:', error);
       alert('❌ Failed to update cart.');
@@ -181,6 +190,6 @@ export class Section4Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.get_products();
+    this.getTopProducts();
   }
 }

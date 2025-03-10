@@ -17,14 +17,15 @@ export class ProductService {
   }
   getProducts(
     page: number = 1,
-    limit: number = 50,
+    limit: number = 10, // ✅ Default to 10 per page
     sortBy: string = 'name',
     order: string = 'asc',
     keyName?: string,
-    valueName?: string
+    valueName?: string,
+    isSearch: boolean = false // ✅ New flag to control pagination
   ): Observable<any> {
     const headers = this.getAuthHeaders();
-    const body = { page, limit, sortBy, order, keyName, valueName };
+    const body = { page, limit, sortBy, order, keyName, valueName, isSearch };
     return this.http.post(`${this.apiUrl}/`, body, { headers });
   }
 

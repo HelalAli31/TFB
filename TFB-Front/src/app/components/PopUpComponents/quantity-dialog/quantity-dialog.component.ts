@@ -18,9 +18,19 @@ export class QuantityDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cartService: CartService
   ) {}
+  ngOnInit() {
+    console.log(`📌 Opening Quantity Dialog for: ${this.data.product.name}`);
+    console.log(`🔍 Received Product Data:`, this.data.product);
 
-  async ngOnInit() {
-    await this.checkExistingQuantity();
+    // 🔹 Ensure `quantity` is present
+    if (this.data.product.quantity === undefined) {
+      console.warn(
+        `⚠ Warning: Product "${this.data.product.name}" is missing quantity!`
+      );
+      this.data.product.quantity = 0; // Prevents `undefined`
+    }
+
+    this.checkExistingQuantity();
   }
 
   async checkExistingQuantity() {
