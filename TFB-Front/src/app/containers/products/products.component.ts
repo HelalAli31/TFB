@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/serverServices/productService/product.service';
 import { ActivatedRoute } from '@angular/router';
+import { CartService } from 'src/app/serverServices/cart/cart.service';
+import { MatDialog } from '@angular/material/dialog';
+import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
 
 @Component({
   selector: 'app-products',
@@ -25,7 +28,9 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cartService: CartService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -44,6 +49,63 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+  openQuantityDialog(product: any) {
+    const dialogRef = this.dialog.open(QuantityDialogComponent, {
+      width: '300px',
+      data: { product },
+    });
+
+    dialogRef.afterClosed().subscribe((selectedQuantity) => {
+      if (selectedQuantity) {
+        this.addToCart(product, selectedQuantity);
+      }
+    });
+  }
+
+  async addToCart(product: any, quantity: number) {
+    if (!product || !quantity) {
+      console.error('🚨 Product or quantity is undefined!');
+      return;
+    }
+
+    try {
+      const cartId = await this.cartService.getCartId(); // ✅ Get cart ID from service
+      if (!cartId) {
+        console.error('🚨 No active cart found for this user.');
+        alert('❌ Could not find an active cart.');
+        return;
+      }
+
+      let finalPrice = product.price;
+      if (product.sale?.isOnSale) {
+        const currentDate = new Date();
+        if (
+          new Date(product.sale.saleStartDate) <= currentDate &&
+          new Date(product.sale.saleEndDate) >= currentDate
+        ) {
+          finalPrice = product.sale.salePrice;
+        }
+      }
+
+      const cartItem = {
+        cart_id: cartId,
+        product_id: product._id,
+        name: product.name,
+        amount: quantity,
+        full_price: finalPrice * quantity,
+      };
+
+      console.log('🛒 Adding to cart:', cartItem);
+
+      await this.cartService.addItemToCart(cartItem);
+      alert(`✅ ${quantity}x ${product.name} added to cart!`);
+      this.cartService.refreshCart();
+    } catch (error) {
+      console.error('❌ Failed to add item to cart:', error);
+      alert('❌ Failed to add item to cart.');
+    }
+  }
+
   extractFilters() {
     this.categories = [
       'All',
@@ -60,20 +122,17 @@ export class ProductsComponent implements OnInit {
   loadProducts() {
     let filteredProducts = [...this.allProducts];
 
-    // 🔍 **Search (Ignores Filters)**
     if (this.searchValue.trim() !== '') {
       filteredProducts = this.allProducts.filter((product) =>
         product.name.toLowerCase().includes(this.searchValue.toLowerCase())
       );
     } else {
-      // 🔍 **Category Filter**
       if (this.selectedCategory !== 'All') {
         filteredProducts = filteredProducts.filter(
           (product) => product.category?.name === this.selectedCategory
         );
       }
 
-      // 🔍 **Customer Type Filter**
       if (this.selectedCustomerType !== 'All') {
         filteredProducts = filteredProducts.filter((product) => {
           const customerType = product.details?.costumer_type || 'New';
@@ -81,7 +140,6 @@ export class ProductsComponent implements OnInit {
         });
       }
 
-      // 🔍 **Brand Filter**
       if (this.selectedBrand !== 'All') {
         filteredProducts = filteredProducts.filter((product) => {
           const productBrand = product.brand?.toLowerCase().trim();
@@ -90,7 +148,6 @@ export class ProductsComponent implements OnInit {
       }
     }
 
-    // 📌 **Sorting Logic**
     filteredProducts.sort((a, b) => {
       let valueA, valueB;
 
@@ -101,7 +158,6 @@ export class ProductsComponent implements OnInit {
         valueA = a.price;
         valueB = b.price;
       } else if (this.sortBy === 'stock') {
-        // 🔄 Stock Sorting: Move **low-stock first**, **in-stock second**, **out-of-stock last**
         if (a.quantity === 0 && b.quantity !== 0) return 1;
         if (b.quantity === 0 && a.quantity !== 0) return -1;
         if (a.quantity < 5 && b.quantity >= 5) return -1;
@@ -115,7 +171,6 @@ export class ProductsComponent implements OnInit {
       return 0;
     });
 
-    // 📌 **Pagination**
     this.totalPages = Math.ceil(filteredProducts.length / this.itemsPerPage);
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     this.products = filteredProducts.slice(

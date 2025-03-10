@@ -1,0 +1,15 @@
+<div class="dialog-container">
+  <h2>Select Quantity</h2>
+  <p>{{ data.product.name }}</p>
+
+  <div class="quantity-control">
+    <button (click)="decreaseQuantity()">➖</button>
+    <span class="quantity-box">{{ quantity }}</span>
+    <button (click)="increaseQuantity()">➕</button>
+  </div>
+
+  <div class="dialog-buttons">
+    <button (click)="dialogRef.close()">Cancel</button>
+    <button (click)="confirmSelection()">Confirm</button>
+  </div>
+</div>

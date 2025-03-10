@@ -89,13 +89,23 @@
           <div class="Product_Info">
             <p class="Product_Brand">{{ product.brand }}</p>
             <span class="Separator">|</span>
-            <p class="Product_Price">{{ product.price }} ₪</p>
+            <p class="Product_Price">
+              <span *ngIf="product.sale?.isOnSale" class="old-price">
+                {{ product.price }} ₪
+              </span>
+              <span *ngIf="product.sale?.isOnSale" class="sale-price">
+                {{ product.sale.salePrice }} ₪
+              </span>
+              <span *ngIf="!product.sale?.isOnSale">
+                {{ product.price }} ₪
+              </span>
+            </p>
           </div>
-
           <button
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
             [disabled]="product.quantity === 0"
+            (click)="openQuantityDialog(product)"
           >
             {{ product.quantity === 0 ? "Unavailable" : "Add to Cart" }}
           </button>

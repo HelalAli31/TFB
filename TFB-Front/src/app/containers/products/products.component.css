@@ -148,6 +148,18 @@
   text-decoration-thickness: 2px;
   text-underline-offset: 4px; /* Moves underline lower */
 }
+.old-price {
+  text-decoration: line-through;
+  color: grey;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.sale-price {
+  font-weight: bold;
+  font-size: 18px;
+}
+
 /* 🔴 Stock Badge (Now in top-right of Product Card) */
 .Stock_Badge {
   position: absolute;

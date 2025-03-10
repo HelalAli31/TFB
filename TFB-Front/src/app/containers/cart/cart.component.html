@@ -30,9 +30,21 @@
 
       <!-- Price Section -->
       <p class="cart-price">
-        💰 <b>Unit Price:</b> {{ item.product_id?.price || 0 }} ₪<br />
+        💰 <b>Unit Price:</b>
+        <span *ngIf="item.product_id?.sale?.isOnSale; else normalPrice">
+          {{ item.product_id?.sale?.salePrice }} ₪
+        </span>
+        <ng-template #normalPrice>
+          {{ item.product_id?.price || 0 }} ₪
+        </ng-template>
+        <br />
         🔹 <b>Total Price:</b>
-        {{ (item.product_id?.price || 0) * item.amount }} ₪
+        <span *ngIf="item.product_id?.sale?.isOnSale; else totalNormalPrice">
+          {{ (item.product_id?.sale?.salePrice || 0) * item.amount }} ₪
+        </span>
+        <ng-template #totalNormalPrice>
+          {{ (item.product_id?.price || 0) * item.amount }} ₪
+        </ng-template>
       </p>
     </div>
 
@@ -43,14 +55,12 @@
         [disabled]="item.amount <= 1"
       >
         <span class="material-icons">remove</span>
-        <!-- ✅ Material Minus -->
       </button>
 
       <div class="quantity-box">{{ item.amount }}</div>
 
       <button class="quantity-btn right-arrow" (click)="increaseQuantity(i)">
         <span class="material-icons">add</span>
-        <!-- ✅ Material Plus -->
       </button>
     </div>
 
@@ -59,10 +69,9 @@
   </div>
 
   <!-- Cart Summary -->
-  <!-- Cart Summary -->
   <div class="cart-summary">
     <h3>
-      <span class="total-price">Total:{{ getTotalPrice() }} ₪</span>
+      <span class="total-price">Total: {{ getTotalPrice() }} ₪</span>
     </h3>
 
     <!-- Buy Now Button -->

@@ -243,3 +243,8 @@
 .buy-now-button:active {
   transform: scale(0.95);
 }
+.sale-price {
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+}

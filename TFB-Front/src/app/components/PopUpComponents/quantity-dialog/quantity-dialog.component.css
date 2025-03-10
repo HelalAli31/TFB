@@ -1,0 +1,34 @@
+h2 {
+  text-align: center;
+  color: #6a0dad;
+}
+
+.quantity-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-selector button {
+  background: #6a0dad;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.quantity-selector input {
+  width: 50px;
+  text-align: center;
+  font-size: 18px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.quantity-selector button:hover {
+  background: #540b99;
+}
