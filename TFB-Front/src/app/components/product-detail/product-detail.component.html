@@ -1,0 +1,52 @@
+<div *ngIf="product">
+  <div class="product-detail-container">
+    <div class="product-image">
+      <img
+        [src]="'assets/products/' + product.image + '.jpg'"
+        alt="{{ product.name }}"
+        class="product-image-detail"
+      />
+    </div>
+
+    <div class="product-info">
+      <h2>{{ product.name }}</h2>
+      <p class="product-brand">Brand: {{ product.brand }}</p>
+
+      <div class="price-section">
+        <p class="product-price">
+          <span *ngIf="product.sale?.isOnSale" class="sale-price">
+            {{ product.sale.salePrice }} ₪
+          </span>
+          <span *ngIf="!product.sale?.isOnSale" class="regular-price">
+            {{ product.price }} ₪
+          </span>
+        </p>
+        <p *ngIf="product.sale?.isOnSale" class="original-price">
+          {{ product.price }} ₪
+        </p>
+      </div>
+
+      <div class="product-description">
+        <h3>Description</h3>
+        <p>{{ product.description }}</p>
+      </div>
+
+      <div class="product-details">
+        <p><strong>Wattage:</strong> {{ product.details?.wattage }}</p>
+        <p><strong>Color:</strong> {{ product.details?.color }}</p>
+        <p>
+          <strong>Customer Type:</strong> {{ product.details?.costumer_type }}
+        </p>
+      </div>
+
+      <!-- Add/Edit to Cart Button -->
+      <button
+        class="add-to-cart-button"
+        [disabled]="product.quantity === 0"
+        (click)="openQuantityDialog(product)"
+      >
+        {{ existingQuantity > 0 ? "Edit" : "Add to Cart" }}
+      </button>
+    </div>
+  </div>
+</div>

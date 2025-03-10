@@ -65,7 +65,10 @@
 
   <div class="Product_Grid">
     <div *ngFor="let product of products" class="Product_Card">
-      <div class="Product_Card_Content">
+      <div
+        [routerLink]="['/product', product._id]"
+        class="Product_Card_Content"
+      >
         <div
           *ngIf="product.quantity < 5"
           class="Stock_Badge"

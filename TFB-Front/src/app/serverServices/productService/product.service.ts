@@ -15,6 +15,12 @@ export class ProductService {
       Authorization: localStorage.getItem('token') || '',
     });
   }
+  // product.service.ts
+  getProductById(id: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/${id}`, { headers });
+  }
+
   getProducts(
     page: number = 1,
     limit: number = 10, // ✅ Default to 10 per page

@@ -9,6 +9,8 @@ const {
 } = require("../controller/products/productsController");
 const axios = require("axios");
 const router = express.Router();
+const productModel = require("../models/productSchema");
+
 const logger = require("../logger");
 const { verifyJWT } = require("../controller/JWT/jwt");
 const getValidationFunction = require("../validations/productValidation");
@@ -102,6 +104,41 @@ router.post("/", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     return next({ message: "GENERAL ERROR", status: 500 });
+  }
+});
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const productId = req.params.id; // Extract product ID from URL parameter
+
+    // Find the product by ID
+    const product = await productModel
+      .findById(productId)
+      .populate("category", "name")
+      .lean();
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    let finalPrice = product.price;
+    if (product.sale?.isOnSale) {
+      const currentDate = new Date();
+      if (
+        new Date(product.sale.saleStartDate) <= currentDate &&
+        new Date(product.sale.saleEndDate) >= currentDate
+      ) {
+        finalPrice = product.sale.salePrice;
+      }
+    }
+
+    // Include the final price considering any ongoing sale
+    product.finalPrice = finalPrice;
+
+    return res.json(product);
+  } catch (error) {
+    console.log(error);
+    return next({ message: "Error fetching product details", status: 500 });
   }
 });
 

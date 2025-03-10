@@ -35,6 +35,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { QuantityDialogComponent } from './components/PopUpComponents/quantity-dialog/quantity-dialog.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,6 +54,7 @@ import { QuantityDialogComponent } from './components/PopUpComponents/quantity-d
     CartComponent,
     FilterPipe,
     QuantityDialogComponent,
+    ProductDetailComponent,
   ],
   imports: [
     BrowserModule,
