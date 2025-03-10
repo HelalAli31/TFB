@@ -1,5 +1,4 @@
 <div class="Product_Section">
-  <!-- Loop through grouped products -->
   <div
     class="topProductsDiv"
     *ngFor="let category of groupedProducts | keyvalue"
@@ -18,7 +17,21 @@
           <h3 class="Product_Name col-12">{{ product.name }}</h3>
           <p class="Product_Brand col-6">{{ product.brand }}</p>
           <p class="Product_Price col-6">{{ product.price }} ₪ </p>
-          <button class="View_Button">Add to cart</button>
+
+          <button
+            class="View_Button"
+            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+            [disabled]="product.quantity === 0"
+            (click)="openQuantityDialog(product)"
+          >
+            {{
+              product.quantity === 0
+                ? "Unavailable"
+                : product.isInCart
+                ? "Edit"
+                : "Add to Cart"
+            }}
+          </button>
         </div>
       </div>
     </div>

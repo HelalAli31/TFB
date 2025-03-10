@@ -2,17 +2,50 @@ const cartModel = require("../../models/cartSchema");
 const userModel = require("../../models/usersSchema");
 const productModel = require("../../models/productSchema");
 const cartItemsModel = require("../../models/cartItemsSchema");
+const mongoose = require("mongoose");
 
 async function getCart(userId) {
   try {
-    const result = await cartModel
-      .find({ user_id: userId }, { __v: false })
-      .populate("user_id", "first_name", userModel);
-    return result;
+    console.log(`🔍 Checking for open cart for user: ${userId}`);
+
+    // ✅ List all carts for debugging
+    const allCarts = await cartModel.find({
+      user_id: new mongoose.Types.ObjectId(userId),
+    });
+    console.log("🛒 All Carts for User:", allCarts);
+
+    let cart = await cartModel
+      .findOne({
+        user_id: new mongoose.Types.ObjectId(userId),
+        cartIsOpen: true, // ✅ Ensure correct field name
+      })
+      .populate("user_id", "first_name");
+
+    console.log("CAAAAART:", cart, " ID:", userId);
+    if (cart) {
+      console.log(`✅ Found open cart for user: ${userId}`);
+      return cart;
+    }
+
+    // 🚀 **If no open cart exists, create one**
+    console.warn(`⚠️ No open cart found for user: ${userId}, creating one...`);
+
+    cart = new cartModel({
+      user_id: new mongoose.Types.ObjectId(userId), // ✅ Ensure userId is ObjectId
+      cartIsOpen: true,
+      created_at: new Date(),
+      items: [],
+    });
+
+    await cart.save();
+    console.log(`✅ New cart created for user: ${userId}`);
+    return cart;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Error fetching/creating cart:", error);
+    throw error;
   }
 }
+
 async function updateCartStatus(cartId) {
   try {
     const result = await cartModel
@@ -23,23 +56,25 @@ async function updateCartStatus(cartId) {
     console.log(error);
   }
 }
-
 async function getCartItems(cartId) {
   try {
-    let result = await cartItemsModel
-      .find({ cart_id: cartId }, { __v: false })
-      .populate({
-        path: "product_id",
-        model: productModel, // ✅ Explicitly define model to populate
-      });
+    console.log(`📤 Fetching cart items for cart ID: ${cartId}`);
 
-    if (!result || result.length === 0) {
-      console.warn("⚠️ No cart items found in DB for cartId:", cartId);
+    // ✅ Ensure correct model name: "Products" instead of "Product"
+    const cartItems = await cartItemsModel.find({ cart_id: cartId }).populate({
+      path: "product_id",
+      model: "Products", // ✅ Correct model name
+      select:
+        "_id name brand category price quantity image description details sale",
+    });
+
+    if (!cartItems || cartItems.length === 0) {
+      console.warn(`⚠️ Cart ${cartId} has no items.`);
       return [];
     }
 
-    console.log("✅ Cart items fetched:", result);
-    return result;
+    console.log(`✅ Items related to cart ID ${cartId}:`, cartItems);
+    return cartItems;
   } catch (error) {
     console.error("❌ Error fetching cart items:", error);
     return [];
@@ -48,12 +83,52 @@ async function getCartItems(cartId) {
 
 async function addItemToCart(item) {
   try {
-    const result = await cartItemsModel.insertMany([item]);
-    return result;
+    console.log("📤 Adding item to cart:", item);
+
+    const { cart_id, product_id, amount, full_price } = item;
+
+    if (!cart_id || !product_id || !amount || !full_price) {
+      console.error("🚨 Invalid item data:", item);
+      return null;
+    }
+
+    const cart = await cartModel.findById(cart_id);
+    if (!cart) {
+      console.error(`❌ Cart not found: ${cart_id}`);
+      return null;
+    }
+
+    const product = await productModel.findById(product_id);
+    if (!product) {
+      console.error(`❌ Product not found: ${product_id}`);
+      return null;
+    }
+
+    let cartItem = await cartItemsModel.findOne({ cart_id, product_id });
+
+    if (cartItem) {
+      console.log("🔄 Item already in cart, updating quantity.");
+      cartItem.amount += amount;
+      cartItem.full_price += full_price;
+      await cartItem.save();
+    } else {
+      console.log("🆕 Adding new item to cart.");
+      cartItem = new cartItemsModel({
+        cart_id,
+        product_id,
+        amount,
+        full_price,
+      });
+      await cartItem.save();
+    }
+
+    return cartItem;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Error adding item to cart:", error);
+    return null;
   }
 }
+
 async function addCart(userId) {
   try {
     const cart = {};

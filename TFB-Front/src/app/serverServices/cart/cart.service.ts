@@ -124,10 +124,7 @@ export class CartService {
         )
         .toPromise();
 
-      console.log('✅ Item added successfully! Response:', response);
-
       if (response && response.message) {
-        alert(`✅ ${cartItem.amount}x ${cartItem.name} added to cart!`);
         this.refreshCart();
       } else {
         console.error('🚨 Unexpected response format:', response);

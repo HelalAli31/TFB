@@ -90,13 +90,35 @@
             <p class="Product_Brand">{{ product.brand }}</p>
             <span class="Separator">|</span>
             <p class="Product_Price">
-              <span *ngIf="product.sale?.isOnSale" class="old-price">
+              <!-- Show old price if there's a sale and the price is different -->
+              <span
+                *ngIf="
+                  product.sale?.isOnSale &&
+                  product.price !== product.sale.salePrice
+                "
+                class="old-price"
+              >
                 {{ product.price }} ₪
               </span>
-              <span *ngIf="product.sale?.isOnSale" class="sale-price">
+
+              <!-- Show sale price if there's a sale and price is different -->
+              <span
+                *ngIf="
+                  product.sale?.isOnSale &&
+                  product.price !== product.sale.salePrice
+                "
+                class="sale-price"
+              >
                 {{ product.sale.salePrice }} ₪
               </span>
-              <span *ngIf="!product.sale?.isOnSale">
+
+              <!-- If there's no sale or price is the same, show only one price -->
+              <span
+                *ngIf="
+                  !product.sale?.isOnSale ||
+                  product.price === product.sale.salePrice
+                "
+              >
                 {{ product.price }} ₪
               </span>
             </p>
@@ -105,9 +127,15 @@
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
             [disabled]="product.quantity === 0"
-            (click)="openQuantityDialog(product)"
+            (click)="debugButtonClick(product)"
           >
-            {{ product.quantity === 0 ? "Unavailable" : "Add to Cart" }}
+            {{
+              product.quantity === 0
+                ? "Unavailable"
+                : product.isInCart
+                ? "Edit"
+                : "Add to Cart"
+            }}
           </button>
         </div>
       </div>

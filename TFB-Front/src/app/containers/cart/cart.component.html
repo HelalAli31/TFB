@@ -48,19 +48,33 @@
       </p>
     </div>
 
-    <div class="quantity-control">
+    <div class="quantity-selector">
+      <!-- Decrease Quantity Button -->
+      <button class="editQuantity" (click)="decreaseQuantity(i)">➖</button>
+
+      <!-- Quantity Slider -->
+      <input
+        type="range"
+        min="1"
+        [max]="item.product_id?.quantity"
+        [(ngModel)]="item.amount"
+        (input)="onSliderChange(i)"
+        class="quantity-slider"
+        [style.backgroundSize]="
+          (item.amount / item.product_id?.quantity) * 100 + '% 100%'
+        "
+      />
+
+      <!-- Quantity Display -->
+      <span class="quantity-box">{{ item.amount }}</span>
+
+      <!-- Increase Quantity Button -->
       <button
-        class="quantity-btn left-arrow"
-        (click)="decreaseQuantity(i)"
-        [disabled]="item.amount <= 1"
+        class="editQuantity"
+        [disabled]="item.amount >= item.product_id?.quantity"
+        (click)="increaseQuantity(i)"
       >
-        <span class="material-icons">remove</span>
-      </button>
-
-      <div class="quantity-box">{{ item.amount }}</div>
-
-      <button class="quantity-btn right-arrow" (click)="increaseQuantity(i)">
-        <span class="material-icons">add</span>
+        ➕
       </button>
     </div>
 

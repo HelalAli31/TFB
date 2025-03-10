@@ -2,14 +2,23 @@
   <h2>Select Quantity</h2>
   <p>{{ data.product.name }}</p>
 
-  <div class="quantity-control">
-    <button (click)="decreaseQuantity()">➖</button>
+  <!-- Quantity Slider -->
+  <div class="quantity-selector">
+    <button class="editQuantity" (click)="decreaseQuantity()">➖</button>
+    <input
+      type="range"
+      min="1"
+      [max]="maxAvailableQuantity"
+      [(ngModel)]="quantity"
+      (input)="onSliderChange()"
+      class="quantity-slider"
+    />
     <span class="quantity-box">{{ quantity }}</span>
-    <button (click)="increaseQuantity()">➕</button>
+    <button class="editQuantity" (click)="increaseQuantity()">➕</button>
   </div>
 
   <div class="dialog-buttons">
     <button (click)="dialogRef.close()">Cancel</button>
-    <button (click)="confirmSelection()">Confirm</button>
+    <button class="confirm" (click)="confirmSelection()">Confirm</button>
   </div>
 </div>

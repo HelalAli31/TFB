@@ -21,7 +21,6 @@ const allowUserOrAdmin = async (req, res, next) => {
     }
 
     let authHeader = req.headers.authorization;
-    console.log("🛡️ AUTH HEADER:", authHeader); // ✅ Log the raw header
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       console.error("🚨 Invalid Token Format");
@@ -29,7 +28,6 @@ const allowUserOrAdmin = async (req, res, next) => {
     }
 
     let token = authHeader.split(" ")[1].trim(); // ✅ Extract token correctly
-    console.log("🔑 Extracted Token:", token); // ✅ Log extracted token
 
     if (!token) {
       console.error("🚨 Empty Token Received");
@@ -37,7 +35,6 @@ const allowUserOrAdmin = async (req, res, next) => {
     }
 
     const verify = await verifyJWT(token); // ✅ Verify token
-    console.log("✅ Decoded Token:", verify); // ✅ Log the decoded token
 
     if (!verify || !verify.data) {
       console.error("🚨 Invalid Token Data");
@@ -66,15 +63,14 @@ router.post(
   allowUserOrAdmin,
   async (req, res, next) => {
     try {
-      const userId = req.user._id; // ✅ Use extracted user ID
-      console.log(`📤 Fetching cart for user: ${userId}`);
+      const userId = req.user._id; // ✅ Extract user ID
+      console.log(`📤 Fetching open cart for user: ${userId}`);
 
-      const cart = await getCart(userId);
-      if (!cart) throw new Error("No cart found for user.");
+      const cart = await getCart(userId); // ✅ Backend ensures an open cart exists
 
       return res.json({ cart });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return next({ message: "GENERAL ERROR", status: 400 });
     }
   }
@@ -96,57 +92,64 @@ router.post(
     }
   }
 );
-
-router.post(
-  "/addCart",
-  allowUserOrAdmin,
-  getValidationFunction("addCart"),
-  async (req, res, next) => {
-    try {
-      const { userId } = req.query;
-      if (!userId) return res.json("something went wrong");
-      const cart = await addCart(userId);
-      if (!cart) throw new Error();
-      return res.json({ message: "cart added!", data: cart });
-    } catch (error) {
-      console.log(error);
-      return next({ message: "GENERAL ERROR", status: 400 });
-    }
+router.post("/addCart", allowUserOrAdmin, async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const newCart = await addCart(userId);
+    res.json({ message: "Cart added!", cart: newCart });
+  } catch (error) {
+    res.status(400).json({ message: "Error adding cart" });
   }
-);
+});
 console.log("CART");
 
 router.get("/getItems", allowUserOrAdmin, async (req, res, next) => {
   try {
-    console.log(req.query, ":into cartItems");
-
     const { cartId } = req.query;
-    if (!cartId) return res.status(400).json({ error: "Cart ID is required" });
 
-    const cartItems = await getCartItems(cartId);
-    if (!cartItems || cartItems.length === 0) {
-      return res.status(404).json({ message: "Cart items not found" });
+    if (!cartId) {
+      return res.status(400).json({ error: "Cart ID is required" });
     }
 
+    console.log(`📤 Fetching items for cart ID: ${cartId}`);
+
+    const cartItems = await getCartItems(cartId);
+
+    if (!cartItems) {
+      console.warn(`⚠️ No cart items found for cart ID: ${cartId}.`);
+      return res.json([]); // ✅ Return empty array instead of `404`
+    }
+
+    console.log("✅ Cart Items:", cartItems);
     return res.json(cartItems);
   } catch (error) {
     console.error("❌ Error fetching cart items:", error);
-    return next({ message: "GENERAL ERROR", status: 400 });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 // ✅ Add item to cart
 router.put("/AddItems", allowUserOrAdmin, async (req, res, next) => {
   try {
     const { item } = req.body;
 
     const cartItem = await addItemToCart(item);
-    if (!cartItem) throw new Error();
-    return res.json("Item added successfully!");
+    if (!cartItem) {
+      console.error("🚨 Failed to add item:", item);
+      return res.status(400).json({ message: "Failed to add item to cart." });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Item added successfully!", cartItem });
   } catch (error) {
-    console.error(error);
-    return next({ message: "GENERAL ERROR", status: 400 });
+    console.error("❌ Error in AddItems route:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
+
 router.post("/editItemAmount", allowUserOrAdmin, async (req, res, next) => {
   try {
     const { fullPrice, amount, itemId } = req.body.data;

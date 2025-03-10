@@ -7,28 +7,94 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  margin-top: 20px;
 }
 
 .quantity-selector button {
-  background: #6a0dad;
   color: white;
-  border: none;
+  border: 1px solid black;
   padding: 10px;
-  font-size: 18px;
+  font-size: 13px;
   cursor: pointer;
   border-radius: 5px;
-}
-
-.quantity-selector input {
-  width: 50px;
-  text-align: center;
-  font-size: 18px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 100%;
 }
 
 .quantity-selector button:hover {
-  background: #540b99;
+  background: #540b99; /* Darker purple on hover */
+}
+
+.quantity-selector button.white {
+  background: white; /* Set background to white for - and + buttons */
+  color: #6a0dad; /* Set text color to purple for - and + buttons */
+}
+
+.quantity-slider {
+  width: 200px;
+  -webkit-appearance: none;
+  height: 8px;
+  background: #ddd;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+.quantity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #6a0dad;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.quantity-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #6a0dad;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.quantity-box {
+  font-size: 18px;
+  font-weight: bold;
+  width: 40px;
+  text-align: center;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.dialog-buttons button {
+  background: #6a0dad; /* Purple for Cancel button */
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+.editQuantity {
+  border-radius: 20%;
+}
+.confirm {
+  background-color: #34b814 !important;
+}
+
+.dialog-buttons button:hover {
+  background: #540b99; /* Darker purple on hover for Cancel button */
+}
+
+/* Green style for the Confirm button */
+.dialog-buttons .confirm-button {
+  background: green; /* Green for Confirm button */
+}
+
+.dialog-buttons .confirm-button:hover {
+  background: darkgreen; /* Darker green on hover */
 }

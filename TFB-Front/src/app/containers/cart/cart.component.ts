@@ -14,84 +14,93 @@ export class CartComponent implements OnInit {
 
   async ngOnInit() {
     console.log('🛒 Initializing CartComponent...');
-
     try {
       await this.loadCartItems();
+      this.updateTotalPrice(); // Call the updateTotalPrice method after loading the cart items
     } catch (error) {
       console.error('❌ Error fetching cart items:', error);
     }
   }
 
-  // 🛒 Fetch Cart Items
   async loadCartItems() {
     try {
       const response = await this.cartService.getCartItems();
-
       if (Array.isArray(response)) {
         this.cartItems = response.map((item: any) => ({
           ...item,
-          amount: item.amount || 1, // Ensure amount is properly set
+          amount: item.amount || 1,
         }));
       } else {
         console.warn('⚠️ No items found in cart.');
         this.cartItems = [];
       }
-
-      console.log('✅ cartItems:', this.cartItems);
     } catch (error) {
       console.error('❌ Error fetching cart items:', error);
     }
   }
 
-  // 🔼 Increase Quantity
+  // Calculate max available quantity based on available stock
+  getMaxAvailableQuantity(item: any): number {
+    return item.product_id?.quantity; // Max quantity = available stock
+  }
+
+  // Increase Quantity Function
   async increaseQuantity(index: number) {
     const item = this.cartItems[index];
-    item.amount++;
+    const maxQuantity = item.product_id?.quantity;
 
+    if (item.amount < maxQuantity) {
+      item.amount++;
+      await this.updateItemInDb(item); // Save the updated item to the DB
+      this.updateTotalPrice();
+    }
+  }
+
+  // Decrease Quantity Function
+  async decreaseQuantity(index: number) {
+    const item = this.cartItems[index];
+    if (item.amount > 1) {
+      item.amount--;
+      await this.updateItemInDb(item); // Save the updated item to the DB
+      this.updateTotalPrice();
+    }
+  }
+
+  // Slider Input Change Handler
+  async onSliderChange(index: number) {
+    const item = this.cartItems[index];
+    const maxAvailableQuantity = this.getMaxAvailableQuantity(item);
+
+    if (item.amount > maxAvailableQuantity) {
+      item.amount = maxAvailableQuantity; // Prevent exceeding max quantity
+    }
+    await this.updateItemInDb(item); // Save the updated item to the DB
+    this.updateTotalPrice();
+  }
+
+  // Function to update the item in the database
+  async updateItemInDb(item: any) {
     try {
-      console.log(`➕ Increasing quantity for item: ${item._id}`);
+      console.log(`🛒 Updating item in DB for item: ${item._id}`);
       await this.cartService.editItemAmount(
         item._id,
         item.amount,
         item.product_id.price * item.amount
       );
-      this.updateTotalPrice();
-      console.log('✅ Quantity increased successfully!');
+      console.log('✅ Item updated in DB!');
     } catch (error) {
-      console.error('❌ Error increasing quantity:', error);
-      item.amount--; // Rollback on failure
+      console.error('❌ Error updating item in DB:', error);
     }
   }
 
-  // 🔽 Decrease Quantity
-  async decreaseQuantity(index: number) {
-    const item = this.cartItems[index];
-    if (item.amount > 1) {
-      item.amount--;
-
-      try {
-        console.log(`➖ Decreasing quantity for item: ${item._id}`);
-        await this.cartService.editItemAmount(
-          item._id,
-          item.amount,
-          item.product_id.price * item.amount
-        );
-        this.updateTotalPrice();
-        console.log('✅ Quantity decreased successfully!');
-      } catch (error) {
-        console.error('❌ Error decreasing quantity:', error);
-        item.amount++; // Rollback on failure
-      }
-    }
-  }
-
-  // 🛒 Remove Item from Cart
+  // Remove Item from Cart
   async removeItem(index: number) {
     try {
       const item = this.cartItems[index];
       console.log(`🗑 Removing item with ID: ${item._id}`);
       await this.cartService.deleteItemFromCart(item._id);
 
+      // Remove the item from the cart items list
       this.cartItems.splice(index, 1);
       this.updateTotalPrice();
       console.log('✅ Item removed from cart!');
@@ -100,58 +109,13 @@ export class CartComponent implements OnInit {
     }
   }
 
-  async updateQuantity(index: number) {
-    try {
-      const item = this.cartItems[index];
-      if (item.amount < 1) {
-        item.amount = 1;
-      }
-
-      console.log(`✏️ Updating quantity for item: ${item._id}`);
-      const response: any = await this.cartService.editItemAmount(
-        item._id,
-        item.amount,
-        item.product_id.price * item.amount
-      );
-
-      if (response && response.updatedCartItem) {
-        this.cartItems[index] = {
-          ...this.cartItems[index],
-          amount: response.updatedCartItem.amount,
-          full_price: response.updatedCartItem.full_price,
-        };
-      } else {
-        console.warn('⚠️ No updated item received, manually updating UI.');
-        this.cartItems[index].amount = item.amount;
-      }
-
-      this.updateTotalPrice();
-      console.log('✅ Quantity updated successfully and saved in DB!');
-    } catch (error) {
-      console.error('❌ Error updating quantity:', error);
-    }
-  }
-
-  getTotalPrice(): number {
-    return this.cartItems.reduce((total, item) => {
-      if (!item.amount || isNaN(item.amount)) {
-        console.warn('⚠️ Amount is missing or invalid for:', item);
-        item.amount = 1;
-      }
-
-      let finalPrice = item.product_id?.price || 0;
-
-      if (item.product_id?.sale?.isOnSale) {
-        finalPrice = item.product_id.sale.salePrice;
-      }
-
-      const itemTotal = finalPrice * item.amount;
-
-      return total + itemTotal;
+  updateTotalPrice() {
+    this.totalPrice = this.cartItems.reduce((total, item) => {
+      return total + item.product_id.price * item.amount;
     }, 0);
   }
 
-  updateTotalPrice() {
-    this.totalPrice = this.getTotalPrice();
+  getTotalPrice(): number {
+    return this.totalPrice;
   }
 }
