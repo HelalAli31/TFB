@@ -1,0 +1,89 @@
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.add-category {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-category input {
+  padding: 8px;
+  width: 70%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-category button {
+  padding: 8px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.add-category button:hover {
+  background: #218838;
+}
+
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.category-table th,
+.category-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.category-table th {
+  background: #f4f4f4;
+}
+
+button {
+  padding: 6px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.loading {
+  font-size: 16px;
+  color: #007bff;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.empty {
+  font-size: 14px;
+  color: gray;
+}

@@ -6,6 +6,8 @@ const {
   productsNumber,
   updateProduct,
   deleteProduct,
+  deleteTopProduct,
+  addTopProduct,
 } = require("../controller/products/productsController");
 const axios = require("axios");
 const router = express.Router();
@@ -14,7 +16,6 @@ const productModel = require("../models/productSchema");
 const logger = require("../logger");
 const { verifyJWT } = require("../controller/JWT/jwt");
 const getValidationFunction = require("../validations/productValidation");
-console.log("in product routes");
 // Middleware to allow both users and admins
 const allowUserOrAdmin = async (req, res, next) => {
   try {
@@ -173,6 +174,35 @@ router.post("/deleteProduct", allowOnlyAdmin, async (req, res, next) => {
     return res.json("product has been deleted!");
   } catch (error) {
     console.log(error);
+    return next({ message: "GENERAL ERROR", status: 400 });
+  }
+});
+router.post("/deleteTopProduct", allowOnlyAdmin, async (req, res, next) => {
+  try {
+    if (!req.body.productId) throw new Error("Missing product ID");
+    console.log(req.body.productId);
+    const result = await deleteTopProduct(req.body.productId);
+    if (!result) throw new Error("Failed to delete top product");
+
+    return res.json("Top product has been deleted!");
+  } catch (error) {
+    console.log(error);
+    return next({ message: "GENERAL ERROR", status: 400 });
+  }
+});
+router.post("/addTopProduct", allowOnlyAdmin, async (req, res, next) => {
+  try {
+    if (!req.body.productId) throw new Error("Missing product ID");
+
+    const result = await addTopProduct(req.body.productId);
+    if (!result) throw new Error("Failed to add top product");
+
+    return res.json({
+      message: "Top product has been added!",
+      product: result,
+    });
+  } catch (error) {
+    console.error(error);
     return next({ message: "GENERAL ERROR", status: 400 });
   }
 });

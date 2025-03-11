@@ -1,7 +1,10 @@
 <div class="Section2_Main">
   <h1 class="mt-5 Section2_Title">Categories</h1>
-  <div class="Section2_Grid">
-    <ng-container *ngFor="let c of cate; let i = index">
+  <div class="Section2_Grid row justify-content-center align-items-center">
+    <div
+      *ngFor="let c of cate; let i = index"
+      class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center"
+    >
       <div class="Section2_Content">
         <div class="Category_Story" (click)="filterByCategory(c.name)">
           <img
@@ -11,6 +14,6 @@
           <h4 class="Category_Name">{{ c.name }}</h4>
         </div>
       </div>
-    </ng-container>
+    </div>
   </div>
 </div>

@@ -35,6 +35,16 @@
           </p>
 
           <button
+            *ngIf="isAdmin"
+            class="delete mt-3"
+            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+            [disabled]="product.quantity === 0"
+            (click)="openDeleteDialog(product._id, product.name)"
+          >
+            delete
+          </button>
+          <button
+            *ngIf="!isAdmin"
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
             [disabled]="product.quantity === 0"

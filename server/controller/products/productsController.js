@@ -135,6 +135,48 @@ async function deleteProduct(productId) {
   }
 }
 
+async function addTopProduct(productId) {
+  try {
+    // Check if product already exists in TopProducts
+    const existingProduct = await TopProductsModel.findOne({
+      product_id: productId,
+    });
+
+    if (existingProduct) {
+      throw new Error("Product is already in top products.");
+    }
+
+    // Create a new entry in the top products collection
+    const newTopProduct = new TopProductsModel({ product_id: productId });
+    const result = await newTopProduct.save();
+
+    return result;
+  } catch (error) {
+    console.error("Error adding top product:", error.message);
+    throw new Error("Error adding top product.");
+  }
+}
+
+async function deleteTopProduct(productId) {
+  try {
+    // Ensure that we're deleting based on product_id
+    const result = await TopProductsModel.findOneAndDelete({
+      product_id: productId,
+    });
+
+    if (!result) {
+      throw new Error(
+        `Product with ID ${productId} not found in top products.`
+      );
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error deleting top product:", error.message);
+    throw new Error("Error deleting top product.");
+  }
+}
+
 async function updateProduct(product) {
   try {
     const result = await productModel.updateOne({ _id: product._id }, product);
@@ -159,4 +201,6 @@ module.exports = {
   productsNumber,
   deleteProduct,
   getTopProducts,
+  deleteTopProduct,
+  addTopProduct,
 };

@@ -2,33 +2,38 @@
   margin-top: 5%;
   width: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* ✅ Center the Title */
 .Section2_Title {
   text-align: center;
   font-family: "Cinzel", serif;
   font-weight: bold;
-  font-size: 236%;
+  font-size: 2.2rem; /* Scales better on tablets & phones */
   margin-bottom: 3%;
   color: #9e01c5;
   text-shadow: 1px 1px 2px grey, 0 0 1em grey, 0 0 0.2em grey;
 }
 
-/* Grid Layout for Two Rows with 6 Items Each */
+/* ✅ Grid Layout */
 .Section2_Grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr); /* 6 items per row */
-  grid-gap: 20px; /* Space between items */
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  gap: 15px;
   max-width: 90%;
   margin: auto;
 }
 
+/* ✅ Category Box */
 .Section2_Content {
   text-align: center;
 }
 
+/* ✅ Category Story */
 .Category_Story {
   display: flex;
   flex-direction: column;
@@ -36,8 +41,9 @@
   margin: 10px;
 }
 
+/* ✅ Category Image */
 .Category_Image {
-  width: 110px; /* Slightly bigger */
+  width: 110px;
   height: 110px;
   border-radius: 50%;
   border: 4px solid #9e01c5;
@@ -51,9 +57,60 @@
   cursor: pointer;
 }
 
+/* ✅ Category Name */
 .Category_Name {
   font-size: 14px;
   font-weight: bold;
   margin-top: 5px;
   text-align: center;
+}
+
+/* 📱 **Responsive for iPads/Tablets (Portrait Mode)** */
+@media (max-width: 1024px) {
+  .Section2_Grid {
+    gap: 10px;
+  }
+
+  .Category_Image {
+    width: 90px;
+    height: 90px;
+  }
+
+  .Category_Name {
+    font-size: 12px;
+  }
+}
+
+/* 📱 **Fix for iPhones (Portrait Mode & Small Devices)** */
+@media (max-width: 768px) {
+  .Section2_Grid {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .Category_Image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .Category_Name {
+    font-size: 10px;
+  }
+}
+
+/* 📱 **Fix for Extra Small Phones (iPhone SE, etc.)** */
+@media (max-width: 480px) {
+  .Section2_Grid {
+    flex-direction: column; /* Stack items */
+    align-items: center;
+  }
+
+  .Category_Image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .Category_Name {
+    font-size: 9px;
+  }
 }

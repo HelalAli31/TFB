@@ -1,13 +1,22 @@
-.Yes {
-  background-color: #e0bba9;
+.popup-container {
+  text-align: center;
+  padding: 20px;
 }
 
-span {
-  color: #7a6458;
+.popup-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #cc00ff;
+  margin-bottom: 10px;
 }
-.Actions {
+
+.popup-actions {
   display: flex;
-  align-content: flex-end;
-  justify-content: space-evenly;
-  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  min-width: 80px;
 }

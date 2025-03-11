@@ -110,6 +110,17 @@
   text-decoration: line-through;
   margin-right: 5px;
 }
+.delete {
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: red;
+}
 
 .sale-price {
   font-size: 18px;

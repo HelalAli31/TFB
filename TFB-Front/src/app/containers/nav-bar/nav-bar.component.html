@@ -1,0 +1,155 @@
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid Nav_Container">
+    <!-- Left Side - Logo & Search Bar -->
+    <div class="Left_Container">
+      <a class="Logo_Container" href="/">
+        <img class="Logo" src="assets/logo.jpg" alt="Logo" />
+        <span class="Website_Name">The Fog Bank</span>
+      </a>
+
+      <!-- Search Bar -->
+      <div class="Search_Bar">
+        <input
+          type="text"
+          [(ngModel)]="searchValue"
+          placeholder="Search..."
+          class="Search_Input"
+          (input)="searchProducts()"
+          (focus)="searchProducts()"
+          (blur)="hideSearch()"
+        />
+        <mat-icon class="Search_Icon" fontIcon="search"></mat-icon>
+
+        <!-- Search Results Dropdown -->
+        <div class="Search_Results" *ngIf="isSearchVisible">
+          <div
+            *ngFor="let product of searchResults"
+            class="Search_Item"
+            (click)="searchValue = product.name; isSearchVisible = false"
+          >
+            <img
+              [src]="'assets/products/' + product.image + '.jpg'"
+              alt="{{ product.name }}"
+              class="Search_Item_Image"
+              width="100px"
+              height="100px"
+            />
+            <span class="Search_Item_Text">{{ product.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center - Navbar Links -->
+    <div class="Nav_Links">
+      <a class="navbar-brand" href="/">
+        <mat-icon fontIcon="home"></mat-icon> Home
+      </a>
+
+      <!-- Products Dropdown -->
+      <div
+        class="Dropdown"
+        (mouseenter)="showCategories()"
+        (mouseleave)="delayedHideCategories()"
+      >
+        <a class="navbar-brand DropButton" href="/products">
+          <mat-icon fontIcon="category"></mat-icon> Products
+        </a>
+
+        <!-- Dropdown Menu -->
+        <div
+          class="Category_Section"
+          [ngClass]="{ show: isCategoriesVisible }"
+          (mouseenter)="showCategories()"
+          (mouseleave)="delayedHideCategories()"
+        >
+          <div class="Category_Grid">
+            <div
+              *ngFor="let category of categories"
+              class="Category_Item"
+              (mouseenter)="showLabels(category.name)"
+              (mouseleave)="hideLabels()"
+            >
+              <img
+                [src]="'assets/categories/' + category.name + '.jpg'"
+                alt="{{ category.name }}"
+                class="Search_Item_Image"
+                width="100px"
+                height="100px"
+                (click)="filterProducts(category.name, '')"
+              />
+              <a
+                href="/products?category={{ category.name }}"
+                class="Category_Text"
+                (click)="filterProducts(category.name, '')"
+              >
+                {{ category.name }}
+              </a>
+
+              <!-- Labels inside the Category_Item -->
+              <div
+                *ngIf="hoveredCategory === category.name"
+                class="Category_Labels"
+              >
+                <span
+                  class="Label New"
+                  (click)="filterProducts(category.name, 'New')"
+                  >New</span
+                >
+                <span
+                  class="Label Normal"
+                  (click)="filterProducts(category.name, 'Normal')"
+                  >Normal</span
+                >
+                <span
+                  class="Label High"
+                  (click)="filterProducts(category.name, 'High Level')"
+                  >High Level</span
+                >
+              </div>
+            </div>
+            <!-- ✅ Closing `div` added here to properly terminate the loop -->
+          </div>
+        </div>
+      </div>
+
+      <a *ngIf="token" class="navbar-brand" href="/cart">
+        <mat-icon fontIcon="shopping_cart"></mat-icon> Cart
+      </a>
+
+      <a class="navbar-brand" href="/contactUs">
+        <mat-icon fontIcon="mail"></mat-icon> Contact Us
+      </a>
+
+      <a class="navbar-brand" href="/aboutUs">
+        <mat-icon fontIcon="info"></mat-icon> About Us
+      </a>
+    </div>
+
+    <!-- Right Side - Login -->
+    <div class="Login_Container">
+      <div *ngIf="token" class="LoginDiv">
+        <a class="navbar-brand ml-2">Sign Out</a>
+        <img
+          class="LoginImage"
+          src="../assets/exit.svg"
+          width="16"
+          height="16"
+          (click)="logOut()"
+          style="cursor: pointer"
+        />
+      </div>
+      <div *ngIf="!token" class="LoginDiv">
+        <a class="navbar-brand">Login</a>
+        <img
+          class="LoginImage"
+          src="../assets/log-in.png"
+          width="16"
+          height="16"
+          (click)="openDialog()"
+          style="cursor: pointer"
+        />
+      </div>
+    </div>
+  </div>
+</nav>

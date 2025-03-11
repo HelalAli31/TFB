@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -6,13 +6,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   templateUrl: './pop-up-delete-item.component.html',
   styleUrls: ['./pop-up-delete-item.component.css'],
 })
-export class PopUpDeleteItemComponent implements OnInit {
+export class PopUpDeleteItemComponent {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<PopUpDeleteItemComponent>
-  ) {
-    console.log(data);
-  }
+    public dialogRef: MatDialogRef<PopUpDeleteItemComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
-  ngOnInit(): void {}
+  closeDialog(confirm: boolean): void {
+    this.dialogRef.close(confirm); // ✅ Return true/false based on user action
+  }
 }

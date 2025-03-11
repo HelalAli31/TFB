@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CartService } from 'src/app/serverServices/cart/cart.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
+import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
 
 @Component({
   selector: 'app-products',
@@ -26,7 +27,7 @@ export class ProductsComponent implements OnInit {
   selectedBrand: string = 'All';
   selectedCustomerType: string = 'All';
   searchResults: any[] = []; // ✅ Store search results separately
-
+  public isAdmin: any;
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
@@ -39,6 +40,7 @@ export class ProductsComponent implements OnInit {
       this.selectedCategory = params['category'] || 'All';
       this.selectedCustomerType = params['customerType'] || 'All';
       this.fetchAllProducts();
+      this.isAdmin = getIsAdmin();
     });
   }
 
@@ -233,6 +235,18 @@ export class ProductsComponent implements OnInit {
     } catch (error) {
       console.error('❌ Error loading products:', error);
     }
+  }
+
+  addToTopProducts(productId: string) {
+    this.productService.addTopProduct(productId).subscribe(
+      (response) => {
+        alert(`${response.message}`); // ✅ Fixed template literal
+        console.log('Top product added:', response);
+      },
+      (error) => {
+        console.error('Error adding top product:', error);
+      }
+    );
   }
 
   searchProducts() {

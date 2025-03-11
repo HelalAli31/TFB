@@ -5,13 +5,21 @@ import { HomeComponent } from './containers/home/home.component';
 import { ProductsComponent } from './containers/products/products.component';
 import { CartComponent } from './containers/cart/cart.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { AdminTopProductsComponent } from './components/admin/admin-top-products/admin-top-products.component';
+import { AdminCategoryComponent } from './components/admin/admin-category/admin-category.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contactUs', component: ContactUsComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'cart', component: CartComponent },
-  { path: 'product/:id', component: ProductDetailComponent }, // Route for product detail page
+  { path: 'product/:id', component: ProductDetailComponent },
+  {
+    path: 'category',
+    component: AdminCategoryComponent,
+  },
+
+  { path: 'topProducts', component: AdminTopProductsComponent },
 ];
 
 @NgModule({

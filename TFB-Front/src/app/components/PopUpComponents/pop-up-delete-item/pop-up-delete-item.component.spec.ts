@@ -11,9 +11,7 @@ describe('PopUpDeleteItemComponent', () => {
       declarations: [ PopUpDeleteItemComponent ]
     })
     .compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(PopUpDeleteItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

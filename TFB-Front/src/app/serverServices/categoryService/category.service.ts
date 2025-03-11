@@ -29,7 +29,7 @@ export class CategoryService {
 
   addCategory(categoryName: string): Observable<any> {
     const headers = this.getAuthHeaders();
-    const body = { categoryName };
+    const body = { categoryName }; // Ensure it's sent as an object
     return this.http.post(`${this.apiUrl}/addCategory`, body, { headers });
   }
 

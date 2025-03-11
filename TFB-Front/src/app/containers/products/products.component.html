@@ -65,10 +65,7 @@
 
   <div class="Product_Grid">
     <div *ngFor="let product of products" class="Product_Card">
-      <div
-        [routerLink]="['/product', product._id]"
-        class="Product_Card_Content"
-      >
+      <div class="Product_Card_Content">
         <div
           *ngIf="product.quantity < 5"
           class="Stock_Badge"
@@ -81,6 +78,7 @@
         </div>
 
         <img
+          [routerLink]="['/product', product._id]"
           [src]="'assets/products/' + product.image + '.jpg'"
           class="Product_Image"
           alt="{{ product.name }}"
@@ -130,7 +128,17 @@
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
             [disabled]="product.quantity === 0"
+            (click)="addToTopProducts(product._id)"
+            *ngIf="isAdmin"
+          >
+            Add To Top Products
+          </button>
+          <button
+            class="View_Button"
+            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+            [disabled]="product.quantity === 0"
             (click)="openQuantityDialog(product)"
+            *ngIf="!isAdmin"
           >
             {{
               product.quantity === 0

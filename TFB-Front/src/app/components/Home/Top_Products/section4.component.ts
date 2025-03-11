@@ -3,6 +3,8 @@ import { ProductService } from 'src/app/serverServices/productService/product.se
 import { CartService } from 'src/app/serverServices/cart/cart.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
+import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
+import { PopUpDeleteItemComponent } from '../../PopUpComponents/pop-up-delete-item/pop-up-delete-item.component';
 
 @Component({
   selector: 'app-section4',
@@ -13,7 +15,7 @@ export class Section4Component implements OnInit {
   public topProducts: any[] = [];
   public groupedProducts: { [category: string]: any[] } = {}; // Grouped top products by category
   public cartItems: any[] = []; // Store cart items to check if a product is in the cart
-
+  public isAdmin: any;
   constructor(
     private productService: ProductService,
     private cartService: CartService,
@@ -188,8 +190,32 @@ export class Section4Component implements OnInit {
       alert('❌ Failed to update cart.');
     }
   }
+  openDeleteDialog(productId: any, productName: any) {
+    const dialogRef = this.dialog.open(PopUpDeleteItemComponent, {
+      data: {
+        title: 'Confirm Deletion',
+        productName,
+      },
+      width: '350px',
+    });
 
+    dialogRef.afterClosed().subscribe(async (result: any) => {
+      console.log('Dialog Result:', result);
+      if (result === true) {
+        this.productService.deleteTopProduct(productId).subscribe(
+          (response) => {
+            console.log('Top product deleted:', response);
+            this.getTopProducts(); // Refresh the list after adding
+          },
+          (error) => {
+            console.error('Error deleting top product:', error);
+          }
+        );
+      }
+    });
+  }
   ngOnInit(): void {
     this.getTopProducts();
+    this.isAdmin = getIsAdmin();
   }
 }

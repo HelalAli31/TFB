@@ -45,6 +45,16 @@ export class ProductService {
     const body = { product };
     return this.http.post(`${this.apiUrl}/addProduct`, body, { headers });
   }
+  deleteTopProduct(productId: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const body = { productId };
+    return this.http.post(`${this.apiUrl}/deleteTopProduct`, body, { headers });
+  }
+  addTopProduct(productId: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    const body = { productId };
+    return this.http.post(`${this.apiUrl}/addTopProduct`, body, { headers });
+  }
 
   updateProduct(product: any): Observable<any> {
     const headers = this.getAuthHeaders();

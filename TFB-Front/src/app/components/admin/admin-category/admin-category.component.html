@@ -1,0 +1,68 @@
+<div class="container">
+  <h2 class="title">Admin - Manage Categories</h2>
+
+  <!-- Add New Category -->
+  <div class="add-category">
+    <input
+      type="text"
+      [(ngModel)]="newCategoryName"
+      placeholder="Enter category name"
+    />
+    <button (click)="addCategory()">Add Category</button>
+  </div>
+
+  <!-- Display Categories -->
+  <div *ngIf="isLoading" class="loading">Loading categories...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <table *ngIf="categories.length > 0" class="category-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Category Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let category of categories; let i = index">
+        <td>{{ i + 1 }}</td>
+
+        <td>
+          <span *ngIf="editingCategory?._id !== category._id">
+            {{ category.name }}
+          </span>
+
+          <input
+            *ngIf="editingCategory?._id === category._id"
+            [(ngModel)]="editingCategory.name"
+            type="text"
+          />
+        </td>
+
+        <td>
+          <button
+            *ngIf="editingCategory?._id !== category._id"
+            (click)="editCategory(category)"
+          >
+            ✏️ Edit
+          </button>
+
+          <button
+            *ngIf="editingCategory?._id === category._id"
+            (click)="updateCategory()"
+          >
+            ✅ Save
+          </button>
+
+          <button class="delete-btn" (click)="deleteCategory(category._id)">
+            ❌ Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="categories.length === 0 && !isLoading" class="empty">
+    No categories available.
+  </p>
+</div>

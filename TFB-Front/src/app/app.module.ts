@@ -36,6 +36,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { QuantityDialogComponent } from './components/PopUpComponents/quantity-dialog/quantity-dialog.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { NavBarComponent } from './containers/nav-bar/nav-bar.component';
+import { AdminNavBarComponent } from './components/admin/admin-nav-bar/admin-nav-bar.component';
+import { AdminTopProductsComponent } from './components/admin/admin-top-products/admin-top-products.component';
+import { PopUpDeleteItemComponent } from './components/PopUpComponents/pop-up-delete-item/pop-up-delete-item.component';
+import { AdminCategoryComponent } from './components/admin/admin-category/admin-category.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,6 +60,11 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
     FilterPipe,
     QuantityDialogComponent,
     ProductDetailComponent,
+    NavBarComponent,
+    AdminNavBarComponent,
+    AdminTopProductsComponent,
+    PopUpDeleteItemComponent,
+    AdminCategoryComponent,
   ],
   imports: [
     BrowserModule,
