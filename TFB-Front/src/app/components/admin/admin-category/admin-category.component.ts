@@ -9,14 +9,31 @@ import { CategoryService } from 'src/app/serverServices/categoryService/category
 export class AdminCategoryComponent implements OnInit {
   categories: any[] = [];
   newCategoryName: string = '';
-  editingCategory: any = null; // Stores the category being edited
+  editingCategory: any = null;
   isLoading: boolean = false;
   errorMessage: string = '';
+  selectedFile: any = null;
+  selectedEditFile: any = null;
 
   constructor(private categoryService: CategoryService) {}
 
   ngOnInit(): void {
     this.loadCategories();
+  }
+  // ✅ Convert File to Base64 for Local Storage
+  convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
+  // ✅ Save Image to Local Storage
+  async saveImageToLocal(categoryName: string, file: File) {
+    const base64Image = await this.convertFileToBase64(file);
+    localStorage.setItem(`category_${categoryName}`, base64Image);
   }
 
   loadCategories(): void {
@@ -34,28 +51,44 @@ export class AdminCategoryComponent implements OnInit {
     );
   }
 
+  // ✅ Handle File Selection
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  onEditFileSelected(event: any) {
+    this.selectedEditFile = event.target.files[0];
+  }
+
+  // ✅ Add Category with Image
   addCategory(): void {
-    if (!this.newCategoryName.trim()) {
-      alert('Category name cannot be empty.');
+    if (!this.newCategoryName.trim() || !this.selectedFile) {
+      alert('Both category name and image are required!');
       return;
     }
 
-    this.categoryService.addCategory(this.newCategoryName).subscribe(
-      (response: any) => {
-        alert('Category added successfully!');
-        this.newCategoryName = '';
-        this.loadCategories(); // Refresh the list
-      },
-      (error: any) => {
-        console.error('Error adding category:', error);
-      }
-    );
+    this.categoryService
+      .addCategory(this.newCategoryName, this.selectedFile)
+      .subscribe(
+        (response: any) => {
+          alert('Category added successfully!');
+          this.newCategoryName = '';
+          this.selectedFile = null;
+          this.loadCategories();
+        },
+        (error: any) => {
+          console.error('Error adding category:', error);
+        }
+      );
   }
 
+  // ✅ Edit Category
   editCategory(category: any): void {
-    this.editingCategory = { ...category }; // Clone category for editing
+    this.editingCategory = { ...category };
+    this.selectedEditFile = null;
   }
 
+  // ✅ Update Category (Supports Name & Image)
   updateCategory(): void {
     if (!this.editingCategory.name.trim()) {
       alert('Category name cannot be empty.');
@@ -63,12 +96,17 @@ export class AdminCategoryComponent implements OnInit {
     }
 
     this.categoryService
-      .updateCategory(this.editingCategory._id, this.editingCategory.name)
+      .updateCategory(
+        this.editingCategory._id,
+        this.editingCategory.name,
+        this.selectedEditFile
+      )
       .subscribe(
         (response: any) => {
           alert('Category updated successfully!');
-          this.editingCategory = null; // Close edit mode
-          this.loadCategories(); // Refresh the list
+          this.editingCategory = null;
+          this.selectedEditFile = null;
+          this.loadCategories();
         },
         (error: any) => {
           console.error('Error updating category:', error);
@@ -76,12 +114,13 @@ export class AdminCategoryComponent implements OnInit {
       );
   }
 
+  // ✅ Delete Category
   deleteCategory(categoryId: string): void {
     if (confirm('Are you sure you want to delete this category?')) {
       this.categoryService.deleteCategory(categoryId).subscribe(
         (response: any) => {
           alert('Category deleted successfully!');
-          this.loadCategories(); // Refresh the list
+          this.loadCategories();
         },
         (error: any) => {
           console.error('Error deleting category:', error);

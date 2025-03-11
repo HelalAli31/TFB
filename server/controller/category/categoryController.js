@@ -1,72 +1,108 @@
-const categoryModel = require("../../models/categorySchema");
-async function getAllCategories() {
-  try {
-    let result = await categoryModel.find({}, { __v: false });
-    if (result) return result;
-  } catch (error) {
-    console.log(error);
-  }
-}
+const fs = require("fs-extra");
+const path = require("path");
+const Category = require("../../models/categorySchema"); // Ensure this model exists
 
-async function getCategoryById(categoryId) {
-  try {
-    const result = await categoryModel.find(
-      { _id: categoryId },
-      { __v: false }
-    );
-    return result;
-  } catch (error) {
-    console.log(error);
-  }
-}
-async function checkIfCategoryAlreadyExists(categoryName) {
-  try {
-    // Check if a category with the same name exists
-    const existingCategory = await categoryModel.findOne({
-      name: categoryName,
-    });
-    return existingCategory !== null; // Returns true if category exists, false otherwise
-  } catch (error) {
-    console.error("Error checking category existence:", error);
-    throw new Error("Database query failed");
-  }
-}
-async function addCategory(categoryName) {
-  try {
-    const result = await categoryModel.insertMany([{ name: categoryName }]);
-    return result;
-  } catch (error) {
-    console.log(error);
-  }
-}
+// ✅ Get All Categories
+const getAllCategories = async () => {
+  return await Category.find({});
+};
 
-async function updateCategory(bodyParams) {
-  const { name, categoryId } = bodyParams;
+// ✅ Get Category by ID
+const getCategoryById = async (categoryId) => {
+  return await Category.findById(categoryId);
+};
+
+// ✅ Check if Category Exists
+const checkIfCategoryAlreadyExists = async (categoryName) => {
+  return await Category.findOne({ name: categoryName });
+};
+
+// ✅ Add a Category (with Image)
+const addCategory = async (categoryName, imageFile) => {
   try {
-    const result = await categoryModel.updateOne(
-      { _id: categoryId },
-      { name: name }
+    // Save category in DB
+    const newCategory = new Category({ name: categoryName });
+    await newCategory.save();
+
+    // Save image if uploaded
+    if (imageFile) {
+      const uploadPath = path.join(
+        __dirname,
+        `../../../TFB-Front/src/assets/categories/${categoryName}.jpg`
+      );
+      await fs.ensureDir(path.dirname(uploadPath)); // Ensure folder exists
+      await fs.writeFile(uploadPath, imageFile.buffer); // Save the file
+    }
+
+    return newCategory;
+  } catch (error) {
+    console.error("Error adding category:", error);
+    return null;
+  }
+};
+
+// ✅ Update a Category (Name & Image)
+const updateCategory = async (categoryId, newName, imageFile) => {
+  try {
+    const category = await Category.findById(categoryId);
+    if (!category) return null;
+
+    const oldImagePath = path.join(
+      __dirname,
+      `../../../TFB-Front/src/assets/categories/${category.name}.jpg`
     );
-    return result;
+    const newImagePath = path.join(
+      __dirname,
+      `../../../TFB-Front/src/assets/categories/${newName}.jpg`
+    );
+
+    // If name is changed, rename the image file
+    if (category.name !== newName) {
+      category.name = newName;
+      if (fs.existsSync(oldImagePath)) {
+        await fs.rename(oldImagePath, newImagePath);
+      }
+    }
+
+    // If a new image is uploaded, replace the old one
+    if (imageFile) {
+      await fs.writeFile(newImagePath, imageFile.buffer);
+    }
+
+    await category.save();
+    return category;
   } catch (error) {
-    console.log(error);
+    console.error("Error updating category:", error);
+    return null;
   }
-}
-async function deleteCategory(categoryId) {
+};
+
+// ✅ Delete a Category (and its Image)
+const deleteCategory = async (categoryId) => {
   try {
-    const result = await categoryModel.findByIdAndDelete(categoryId);
-    return result;
+    const category = await Category.findByIdAndDelete(categoryId);
+    if (!category) return null;
+
+    const imagePath = path.join(
+      __dirname,
+      `../../../TFB-Front/src/assets/categories/${category.name}.jpg`
+    );
+    if (fs.existsSync(imagePath)) {
+      await fs.unlink(imagePath); // Delete image
+    }
+
+    return category;
   } catch (error) {
-    console.log(error);
+    console.error("Error deleting category:", error);
+    return null;
   }
-}
+};
 
 module.exports = {
   getAllCategories,
+  getCategoryById,
   addCategory,
   updateCategory,
-  getCategoryById,
-  deleteCategory,
   deleteCategory,
   checkIfCategoryAlreadyExists,
 };

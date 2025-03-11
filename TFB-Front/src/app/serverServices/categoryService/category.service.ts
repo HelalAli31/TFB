@@ -17,33 +17,41 @@ export class CategoryService {
   }
 
   getCategories(): Observable<any> {
-    const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}`, {}, { headers });
+    return this.http.get(`${this.apiUrl}`);
   }
 
-  getCategoryById(categoryId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { categoryId };
-    return this.http.post(`${this.apiUrl}/byId`, body, { headers });
+  // ✅ Add Category with Image Upload
+  addCategory(categoryName: string, image: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('categoryName', categoryName);
+    formData.append('image', image);
+
+    return this.http.post(`${this.apiUrl}/addCategory`, formData, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
-  addCategory(categoryName: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { categoryName }; // Ensure it's sent as an object
-    return this.http.post(`${this.apiUrl}/addCategory`, body, { headers });
-  }
+  // ✅ Update Category (Supports Image Update)
+  updateCategory(
+    categoryId: string,
+    categoryName: string,
+    image?: File
+  ): Observable<any> {
+    const formData = new FormData();
+    formData.append('categoryId', categoryId);
+    formData.append('categoryName', categoryName);
+    if (image) formData.append('image', image);
 
-  updateCategory(categoryId: string, name: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { categoryId, name };
-    return this.http.post(`${this.apiUrl}/updateCategoryById`, body, {
-      headers,
+    return this.http.post(`${this.apiUrl}/updateCategory`, formData, {
+      headers: this.getAuthHeaders(),
     });
   }
 
   deleteCategory(categoryId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { categoryId };
-    return this.http.post(`${this.apiUrl}/deleteCategory`, body, { headers });
+    return this.http.post(
+      `${this.apiUrl}/deleteCategory`,
+      { categoryId },
+      { headers: this.getAuthHeaders() }
+    );
   }
 }

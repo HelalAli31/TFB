@@ -6,8 +6,10 @@
     <input
       type="text"
       [(ngModel)]="newCategoryName"
+      name="categoryName"
       placeholder="Enter category name"
     />
+    <input type="file" (change)="onFileSelected($event)" />
     <button (click)="addCategory()">Add Category</button>
   </div>
 
@@ -19,6 +21,7 @@
     <thead>
       <tr>
         <th>#</th>
+        <th>Image</th>
         <th>Category Name</th>
         <th>Actions</th>
       </tr>
@@ -27,6 +30,15 @@
       <tr *ngFor="let category of categories; let i = index">
         <td>{{ i + 1 }}</td>
 
+        <!-- Show category image -->
+        <td>
+          <img
+            [src]="'/assets/categories/' + category.name + '.jpg'"
+            width="50"
+          />
+        </td>
+
+        <!-- Editing Mode -->
         <td>
           <span *ngIf="editingCategory?._id !== category._id">
             {{ category.name }}
@@ -36,6 +48,11 @@
             *ngIf="editingCategory?._id === category._id"
             [(ngModel)]="editingCategory.name"
             type="text"
+          />
+          <input
+            *ngIf="editingCategory?._id === category._id"
+            type="file"
+            (change)="onEditFileSelected($event)"
           />
         </td>
 
