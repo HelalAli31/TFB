@@ -28,6 +28,8 @@ export class ProductsComponent implements OnInit {
   selectedCustomerType: string = 'All';
   searchResults: any[] = []; // ✅ Store search results separately
   public isAdmin: any;
+  topProducts: any = []; // ✅ Store all top product IDs
+
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
@@ -41,6 +43,7 @@ export class ProductsComponent implements OnInit {
       this.selectedCustomerType = params['customerType'] || 'All';
       this.fetchAllProducts();
       this.isAdmin = getIsAdmin();
+      this.getTopProducts();
     });
   }
 
@@ -238,16 +241,30 @@ export class ProductsComponent implements OnInit {
   }
 
   addToTopProducts(productId: string) {
-    this.productService.addTopProduct(productId).subscribe(
-      (response) => {
-        alert(`${response.message}`); // ✅ Fixed template literal
-        console.log('Top product added:', response);
-      },
-      (error) => {
-        console.error('Error adding top product:', error);
+    this.productService.getTopProducts().subscribe((topProductsData: any) => {
+      const topProductIds = topProductsData.map((p: any) => p._id);
+
+      if (topProductIds.includes(productId)) {
+        alert('⚠️ This product is already in Top Products!');
+        return;
       }
-    );
+
+      this.productService.addTopProduct(productId).subscribe(
+        (response) => {
+          alert(`${response.message}`);
+          console.log('Top product added:', response);
+        },
+        (error) => {
+          console.error('Error adding top product:', error);
+        }
+      );
+    });
   }
+
+  getTopProducts() {
+    return this.productService.getTopProducts();
+  }
+  checkProductIfInTop() {}
 
   searchProducts() {
     if (this.searchValue.trim()) {
