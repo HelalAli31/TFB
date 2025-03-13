@@ -1,0 +1,74 @@
+<div class="add-product-container">
+  <h2>Add New Product</h2>
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <!-- Basic Details -->
+    <div class="form-group">
+      <label>*Product Name</label>
+      <input type="text" formControlName="name" required />
+    </div>
+
+    <div class="form-group">
+      <label>*Brand</label>
+      <input type="text" formControlName="brand" required />
+    </div>
+
+    <div class="form-group">
+      <label>*Category</label>
+      <select formControlName="category" required>
+        <option *ngFor="let cat of categories" [value]="cat._id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Price & Quantity -->
+    <div class="form-group">
+      <label>*Price (₪)</label>
+      <input type="number" formControlName="price" required />
+    </div>
+
+    <div class="form-group">
+      <label>*Quantity</label>
+      <input type="number" formControlName="quantity" required />
+    </div>
+
+    <div class="form-group">
+      <label>*Description</label>
+      <input type="text" formControlName="description" required />
+    </div>
+
+    <!-- Main Image Upload -->
+    <!-- ✅ Upload Main Product Image -->
+    <label>Upload Main Image</label>
+    <input type="file" (change)="onFileSelected($event)" required />
+    <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
+
+    <!-- ✅ Colors and Image Upload -->
+    <label>Colors</label>
+    <input type="text" #colorInput />
+    <input type="number" #quantityInput placeholder="Quantity" />
+    <button type="button" (click)="addColor(colorInput, quantityInput)">
+      Add Color
+    </button>
+
+    <div *ngFor="let colorData of colorsWithDetails">
+      <label
+        >Upload Image for {{ colorData.color }} (Quantity:
+        {{ colorData.quantity }})</label
+      >
+      <input
+        type="file"
+        (change)="onColorImageSelected($event, colorData.color)"
+      />
+      <img
+        *ngIf="colorImages[colorData.color]"
+        [src]="colorImages[colorData.color]"
+        class="preview-img"
+      />
+    </div>
+
+    <!-- ✅ Submit Button -->
+
+    <button type="submit" class="submit-btn">Add Product</button>
+  </form>
+</div>

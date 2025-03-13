@@ -214,6 +214,45 @@ export class Section4Component implements OnInit {
       }
     });
   }
+  getProductImage(product: any): string {
+    if (!product || !product.name) {
+      console.log('❌ No product found, using default image.');
+      return 'assets/products/default.jpg';
+    }
+    return `assets/products/${product.name}.jpg`; // Try first image (name.jpg)
+  }
+
+  // Handle Image Fallback
+  onImageError(event: any, product: any) {
+    // If product or color details are missing, use the default image
+    if (!product || !product.details || !product.details.color?.length) {
+      console.log('⚠️ No product color found, using default image.');
+      event.target.src = 'assets/products/default.jpg';
+      return;
+    }
+
+    const color = product.details.color[0]?.color;
+    if (!color) {
+      console.log('⚠️ Color missing, using default image.');
+      event.target.src = 'assets/products/default.jpg';
+      return;
+    }
+
+    const fallbackImage = `assets/products/${product.name}_${color}.jpg`;
+    console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+    // Create a new Image object to pre-check if the fallback image exists
+    const img = new Image();
+    img.src = fallbackImage;
+    img.onload = () => {
+      event.target.src = fallbackImage;
+    };
+    img.onerror = () => {
+      console.log('❌ Both images missing, using default.');
+      event.target.src = 'assets/products/default.jpg';
+    };
+  }
+
   ngOnInit(): void {
     this.getTopProducts();
     this.isAdmin = getIsAdmin();

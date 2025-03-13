@@ -1,3 +1,4 @@
+const { required } = require("@hapi/joi");
 const mongoose = require("mongoose");
 
 // Define the schema
@@ -11,13 +12,15 @@ const productSchema = new mongoose.Schema({
   }, // Reference to category (e.g., 'kits')
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-  image: { type: String, required: true },
-  description: { type: String },
-
+  description: { type: String, required: true },
+  sale: {
+    isOnSale: { type: Boolean, default: false },
+  },
   // Type-specific details
   details: {
     type: Map, // Flexible structure to accommodate type-specific fields
     of: mongoose.Schema.Types.Mixed, // Allows different data types
+    required: false,
   },
 
   // Optional fields for metadata or tracking

@@ -28,8 +28,10 @@
             (click)="searchValue = product.name; isSearchVisible = false"
           >
             <img
-              [src]="'assets/products/' + product.image + '.jpg'"
-              alt="{{ product.name }}"
+              *ngIf="product"
+              [src]="getProductImage(product)"
+              (error)="onImageError($event, product)"
+              alt="{{ product?.name || 'No Image Available' }}"
               class="Search_Item_Image"
               width="100px"
               height="100px"

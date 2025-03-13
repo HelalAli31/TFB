@@ -25,9 +25,18 @@ export class ProductDetailComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params) => {
       const productId = params['id'];
-      console.log('🔍 Fetching product with ID:', productId);
       this.fetchProductDetails(productId);
     });
+  }
+  isCurrentlyOnSale(sale: any): boolean {
+    if (!sale?.isOnSale || !sale.saleStartDate || !sale.saleEndDate)
+      return false;
+
+    const now = new Date();
+    const start = new Date(sale.saleStartDate);
+    const end = new Date(sale.saleEndDate);
+
+    return now >= start && now <= end;
   }
 
   // Fetch the details of the product from the database
@@ -37,6 +46,8 @@ export class ProductDetailComponent implements OnInit {
       (data: any) => {
         console.log('📦 Product details fetched:', data);
         this.product = data;
+        console.log('🔍 Fetching product', this.product);
+
         this.checkIfProductInCart();
       },
       (error) => {
@@ -60,7 +71,7 @@ export class ProductDetailComponent implements OnInit {
         const productIdStr = String(this.product._id);
 
         // If cartItem.product_id is an object, compare the _id field
-        const cartItemIdStr = String(item.product_id._id || item.product_id);
+        const cartItemIdStr = String(item.product_id?._id || item?.product_id);
 
         console.log('🔑 Product ID (String):', productIdStr); // Debug log
         console.log('🔑 Cart Item ID (String):', cartItemIdStr); // Debug log

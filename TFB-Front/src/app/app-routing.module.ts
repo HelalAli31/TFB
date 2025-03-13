@@ -7,12 +7,14 @@ import { CartComponent } from './containers/cart/cart.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { AdminTopProductsComponent } from './components/admin/admin-top-products/admin-top-products.component';
 import { AdminCategoryComponent } from './components/admin/admin-category/admin-category.component';
+import { AdminAddProductComponent } from './components/admin/admin-add-product/admin-add-product.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contactUs', component: ContactUsComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'addProduct', component: AdminAddProductComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   {
     path: 'category',

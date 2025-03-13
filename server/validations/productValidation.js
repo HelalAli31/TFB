@@ -1,18 +1,18 @@
 const Joi = require("@hapi/joi");
 
-const ProductActionSchema = Joi.object().keys({
-  _id: Joi.string().allow(""),
-  name: Joi.string().required(),
-  brand: Joi.string().required(),
-  category: Joi.any().required(),
-  price: Joi.number().required(),
-  quantity: Joi.any().required(),
-  image: Joi.string().allow(null, "").optional(),
-  description: Joi.string().allow(null, "").optional(),
-  details: Joi.object().allow(null, "").optional(),
-  createdAt: Joi.string().allow(null, "").optional(),
-  updatedAt: Joi.string().allow(null, "").optional(),
-});
+const ProductActionSchema = Joi.object()
+  .keys({
+    _id: Joi.string().allow(""),
+    name: Joi.string().required(),
+    brand: Joi.string().required(),
+    category: Joi.string().required(), // Ensuring category is a valid ObjectId reference
+    price: Joi.number().required(),
+    quantity: Joi.number().required(),
+    description: Joi.string().allow(null, "").optional(),
+    createdAt: Joi.date().optional(),
+    updatedAt: Joi.date().optional(),
+  })
+  .unknown(true); // ✅ Allows additional, unexpected fields
 
 const validationsObj = {
   ProductAction: (req, res, next) => {

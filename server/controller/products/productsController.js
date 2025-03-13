@@ -1,49 +1,49 @@
 const productModel = require("../../models/productSchema");
 const categoryModel = require("../../models/categorySchema");
 const TopProductsModel = require("../../models/topProductsSchema");
+const fs = require("fs-extra");
+const path = require("path");
 
 async function getTopProducts() {
   try {
     const topProducts = await TopProductsModel.find()
       .populate({
         path: "product_id",
-        model: productModel,
-        select: "name image price brand category quantity sale", // ✅ Ensure "sale" is included
+        model: "Products", // ✅ Ensure model reference is correct
+        select: "name image price brand category quantity sale details", // ✅ Added "details"
         populate: {
           path: "category",
-          model: categoryModel,
+          model: "category", // ✅ Ensure correct category model name
           select: "name",
         },
       })
       .lean();
 
-    // ✅ Filter out out-of-stock products and apply sale pricing
+    // ✅ Filter out items without product data or out-of-stock products
     return topProducts
-      .filter((item) => item.product_id.quantity > 0) // ✅ Exclude out-of-stock
+      .filter((item) => item.product_id && item.product_id.quantity > 0)
       .map((item) => {
-        let finalPrice = item.product_id.price; // Default price
-        if (item.product_id.sale?.isOnSale) {
-          const currentDate = new Date();
-          if (
-            new Date(item.product_id.sale.saleStartDate) <= currentDate &&
-            new Date(item.product_id.sale.saleEndDate) >= currentDate
-          ) {
-            finalPrice = item.product_id.sale.salePrice; // ✅ Apply sale price
-          }
+        const product = item.product_id;
+        let finalPrice = product.price;
+
+        if (
+          product.sale?.isOnSale &&
+          new Date(product.sale.saleStartDate) <= new Date() &&
+          new Date(product.sale.saleEndDate) >= new Date()
+        ) {
+          finalPrice = product.sale.salePrice;
         }
 
         return {
-          _id: item.product_id._id,
-          name: item.product_id.name,
-          image: item.product_id.image,
-          price: finalPrice, // ✅ Ensure correct price is sent
-          brand: item.product_id.brand,
-          category: item.product_id.category
-            ? item.product_id.category.name
-            : "Unknown",
-          quantity: item.product_id.quantity,
-          originalPrice: item.product_id.price, // ✅ Keep original price for UI
-          sale: item.product_id.sale, // ✅ Pass sale details
+          _id: product._id,
+          name: product.name,
+          price: finalPrice,
+          brand: product.brand,
+          category: product.category?.name || "Unknown",
+          quantity: product.quantity,
+          originalPrice: product.price,
+          details: product.details, // ✅ Ensure details are returned
+          sale: product.sale,
         };
       });
   } catch (error) {
@@ -113,14 +113,99 @@ async function getAllProducts(
   }
 }
 
-async function addProduct(product) {
+const addProduct = async (productData, mainImage, colorImages) => {
   try {
-    const result = await productModel.insertMany([product]);
-    if (result) return result;
+    console.log(
+      "\n🚀 Received productData:",
+      JSON.stringify(productData, null, 2)
+    );
+
+    if (!productData.name) {
+      console.error("❌ ERROR: Product name is missing");
+      return { success: false, message: "Product name is required." };
+    }
+
+    // ✅ Process product name
+    const productName = productData.name.replace(/\s+/g, "").toLowerCase();
+    console.log("📝 Processed product name:", productName);
+
+    const productImagePath = path.join(
+      __dirname,
+      `../../../TFB-Front/src/assets/products`
+    );
+    await fs.ensureDir(productImagePath);
+    console.log("📂 Ensured product image directory exists:", productImagePath);
+
+    // ✅ Save Main Image
+    if (mainImage) {
+      console.log("🖼️ Received main image:", mainImage.originalname);
+      const mainImagePath = path.join(productImagePath, `${productName}.jpg`);
+      await fs.writeFile(mainImagePath, mainImage.buffer);
+      console.log("✅ Main image saved at:", mainImagePath);
+    } else {
+      console.log("⚠️ No main image provided");
+    }
+
+    // ✅ Save ALL Color Images
+    console.log("\n🎨 Received colorImages:", colorImages);
+
+    if (Array.isArray(colorImages) && colorImages.length > 0) {
+      console.log("🔍 Looping through color images...");
+      const colorDetailsArray = [];
+
+      for (const file of colorImages) {
+        console.log(`🔹 Processing file: ${file.originalname}`);
+
+        // ✅ Extract color name from filename (assumes 'color.jpg' format)
+        const cleanColorName = file.originalname.split(".")[0].toLowerCase();
+        console.log(`🎯 Extracted color name: ${cleanColorName}`);
+
+        // ✅ Create file path (productName_color.jpg)
+        const colorImagePath = path.join(
+          productImagePath,
+          `${productName}_${cleanColorName}.jpg`
+        );
+        console.log(
+          `🖼️ Saving image for color: ${cleanColorName} -> ${colorImagePath}`
+        );
+
+        // ✅ Save image
+        await fs.writeFile(colorImagePath, file.buffer);
+        console.log(`✅ Color image saved successfully: ${colorImagePath}`);
+
+        // ✅ Store color name (WITHOUT image path) in details
+        colorDetailsArray.push({ color: cleanColorName });
+      }
+
+      // ✅ Update MongoDB details with color names only
+      productData.details.color = colorDetailsArray;
+      console.log(
+        "\n✅ Updated details for MongoDB:",
+        JSON.stringify(productData.details, null, 2)
+      );
+    } else {
+      console.log("⚠️ No color images provided");
+    }
+
+    // ✅ Ensure `details` is a valid object before saving to MongoDB
+    if (!productData.details || typeof productData.details === "string") {
+      productData.details = productData.details
+        ? JSON.parse(productData.details)
+        : {};
+    }
+
+    // ✅ Save Product to Database
+    console.log("💾 Saving product to MongoDB...");
+    const newProduct = new productModel(productData);
+    await newProduct.save();
+    console.log("✅ Product saved successfully:", newProduct);
+
+    return { success: true, product: newProduct };
   } catch (error) {
-    console.log(error);
+    console.error("❌ Error adding product:", error);
+    return { success: false, error: error.message };
   }
-}
+};
 
 async function deleteProduct(productId) {
   try {
@@ -137,6 +222,7 @@ async function deleteProduct(productId) {
 
 async function addTopProduct(productId) {
   try {
+    console.log("ADDING TO");
     // Check if product already exists in TopProducts
     const existingProduct = await TopProductsModel.findOne({
       product_id: productId,

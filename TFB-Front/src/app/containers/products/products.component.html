@@ -79,9 +79,10 @@
 
         <img
           [routerLink]="['/product', product._id]"
-          [src]="'assets/products/' + product.image + '.jpg'"
-          class="Product_Image"
+          [src]="getProductImage(product)"
+          (error)="onImageError($event, product)"
           alt="{{ product.name }}"
+          class="Product_Image"
         />
 
         <div class="Product_Details">
@@ -94,7 +95,7 @@
               <!-- Show old price if there's a sale and the price is different -->
               <span
                 *ngIf="
-                  product.sale?.isOnSale &&
+                  isCurrentlyOnSale(product.sale) &&
                   product.price !== product.sale.salePrice
                 "
                 class="old-price"
@@ -105,7 +106,7 @@
               <!-- Show sale price if there's a sale and price is different -->
               <span
                 *ngIf="
-                  product.sale?.isOnSale &&
+                  isCurrentlyOnSale(product.sale) &&
                   product.price !== product.sale.salePrice
                 "
                 class="sale-price"
@@ -116,7 +117,7 @@
               <!-- If there's no sale or price is the same, show only one price -->
               <span
                 *ngIf="
-                  !product.sale?.isOnSale ||
+                  !isCurrentlyOnSale(product.sale) ||
                   product.price === product.sale.salePrice
                 "
               >
@@ -124,6 +125,22 @@
               </span>
             </p>
           </div>
+          <h5
+            *ngIf="
+              isCurrentlyOnSale(product.sale) &&
+              product.price !== product.sale.salePrice
+            "
+          >
+            * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
+          </h5>
+          <h5
+            *ngIf="
+              !isCurrentlyOnSale(product.sale) &&
+              product.price !== product.sale.salePrice
+            "
+          >
+            <br />
+          </h5>
           <button
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"

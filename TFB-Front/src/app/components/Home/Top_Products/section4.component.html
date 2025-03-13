@@ -7,7 +7,8 @@
     <div class="Product_Grid p-4">
       <div *ngFor="let product of category.value" class="Product_Card">
         <img
-          [src]="'assets/products/' + product.image + '.jpg'"
+          [src]="getProductImage(product)"
+          (error)="onImageError($event, product)"
           class="Product_Image"
           alt="{{ product.name }}"
           height="10%"

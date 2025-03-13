@@ -16,6 +16,22 @@ const productModel = require("../models/productSchema");
 const logger = require("../logger");
 const { verifyJWT } = require("../controller/JWT/jwt");
 const getValidationFunction = require("../validations/productValidation");
+const multer = require("multer");
+
+// ✅ Step 1: Initialize Multer with Memory Storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }); // ✅ Corrected Initialization
+
+// Route to handle product image upload
+router.post("/upload-product-image", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  res.json({
+    message: "Image uploaded successfully!",
+    filePath: `/assets/products/${req.file.filename}`,
+  });
+});
 // Middleware to allow both users and admins
 const allowUserOrAdmin = async (req, res, next) => {
   try {
@@ -68,9 +84,10 @@ const allowOnlyAdmin = async (req, res, next) => {
 
 router.post("/topProducts", async (req, res, next) => {
   try {
+    console.log("TOPPP PRODUCTS: ");
     const result = await getTopProducts();
     if (!result.length) {
-      return res.status(404).json({ message: "No top products found" });
+      return;
     }
     console.log(result);
     return res.json(result);
@@ -97,8 +114,8 @@ router.post("/", async (req, res, next) => {
       order
     );
 
-    if (!result.products || result.products.length === 0) {
-      return res.status(404).json({ message: "No products found" });
+    if (!result.products) {
+      return;
     }
 
     return res.json(result);
@@ -153,19 +170,41 @@ router.get("/productsNumber", async (req, res, next) => {
 router.post(
   "/addProduct",
   allowOnlyAdmin,
-  getValidationFunction("ProductAction"),
-  async (req, res, next) => {
-    console.log(req.body.product);
+  upload.fields([{ name: "colorImages" }]),
+  async (req, res) => {
     try {
-      const result = await addProduct(req.body.product);
-      if (!result) throw new Error();
-      return res.json("product has been added!");
+      console.log("📩 Received addProduct request with body:", req.body);
+      console.log("📸 Received files:", req.files);
+
+      const productData = req.body;
+      const colorImages = req.files?.colorImages || [];
+
+      console.log("🎨 Extracted color images:", colorImages);
+
+      // ✅ Call addProduct function
+      const product = await addProduct(productData, req.file, colorImages);
+      if (!product || product.success === false) {
+        console.error(
+          "❌ Error in addProduct function:",
+          product.error || "Unknown error"
+        );
+        return res.status(400).json({
+          success: false,
+          error: product.error || "Failed to add product",
+        });
+      }
+
+      return res.status(201).json({ success: true, product });
     } catch (error) {
-      console.log(error);
-      return next({ message: "GENERAL ERROR", status: 400 });
+      console.error("❌ Unexpected error in addProduct route:", error);
+      return res.status(500).json({
+        success: false,
+        error: error.message || "Internal server error",
+      });
     }
   }
 );
+
 router.post("/deleteProduct", allowOnlyAdmin, async (req, res, next) => {
   try {
     if (!req.body.productId) throw new Error();
@@ -192,6 +231,7 @@ router.post("/deleteTopProduct", allowOnlyAdmin, async (req, res, next) => {
 });
 router.post("/addTopProduct", allowOnlyAdmin, async (req, res, next) => {
   try {
+    console.log("ADD RTO TOP");
     if (!req.body.productId) throw new Error("Missing product ID");
 
     const result = await addTopProduct(req.body.productId);

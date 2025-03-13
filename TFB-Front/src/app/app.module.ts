@@ -41,6 +41,7 @@ import { AdminNavBarComponent } from './components/admin/admin-nav-bar/admin-nav
 import { AdminTopProductsComponent } from './components/admin/admin-top-products/admin-top-products.component';
 import { PopUpDeleteItemComponent } from './components/PopUpComponents/pop-up-delete-item/pop-up-delete-item.component';
 import { AdminCategoryComponent } from './components/admin/admin-category/admin-category.component';
+import { AdminAddProductComponent } from './components/admin/admin-add-product/admin-add-product.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -65,6 +66,7 @@ import { AdminCategoryComponent } from './components/admin/admin-category/admin-
     AdminTopProductsComponent,
     PopUpDeleteItemComponent,
     AdminCategoryComponent,
+    AdminAddProductComponent,
   ],
   imports: [
     BrowserModule,

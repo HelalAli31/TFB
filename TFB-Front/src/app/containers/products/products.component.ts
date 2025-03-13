@@ -143,6 +143,16 @@ export class ProductsComponent implements OnInit {
       console.error('❌ Failed to update cart:', error);
     }
   }
+  isCurrentlyOnSale(sale: any): boolean {
+    if (!sale?.isOnSale || !sale.saleStartDate || !sale.saleEndDate)
+      return false;
+
+    const now = new Date();
+    const start = new Date(sale.saleStartDate);
+    const end = new Date(sale.saleEndDate);
+
+    return now >= start && now <= end;
+  }
 
   extractFilters() {
     this.categories = [
@@ -239,26 +249,76 @@ export class ProductsComponent implements OnInit {
       console.error('❌ Error loading products:', error);
     }
   }
-
   addToTopProducts(productId: string) {
-    this.productService.getTopProducts().subscribe((topProductsData: any) => {
-      const topProductIds = topProductsData.map((p: any) => p._id);
+    console.log('ADDDD TO TO1P');
 
-      if (topProductIds.includes(productId)) {
-        alert('⚠️ This product is already in Top Products!');
-        return;
-      }
+    this.productService.getTopProducts().subscribe({
+      next: (topProductsData: any) => {
+        console.log('ADDDD TO3 TOP:', topProductsData);
+        const topProductIds = (topProductsData || []).map((p: any) => p._id);
+        console.log('Mapped IDs:', topProductIds);
 
-      this.productService.addTopProduct(productId).subscribe(
-        (response) => {
-          alert(`${response.message}`);
-          console.log('Top product added:', response);
-        },
-        (error) => {
-          console.error('Error adding top product:', error);
+        if (topProductIds.includes(productId)) {
+          alert('⚠️ This product is already in Top Products!');
+          return;
         }
-      );
+
+        console.log('ADDDD TO TO2P');
+        this.productService.addTopProduct(productId).subscribe({
+          next: (response) => {
+            alert(`${response.message}`);
+            console.log('Top product added:', response);
+          },
+          error: (error) => {
+            console.error('Error adding top product:', error);
+          },
+        });
+      },
+      error: (error) => {
+        console.error('❌ Error fetching top products:', error);
+      },
+      complete: () => {
+        console.log('✅ Completed fetching top products.');
+      },
     });
+  }
+  getProductImage(product: any): string {
+    if (!product || !product.name) {
+      console.log('❌ No product found, using default image.');
+      return 'assets/products/default.jpg';
+    }
+    return `assets/products/${product.name}.jpg`; // Try first image (name.jpg)
+  }
+
+  // Handle Image Fallback
+  onImageError(event: any, product: any) {
+    // If product or color details are missing, use the default image
+    if (!product || !product.details || !product.details.color?.length) {
+      console.log('⚠️ No product color found, using default image.');
+      event.target.src = 'assets/products/default.jpg';
+      return;
+    }
+
+    const color = product.details.color[0]?.color;
+    if (!color) {
+      console.log('⚠️ Color missing, using default image.');
+      event.target.src = 'assets/products/default.jpg';
+      return;
+    }
+
+    const fallbackImage = `assets/products/${product.name}_${color}.jpg`;
+    console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+    // Create a new Image object to pre-check if the fallback image exists
+    const img = new Image();
+    img.src = fallbackImage;
+    img.onload = () => {
+      event.target.src = fallbackImage;
+    };
+    img.onerror = () => {
+      console.log('❌ Both images missing, using default.');
+      event.target.src = 'assets/products/default.jpg';
+    };
   }
 
   getTopProducts() {

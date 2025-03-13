@@ -64,7 +64,6 @@ router.post(
   async (req, res, next) => {
     try {
       const userId = req.user._id; // ✅ Extract user ID
-      console.log(`📤 Fetching open cart for user: ${userId}`);
 
       const cart = await getCart(userId); // ✅ Backend ensures an open cart exists
 
@@ -111,8 +110,6 @@ router.get("/getItems", allowUserOrAdmin, async (req, res, next) => {
       return res.status(400).json({ error: "Cart ID is required" });
     }
 
-    console.log(`📤 Fetching items for cart ID: ${cartId}`);
-
     const cartItems = await getCartItems(cartId);
 
     if (!cartItems) {
@@ -120,7 +117,6 @@ router.get("/getItems", allowUserOrAdmin, async (req, res, next) => {
       return res.json([]); // ✅ Return empty array instead of `404`
     }
 
-    console.log("✅ Cart Items:", cartItems);
     return res.json(cartItems);
   } catch (error) {
     console.error("❌ Error fetching cart items:", error);
