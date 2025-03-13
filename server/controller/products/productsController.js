@@ -131,14 +131,25 @@ const addProduct = async (productData, mainImage, colorImages) => {
 
     const productImagePath = path.join(
       __dirname,
-      `../../../TFB-Front/src/assets/products`
+      "../../../TFB-Front/src/assets/products"
     );
     await fs.ensureDir(productImagePath);
     console.log("📂 Ensured product image directory exists:", productImagePath);
 
-    // ✅ Save Main Image
+    // ✅ Ensure `details` is a valid object before saving
+    if (!productData.details) {
+      productData.details = {}; // Default to an empty object
+    } else if (typeof productData.details === "string") {
+      try {
+        productData.details = JSON.parse(productData.details); // Parse only if it's a string
+      } catch (error) {
+        console.error("❌ Error parsing `details` JSON:", error);
+        return { success: false, error: "Invalid details format" };
+      }
+    }
+
+    // ✅ Save Main Image if Available
     if (mainImage) {
-      console.log("🖼️ Received main image:", mainImage.originalname);
       const mainImagePath = path.join(productImagePath, `${productName}.jpg`);
       await fs.writeFile(mainImagePath, mainImage.buffer);
       console.log("✅ Main image saved at:", mainImagePath);
@@ -146,55 +157,39 @@ const addProduct = async (productData, mainImage, colorImages) => {
       console.log("⚠️ No main image provided");
     }
 
-    // ✅ Save ALL Color Images
-    console.log("\n🎨 Received colorImages:", colorImages);
+    // ✅ Save Color Images if Available
+    console.log("\n🎨 Processing color images...");
+    const colorDetailsArray = [];
 
-    if (Array.isArray(colorImages) && colorImages.length > 0) {
-      console.log("🔍 Looping through color images...");
-      const colorDetailsArray = [];
+    for (const file of colorImages) {
+      console.log(`🔹 Processing file: ${file.originalname}`);
 
-      for (const file of colorImages) {
-        console.log(`🔹 Processing file: ${file.originalname}`);
+      // ✅ Extract color name correctly
+      const colorName = path.parse(file.originalname).name.toLowerCase(); // Get filename without extension
 
-        // ✅ Extract color name from filename (assumes 'color.jpg' format)
-        const cleanColorName = file.originalname.split(".")[0].toLowerCase();
-        console.log(`🎯 Extracted color name: ${cleanColorName}`);
-
-        // ✅ Create file path (productName_color.jpg)
-        const colorImagePath = path.join(
-          productImagePath,
-          `${productName}_${cleanColorName}.jpg`
-        );
-        console.log(
-          `🖼️ Saving image for color: ${cleanColorName} -> ${colorImagePath}`
-        );
-
-        // ✅ Save image
-        await fs.writeFile(colorImagePath, file.buffer);
-        console.log(`✅ Color image saved successfully: ${colorImagePath}`);
-
-        // ✅ Store color name (WITHOUT image path) in details
-        colorDetailsArray.push({ color: cleanColorName });
-      }
-
-      // ✅ Update MongoDB details with color names only
-      productData.details.color = colorDetailsArray;
-      console.log(
-        "\n✅ Updated details for MongoDB:",
-        JSON.stringify(productData.details, null, 2)
+      // ✅ Save image with `productName_color.jpg`
+      const colorImagePath = path.join(
+        productImagePath,
+        `${productName}_${colorName}.jpg`
       );
-    } else {
-      console.log("⚠️ No color images provided");
+      await fs.writeFile(colorImagePath, file.buffer);
+      console.log(`✅ Color image saved successfully: ${colorImagePath}`);
+
+      // ✅ Store color data **without image path** in `details`
+      colorDetailsArray.push({ color: colorName });
     }
 
-    // ✅ Ensure `details` is a valid object before saving to MongoDB
-    if (!productData.details || typeof productData.details === "string") {
-      productData.details = productData.details
-        ? JSON.parse(productData.details)
-        : {};
+    // ✅ Add color details to `details` if any colors exist
+    if (colorDetailsArray.length > 0) {
+      productData.details.color = colorDetailsArray;
     }
 
-    // ✅ Save Product to Database
+    console.log(
+      "\n✅ Final `details` saved to MongoDB:",
+      JSON.stringify(productData.details, null, 2)
+    );
+
+    // ✅ Save Product to Database (ONLY DATA, NOT IMAGES)
     console.log("💾 Saving product to MongoDB...");
     const newProduct = new productModel(productData);
     await newProduct.save();

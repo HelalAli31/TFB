@@ -2,7 +2,8 @@
   <div class="product-detail-container">
     <div class="product-image">
       <img
-        [src]="'assets/products/' + product.image + '.jpg'"
+        [src]="getProductImage(product)"
+        (error)="onImageError($event, product)"
         alt="{{ product.name }}"
         class="product-image-detail"
       />

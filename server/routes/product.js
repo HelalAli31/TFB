@@ -170,19 +170,23 @@ router.get("/productsNumber", async (req, res, next) => {
 router.post(
   "/addProduct",
   allowOnlyAdmin,
-  upload.fields([{ name: "colorImages" }]),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "colorImages", maxCount: 10 },
+  ]),
   async (req, res) => {
     try {
       console.log("📩 Received addProduct request with body:", req.body);
       console.log("📸 Received files:", req.files);
 
       const productData = req.body;
+      const mainImage = req.files?.image ? req.files.image[0] : null;
       const colorImages = req.files?.colorImages || [];
 
       console.log("🎨 Extracted color images:", colorImages);
 
       // ✅ Call addProduct function
-      const product = await addProduct(productData, req.file, colorImages);
+      const product = await addProduct(productData, mainImage, colorImages);
       if (!product || product.success === false) {
         console.error(
           "❌ Error in addProduct function:",

@@ -39,12 +39,12 @@
 
     <!-- Main Image Upload -->
     <!-- ✅ Upload Main Product Image -->
-    <label>Upload Main Image</label>
+    <label>Upload Main Image (*not kits)</label>
     <input type="file" (change)="onFileSelected($event)" required />
     <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
 
     <!-- ✅ Colors and Image Upload -->
-    <label>Colors</label>
+    <label>Colors (*kits)</label>
     <input type="text" #colorInput />
     <input type="number" #quantityInput placeholder="Quantity" />
     <button type="button" (click)="addColor(colorInput, quantityInput)">

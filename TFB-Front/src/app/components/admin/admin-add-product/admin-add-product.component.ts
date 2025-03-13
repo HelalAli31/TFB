@@ -128,22 +128,19 @@ export class AdminAddProductComponent {
     };
 
     // ✅ Store color details with image filenames
-    const colorImageFiles: { [color: string]: File } = {};
-    const colorImagePaths: { [color: string]: string } = {};
+    let colorImageFiles: { [color: string]: File } | null = null;
 
-    for (const colorData of this.colorsWithDetails) {
-      if (colorData.image) {
-        colorImageFiles[colorData.color] = colorData.image;
-        colorImagePaths[
-          colorData.color
-        ] = `/assets/products/${this.getColorImageFilename(colorData.color)}`;
+    if (this.colorsWithDetails.length > 0) {
+      colorImageFiles = {}; // ✅ Initialize only if there are color images
+      for (const colorData of this.colorsWithDetails) {
+        if (colorData.image) {
+          colorImageFiles[colorData.color] = colorData.image;
+        }
       }
     }
 
-    // ✅ Save color image paths in product details (Ensure it's an object, not a string)
-    if (Object.keys(colorImagePaths).length > 0) {
-      productData.details.colorImages = colorImagePaths;
-    }
+    console.log('📩 Sending product with:', productData);
+    console.log('🎨 Color images:', colorImageFiles);
 
     // ✅ Send Data to Backend
     this.productService

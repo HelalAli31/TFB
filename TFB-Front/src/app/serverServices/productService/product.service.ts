@@ -24,7 +24,7 @@ export class ProductService {
 
   getProducts(
     page: number = 1,
-    limit: number = 10, // ✅ Default to 10 per page
+    limit: number = 30, // ✅ Default to 10 per page
     sortBy: string = 'name',
     order: string = 'asc',
     keyName?: string,
@@ -43,7 +43,7 @@ export class ProductService {
   addProduct(
     product: any,
     mainImage: File | null,
-    colorImages: { [color: string]: File }
+    colorImages: { [color: string]: File } | null
   ): Observable<any> {
     const headers = this.getAuthHeaders();
     const formData = new FormData();
@@ -55,20 +55,31 @@ export class ProductService {
     formData.append('quantity', product.quantity);
     formData.append('description', product.description);
 
-    // ✅ Convert `details` to JSON before appending
-    formData.append('details', JSON.stringify(product.details));
-
-    // ✅ Only append main image if it exists
-    if (mainImage) {
-      formData.append('image', mainImage);
+    // ✅ Ensure `details` is a valid JSON object
+    if (product.details && Object.keys(product.details).length > 0) {
+      formData.append('details', JSON.stringify(product.details));
     }
 
-    // ✅ Append Color Images in a way that the backend can correctly parse them
-    console.log('🖼️ Appending color images to FormData...');
-    Object.entries(colorImages).forEach(([color, file]) => {
-      console.log(`🔹 Attaching color: ${color}, Filename: ${file.name}`);
-      formData.append('colorImages', file, `${color}.jpg`); // Attach file with its color name
-    });
+    // ✅ Append Main Image if Available
+    if (mainImage) {
+      console.log('🖼️ Attaching main image:', mainImage.name);
+      formData.append('image', mainImage);
+    } else {
+      console.log('⚠️ No main image provided.');
+    }
+
+    // ✅ Append Color Images Correctly
+    if (colorImages && Object.keys(colorImages).length > 0) {
+      console.log('🎨 Attaching color images...');
+      Object.entries(colorImages).forEach(([color, file]) => {
+        if (file) {
+          console.log(`🔹 Attaching color: ${color}, Filename: ${file.name}`);
+          formData.append('colorImages', file, `${color}.jpg`); // ✅ Correct format
+        }
+      });
+    } else {
+      console.log('⚠️ No color images provided.');
+    }
 
     console.log('\n📩 FormData before sending:');
     formData.forEach((value, key) => {
