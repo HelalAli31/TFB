@@ -10,6 +10,7 @@ const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes//orders");
 //Routes
 const app = express();
+const path = require("path");
 
 app.use(cors());
 app.use(express.static("public"));
@@ -17,6 +18,7 @@ app.use(express.static("public"));
 app.use(bodyParser.json());
 
 createConnection();
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 app.use("/auth", userRoute);
 app.use("/products", productsRoute);

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from 'src/app/serverServices/cart/cart.service';
+import { environment } from '../../../environments/environment'; // Import environment
 
 @Component({
   selector: 'app-cart',
@@ -9,6 +10,7 @@ import { CartService } from 'src/app/serverServices/cart/cart.service';
 export class CartComponent implements OnInit {
   public cartItems: any[] = [];
   public totalPrice: number = 0;
+  apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
 
   constructor(private cartService: CartService) {}
 
@@ -108,7 +110,44 @@ export class CartComponent implements OnInit {
       console.error('❌ Error removing item:', error);
     }
   }
+  getProductImage(product: any): string {
+    if (!product || !product.name) {
+      console.log('❌ No product found, using default image.');
+      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
+    }
 
+    // ✅ Check if product has colors
+    if (product.details?.color && product.details.color.length > 0) {
+      const color = product.details.color[0]?.color; // Get first color
+      if (color) {
+        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+      }
+    }
+
+    // ✅ Default case: product without colors
+    return `${this.apiUrl}/assets/products/${product.name}.jpg`;
+  }
+
+  // ✅ Handle Image Fallback if Not Found
+  onImageError(event: any, product: any) {
+    console.log(`⚠️ Image failed to load: ${event.target.src}`);
+
+    // Check for color variation
+    if (product?.details?.color?.length > 0) {
+      const color = product.details.color[0]?.color;
+      if (color) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+        event.target.src = fallbackImage; // Try alternative image
+        return;
+      }
+    }
+
+    // ✅ Final fallback to default image
+    console.log('❌ Both images missing, using default.');
+    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
+  }
   updateTotalPrice() {
     this.totalPrice = this.cartItems.reduce((total, item) => {
       return total + item.product_id.price * item.amount;

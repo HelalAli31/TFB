@@ -1,0 +1,45 @@
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input,
+textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #34b814;
+  color: white;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #2d9e13;
+}
+
+/* Image Preview */
+.preview-img {
+  max-width: 100px;
+  margin-top: 10px;
+}
+
+/* Color Circles */
+.color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
+}

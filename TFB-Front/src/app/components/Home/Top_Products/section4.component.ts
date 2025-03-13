@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
 import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
 import { PopUpDeleteItemComponent } from '../../PopUpComponents/pop-up-delete-item/pop-up-delete-item.component';
+import { environment } from '../../../../environments/environment'; // Import environment
 
 @Component({
   selector: 'app-section4',
@@ -16,6 +17,8 @@ export class Section4Component implements OnInit {
   public groupedProducts: { [category: string]: any[] } = {}; // Grouped top products by category
   public cartItems: any[] = []; // Store cart items to check if a product is in the cart
   public isAdmin: any;
+  apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
+
   constructor(
     private productService: ProductService,
     private cartService: CartService,
@@ -217,40 +220,40 @@ export class Section4Component implements OnInit {
   getProductImage(product: any): string {
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
-      return 'assets/products/default.jpg';
+      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
-    return `assets/products/${product.name}.jpg`; // Try first image (name.jpg)
+
+    // ✅ Check if product has colors
+    if (product.details?.color && product.details.color.length > 0) {
+      const color = product.details.color[0]?.color; // Get first color
+      if (color) {
+        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+      }
+    }
+
+    // ✅ Default case: product without colors
+    return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
-  // Handle Image Fallback
+  // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
-    // If product or color details are missing, use the default image
-    if (!product || !product.details || !product.details.color?.length) {
-      console.log('⚠️ No product color found, using default image.');
-      event.target.src = 'assets/products/default.jpg';
-      return;
+    console.log(`⚠️ Image failed to load: ${event.target.src}`);
+
+    // Check for color variation
+    if (product?.details?.color?.length > 0) {
+      const color = product.details.color[0]?.color;
+      if (color) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+        event.target.src = fallbackImage; // Try alternative image
+        return;
+      }
     }
 
-    const color = product.details.color[0]?.color;
-    if (!color) {
-      console.log('⚠️ Color missing, using default image.');
-      event.target.src = 'assets/products/default.jpg';
-      return;
-    }
-
-    const fallbackImage = `assets/products/${product.name}_${color}.jpg`;
-    console.log(`🔄 Trying fallback image: ${fallbackImage}`);
-
-    // Create a new Image object to pre-check if the fallback image exists
-    const img = new Image();
-    img.src = fallbackImage;
-    img.onload = () => {
-      event.target.src = fallbackImage;
-    };
-    img.onerror = () => {
-      console.log('❌ Both images missing, using default.');
-      event.target.src = 'assets/products/default.jpg';
-    };
+    // ✅ Final fallback to default image
+    console.log('❌ Both images missing, using default.');
+    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
 
   ngOnInit(): void {

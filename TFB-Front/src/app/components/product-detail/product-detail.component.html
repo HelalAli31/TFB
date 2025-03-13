@@ -1,53 +1,89 @@
 <div *ngIf="product">
   <div class="product-detail-container">
-    <div class="product-image">
+    <!-- Left Side: Product Image -->
+    <div class="product-image-container">
       <img
         [src]="getProductImage(product)"
-        (error)="onImageError($event, product)"
         alt="{{ product.name }}"
-        class="product-image-detail"
+        (error)="onImageError($event, product)"
+        class="product-detail-image"
       />
     </div>
 
-    <div class="product-info">
-      <h2>{{ product.name }}</h2>
-      <p class="product-brand">Brand: {{ product.brand }}</p>
+    <!-- Right Side: Product Info -->
+    <div class="product-details-container">
+      <h2 class="product-title">{{ product.name }}</h2>
+      <p class="product-brand">
+        Brand: <span>{{ product.brand }}</span>
+      </p>
 
+      <!-- Price Section -->
       <div class="price-section">
-        <p class="product-price">
-          <span *ngIf="product.sale?.isOnSale" class="sale-price">
-            {{ product.sale.salePrice }} ₪
-          </span>
-          <span *ngIf="!product.sale?.isOnSale" class="regular-price">
+        <p *ngIf="isCurrentlyOnSale(product.sale)" class="original-price">
+          <span *ngIf="product.price !== product.sale.salePrice">
             {{ product.price }} ₪
           </span>
         </p>
-        <p *ngIf="product.sale?.isOnSale" class="original-price">
+        <p *ngIf="isCurrentlyOnSale(product.sale)" class="sale-price">
+          {{ product.sale.salePrice }} ₪
+        </p>
+        <p *ngIf="!isCurrentlyOnSale(product.sale)" class="regular-price">
           {{ product.price }} ₪
         </p>
+        <h5
+          *ngIf="
+            isCurrentlyOnSale(product.sale) &&
+            product.price !== product.sale.salePrice
+          "
+        >
+          * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
+        </h5>
       </div>
 
-      <div class="product-description">
-        <h3>Description</h3>
-        <p>{{ product.description }}</p>
-      </div>
+      <!-- Product Details -->
+      <div class="product-details-card">
+        <h3 class="section-title">Product Details</h3>
+        <div class="decorative-line"></div>
+        <!-- Decorative line added -->
 
-      <div class="product-details">
-        <p><strong>Wattage:</strong> {{ product.details?.wattage }}</p>
-        <p><strong>Color:</strong> {{ product.details?.color }}</p>
-        <p>
-          <strong>Customer Type:</strong> {{ product.details?.customerType }}
+        <p *ngIf="product.details?.wattage">
+          <strong>Wattage:</strong> {{ product.details.wattage }}W
         </p>
-      </div>
+        <p *ngIf="product.details?.capacity">
+          <strong>Capacity:</strong> {{ product.details.capacity }}mAh/ml
+        </p>
+        <p *ngIf="product.details?.customerType">
+          <strong>Customer Type:</strong> {{ product.details.customerType }}
+        </p>
 
-      <!-- Add/Edit to Cart Button -->
-      <button
-        class="add-to-cart-button"
-        [disabled]="product.quantity === 0"
-        (click)="openQuantityDialog(product)"
-      >
-        {{ existingQuantity > 0 ? "Edit" : "Add to Cart" }}
-      </button>
+        <!-- Color Display (Circles) -->
+        <div *ngIf="product.details?.color?.length" class="color-section">
+          <strong>Available Colors:</strong>
+          <div class="color-circles">
+            <span
+              *ngFor="let color of product.details.color"
+              class="color-circle"
+              [style.backgroundColor]="color.color"
+              [title]="color.color"
+            ></span>
+          </div>
+        </div>
+
+        <!-- Add/Edit to Cart Button -->
+        <button
+          class="View_Button mt-4"
+          [disabled]="product.quantity === 0"
+          (click)="openQuantityDialog(product)"
+        >
+          {{ existingQuantity > 0 ? "Edit" : "Add to Cart" }}
+        </button>
+      </div>
     </div>
+  </div>
+
+  <!-- Description Section at the Bottom -->
+  <div class="product-description-container">
+    <h3>Description</h3>
+    <p>{{ product.description }}</p>
   </div>
 </div>

@@ -36,8 +36,15 @@ export class AdminAddProductComponent {
       sale: this.fb.group({
         isOnSale: [false],
       }),
-      details: this.fb.group({}),
+      details: this.fb.group({
+        customerType: [''], // Optional
+        wattage: [null], // Optional
+        capacity: [null], // Optional
+      }),
     });
+  }
+  get detailsForm(): FormGroup {
+    return this.productForm.get('details') as FormGroup;
   }
 
   ngOnInit(): void {
@@ -124,7 +131,10 @@ export class AdminAddProductComponent {
     // ✅ Prepare product data
     const productData: any = {
       ...this.productForm.value,
-      details: { ...this.productForm.value.details },
+      details: {
+        ...this.productForm.value.details,
+        color: this.colorsWithDetails, // ✅ Include color array inside details
+      },
     };
 
     // ✅ Store color details with image filenames

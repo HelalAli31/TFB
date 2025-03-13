@@ -3,7 +3,7 @@
     <!-- Left Side - Logo & Search Bar -->
     <div class="Left_Container">
       <a class="Logo_Container" href="/">
-        <img class="Logo" src="assets/logo.jpg" alt="Logo" />
+        <img class="Logo" [src]="apiUrl + '/assets/logo.jpg'" alt="Logo" />
         <span class="Website_Name">The Fog Bank</span>
       </a>
 
@@ -31,7 +31,7 @@
               *ngIf="product"
               [src]="getProductImage(product)"
               (error)="onImageError($event, product)"
-              alt="{{ product?.name || 'No Image Available' }}"
+              alt="{{ product.name }}"
               class="Search_Item_Image"
               width="100px"
               height="100px"
@@ -74,13 +74,15 @@
               (mouseleave)="hideLabels()"
             >
               <img
-                [src]="'assets/categories/' + category.name + '.jpg'"
+                [src]="apiUrl + '/assets/categories/' + category.name + '.jpg'"
                 alt="{{ category.name }}"
                 class="Search_Item_Image"
                 width="100px"
                 height="100px"
                 (click)="filterProducts(category.name, '')"
+                (error)="onImageCateError($event)"
               />
+
               <a
                 href="/products?category={{ category.name }}"
                 class="Category_Text"
@@ -135,7 +137,7 @@
         <a class="navbar-brand ml-2">Sign Out</a>
         <img
           class="LoginImage"
-          src="../assets/exit.svg"
+          [src]="apiUrl + '/assets/exit.svg'"
           width="16"
           height="16"
           (click)="logOut()"
@@ -146,7 +148,7 @@
         <a class="navbar-brand">Login</a>
         <img
           class="LoginImage"
-          src="../assets/log-in.png"
+          [src]="apiUrl + '/assets/log-in.png'"
           width="16"
           height="16"
           (click)="openDialog()"

@@ -8,8 +8,10 @@
       <div class="Section2_Content">
         <div class="Category_Story" (click)="filterByCategory(c.name)">
           <img
-            src="assets/categories/{{ c.name }}.jpg"
+            [src]="apiUrl + '/assets/categories/' + c.name + '.jpg'"
             class="Category_Image"
+            alt="{{ c.name }} Image"
+            (error)="onImageError($event)"
           />
           <h4 class="Category_Name">{{ c.name }}</h4>
         </div>

@@ -125,32 +125,43 @@ const addProduct = async (productData, mainImage, colorImages) => {
       return { success: false, message: "Product name is required." };
     }
 
-    // ✅ Process product name
-    const productName = productData.name.replace(/\s+/g, "").toLowerCase();
+    // ✅ Ensure `productName` is always available
+    const productName = productData.name
+      .trim()
+      .replace(/\s+/g, "")
+      .toLowerCase();
+    if (!productName) {
+      console.error("❌ ERROR: Processed product name is empty");
+      return { success: false, message: "Invalid product name." };
+    }
     console.log("📝 Processed product name:", productName);
 
-    const productImagePath = path.join(
-      __dirname,
-      "../../../TFB-Front/src/assets/products"
-    );
-    await fs.ensureDir(productImagePath);
-    console.log("📂 Ensured product image directory exists:", productImagePath);
+    // ✅ Change the Save Directory to `server/assets/products`
+    const productImagesDir = path.join(__dirname, "../../assets/products");
+    await fs.ensureDir(productImagesDir);
+    console.log("📂 Ensured product image directory exists:", productImagesDir);
 
-    // ✅ Ensure `details` is a valid object before saving
+    // ✅ Convert details to JSON object if needed
     if (!productData.details) {
-      productData.details = {}; // Default to an empty object
+      productData.details = {};
     } else if (typeof productData.details === "string") {
       try {
-        productData.details = JSON.parse(productData.details); // Parse only if it's a string
+        productData.details = JSON.parse(productData.details);
       } catch (error) {
         console.error("❌ Error parsing `details` JSON:", error);
         return { success: false, error: "Invalid details format" };
       }
     }
 
-    // ✅ Save Main Image if Available
+    // ✅ Save the product in MongoDB **FIRST**
+    console.log("💾 Saving product to MongoDB...");
+    const newProduct = new productModel({ ...productData, name: productName });
+    await newProduct.save();
+    console.log("✅ Product saved successfully:", newProduct);
+
+    // ✅ Save the Main Image (ONLY ONCE)
     if (mainImage) {
-      const mainImagePath = path.join(productImagePath, `${productName}.jpg`);
+      const mainImagePath = path.join(productImagesDir, `${productName}.jpg`);
       await fs.writeFile(mainImagePath, mainImage.buffer);
       console.log("✅ Main image saved at:", mainImagePath);
     } else {
@@ -164,36 +175,31 @@ const addProduct = async (productData, mainImage, colorImages) => {
     for (const file of colorImages) {
       console.log(`🔹 Processing file: ${file.originalname}`);
 
-      // ✅ Extract color name correctly
-      const colorName = path.parse(file.originalname).name.toLowerCase(); // Get filename without extension
+      // ✅ Extract color name
+      const colorName = path.parse(file.originalname).name.toLowerCase();
 
       // ✅ Save image with `productName_color.jpg`
       const colorImagePath = path.join(
-        productImagePath,
+        productImagesDir,
         `${productName}_${colorName}.jpg`
       );
       await fs.writeFile(colorImagePath, file.buffer);
       console.log(`✅ Color image saved successfully: ${colorImagePath}`);
 
-      // ✅ Store color data **without image path** in `details`
+      // ✅ Store color data in `details`
       colorDetailsArray.push({ color: colorName });
     }
 
     // ✅ Add color details to `details` if any colors exist
     if (colorDetailsArray.length > 0) {
-      productData.details.color = colorDetailsArray;
+      newProduct.details.color = colorDetailsArray;
+      await newProduct.save(); // Update MongoDB with color details
     }
 
     console.log(
       "\n✅ Final `details` saved to MongoDB:",
-      JSON.stringify(productData.details, null, 2)
+      JSON.stringify(newProduct.details, null, 2)
     );
-
-    // ✅ Save Product to Database (ONLY DATA, NOT IMAGES)
-    console.log("💾 Saving product to MongoDB...");
-    const newProduct = new productModel(productData);
-    await newProduct.save();
-    console.log("✅ Product saved successfully:", newProduct);
 
     return { success: true, product: newProduct };
   } catch (error) {

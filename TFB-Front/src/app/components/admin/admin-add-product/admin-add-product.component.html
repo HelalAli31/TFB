@@ -36,6 +36,29 @@
       <label>*Description</label>
       <input type="text" formControlName="description" required />
     </div>
+    <!-- Optional Fields in Details -->
+    <div class="form-group" [formGroup]="detailsForm">
+      <label>Customer Type</label>
+      <input
+        type="text"
+        formControlName="customerType"
+        placeholder="e.g., New, Returning"
+      />
+    </div>
+
+    <div class="form-group" [formGroup]="detailsForm">
+      <label>Wattage</label>
+      <input type="number" formControlName="wattage" placeholder="e.g., 75" />
+    </div>
+
+    <div class="form-group" [formGroup]="detailsForm">
+      <label>Capacity (mAh/ml)</label>
+      <input
+        type="number"
+        formControlName="capacity"
+        placeholder="e.g., 5000"
+      />
+    </div>
 
     <!-- Main Image Upload -->
     <!-- ✅ Upload Main Product Image -->

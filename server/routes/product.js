@@ -4,8 +4,7 @@ const {
   getTopProducts,
   addProduct,
   productsNumber,
-  updateProduct,
-  deleteProduct,
+
   deleteTopProduct,
   addTopProduct,
 } = require("../controller/products/productsController");
@@ -17,10 +16,16 @@ const logger = require("../logger");
 const { verifyJWT } = require("../controller/JWT/jwt");
 const getValidationFunction = require("../validations/productValidation");
 const multer = require("multer");
+const fs = require("fs-extra");
+const path = require("path");
 
 // ✅ Step 1: Initialize Multer with Memory Storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }); // ✅ Corrected Initialization
+const productImagesDir = path.join(__dirname, "../assets/products");
+
+// ✅ Ensure the directory exists
+fs.ensureDirSync(productImagesDir);
 
 // Route to handle product image upload
 router.post("/upload-product-image", upload.single("image"), (req, res) => {
@@ -167,59 +172,55 @@ router.get("/productsNumber", async (req, res, next) => {
 });
 
 // add product (product)
+// ✅ Add Product (with Image Upload)
 router.post(
   "/addProduct",
-  allowOnlyAdmin,
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "colorImages", maxCount: 10 },
   ]),
   async (req, res) => {
     try {
-      console.log("📩 Received addProduct request with body:", req.body);
-      console.log("📸 Received files:", req.files);
+      console.log("📩 Received addProduct request:", req.body);
 
       const productData = req.body;
       const mainImage = req.files?.image ? req.files.image[0] : null;
       const colorImages = req.files?.colorImages || [];
 
-      console.log("🎨 Extracted color images:", colorImages);
-
-      // ✅ Call addProduct function
       const product = await addProduct(productData, mainImage, colorImages);
-      if (!product || product.success === false) {
-        console.error(
-          "❌ Error in addProduct function:",
-          product.error || "Unknown error"
+      if (!product) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Failed to add product" });
+      }
+
+      // ✅ Save the image if provided
+      if (mainImage) {
+        const imagePath = path.join(productImagesDir, `${product.name}.jpg`);
+        await fs.writeFile(imagePath, mainImage.buffer);
+        console.log(`✅ Saved main image: ${imagePath}`);
+      }
+
+      // ✅ Save color images if available
+      for (const colorImage of colorImages) {
+        const imagePath = path.join(
+          productImagesDir,
+          `${product.name}_${colorImage.originalname}`
         );
-        return res.status(400).json({
-          success: false,
-          error: product.error || "Failed to add product",
-        });
+        await fs.writeFile(imagePath, colorImage.buffer);
+        console.log(`✅ Saved color image: ${imagePath}`);
       }
 
       return res.status(201).json({ success: true, product });
     } catch (error) {
-      console.error("❌ Unexpected error in addProduct route:", error);
-      return res.status(500).json({
-        success: false,
-        error: error.message || "Internal server error",
-      });
+      console.error("❌ Error adding product:", error);
+      return res
+        .status(500)
+        .json({ success: false, error: "Internal server error" });
     }
   }
 );
 
-router.post("/deleteProduct", allowOnlyAdmin, async (req, res, next) => {
-  try {
-    if (!req.body.productId) throw new Error();
-    const result = await deleteProduct(req.body.productId);
-    if (!result) throw new Error();
-    return res.json("product has been deleted!");
-  } catch (error) {
-    console.log(error);
-    return next({ message: "GENERAL ERROR", status: 400 });
-  }
-});
 router.post("/deleteTopProduct", allowOnlyAdmin, async (req, res, next) => {
   try {
     if (!req.body.productId) throw new Error("Missing product ID");
@@ -250,20 +251,117 @@ router.post("/addTopProduct", allowOnlyAdmin, async (req, res, next) => {
     return next({ message: "GENERAL ERROR", status: 400 });
   }
 });
+// ✅ Update Product - Should be PUT
+// ✅ Update Product with Image
+router.put("/updateProduct/:id", upload.single("image"), async (req, res) => {
+  try {
+    const { id } = req.params;
+    let updatedData = req.body;
 
-router.post(
-  "/updateProduct",
-  allowOnlyAdmin,
-  getValidationFunction("ProductAction"),
-  async (req, res, next) => {
-    try {
-      const result = await updateProduct(req.body.product);
-      if (!result) throw new Error();
-      return res.json("product has been updated!");
-    } catch (error) {
-      console.log(error);
-      return next({ message: "GENERAL ERROR", status: 400 });
+    if (typeof updatedData.details === "string") {
+      updatedData.details = JSON.parse(updatedData.details);
     }
+
+    const product = await productModel.findById(id);
+    if (!product)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+
+    // ✅ Save updated image if provided
+    if (req.file) {
+      const imagePath = path.join(productImagesDir, `${product.name}.jpg`);
+      await fs.writeFile(imagePath, req.file.buffer);
+      console.log(`✅ Updated product image: ${imagePath}`);
+    }
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      updatedData,
+      { new: true }
+    );
+    res.json({ success: true, product: updatedProduct });
+  } catch (error) {
+    console.error("❌ Error updating product:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
-);
+});
+
+// ✅ DELETE PRODUCT (AND REMOVE IMAGES)
+router.delete("/deleteProduct/:id", async (req, res) => {
+  try {
+    console.log(`🔍 Attempting to delete product with ID: ${req.params.id}`);
+
+    // ✅ Find product in the database
+    const product = await productModel.findById(req.params.id);
+    if (!product) {
+      console.log("❌ Product not found in database.");
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    console.log(`🛒 Found product: ${product.name}`);
+
+    // ✅ Determine images directory
+    const imagesDir = path.join(__dirname, "../assets/products");
+
+    if (!fs.existsSync(imagesDir)) {
+      console.error(
+        `❌ Error: Product images directory (${imagesDir}) does not exist.`
+      );
+      return res
+        .status(500)
+        .json({ error: "Product images directory not found." });
+    }
+
+    console.log(`📁 Product images directory exists: ${imagesDir}`);
+
+    // ✅ Delete all related images (default + color variations)
+    let deletedImages = [];
+    const productName = product.name;
+
+    try {
+      const files = await fs.promises.readdir(imagesDir);
+
+      // Filter images matching the product pattern
+      const productImages = files.filter(
+        (file) => file.startsWith(productName) && file.endsWith(".jpg")
+      );
+
+      console.log(
+        `🔎 Found ${productImages.length} matching images for deletion.`
+      );
+
+      // Delete all found images
+      await Promise.all(
+        productImages.map(async (file) => {
+          const filePath = path.join(imagesDir, file);
+          try {
+            await fs.promises.unlink(filePath);
+            deletedImages.push(file);
+            console.log(`✅ Deleted image: ${file}`);
+          } catch (unlinkErr) {
+            console.error(`❌ Error deleting image: ${file}`, unlinkErr);
+          }
+        })
+      );
+    } catch (readDirErr) {
+      console.error("❌ Error reading image directory:", readDirErr);
+    }
+
+    // ✅ Delete product from database AFTER deleting images
+    await productModel.findByIdAndDelete(req.params.id);
+    console.log(`🗑️ Product ${product.name} deleted from database.`);
+
+    return res.status(200).json({
+      message: "✅ Product and associated images deleted successfully.",
+      deletedImages,
+    });
+  } catch (err) {
+    console.error("❌ Error deleting product or images:", err);
+    return res.status(500).json({
+      error: "An error occurred while deleting the product or its images.",
+    });
+  }
+});
+
 module.exports = router;

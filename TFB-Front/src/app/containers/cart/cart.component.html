@@ -11,11 +11,8 @@
     <!-- Product Image -->
     <div class="cart-image-container">
       <img
-        [src]="
-          item.product_id?.image
-            ? 'assets/products/' + item.product_id.image + '.jpg'
-            : 'assets/products/default.jpg'
-        "
+        [src]="getProductImage(item)"
+        (error)="onImageError($event, item)"
         class="cart-image"
         alt="{{ item.product_id?.name || 'Product' }}"
       />

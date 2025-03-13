@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CategoryService } from 'src/app/serverServices/categoryService/category.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment'; // Import environment
 
 @Component({
   selector: 'app-section2',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class Section2Component implements OnInit {
   public cate: any;
+  apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
 
   constructor(
     private categoryService: CategoryService,
@@ -24,6 +26,9 @@ export class Section2Component implements OnInit {
         console.error('Error fetching categories:', error);
       }
     );
+  }
+  onImageError(event: any) {
+    event.target.src = this.apiUrl + '/assets/categories/default.jpg';
   }
 
   filterByCategory(category: string) {

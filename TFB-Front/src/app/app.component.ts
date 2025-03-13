@@ -5,7 +5,7 @@ import getPayload from './serverServices/Payload/getPayload';
 import { CategoryService } from './serverServices/categoryService/category.service';
 import { ProductService } from './serverServices/productService/product.service';
 import { Router } from '@angular/router';
-import getIsAdmin from '../app/serverServices/Payload/isAdmin';
+import getIsAdmin from './serverServices/Payload/isAdmin';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

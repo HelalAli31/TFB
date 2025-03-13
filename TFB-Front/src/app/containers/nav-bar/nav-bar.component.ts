@@ -6,6 +6,8 @@ import getPayload from '../../serverServices/Payload/getPayload';
 import { CategoryService } from '../../serverServices/categoryService/category.service';
 import { ProductService } from '../../serverServices/productService/product.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment'; // Import environment
+
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -22,6 +24,7 @@ export class NavBarComponent implements OnInit {
   searchResults: any[] = [];
   isSearchVisible: boolean = false;
   isMenuOpen: boolean = false; // Define isMenuOpen state
+  apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
 
   constructor(
     public dialog: MatDialog,
@@ -84,43 +87,47 @@ export class NavBarComponent implements OnInit {
     localStorage.removeItem('token');
     window.location.reload();
   }
+
+  onImageCateError(event: any) {
+    event.target.src = this.apiUrl + '/assets/categories/default.jpg';
+  }
   getProductImage(product: any): string {
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
-      return 'assets/products/default.jpg';
+      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
-    return `assets/products/${product.name}.jpg`; // Try first image (name.jpg)
+
+    // ✅ Check if product has colors
+    if (product.details?.color && product.details.color.length > 0) {
+      const color = product.details.color[0]?.color; // Get first color
+      if (color) {
+        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+      }
+    }
+
+    // ✅ Default case: product without colors
+    return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
-  // Handle Image Fallback
+  // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
-    // If product or color details are missing, use the default image
-    if (!product || !product.details || !product.details.color?.length) {
-      console.log('⚠️ No product color found, using default image.');
-      event.target.src = 'assets/products/default.jpg';
-      return;
+    console.log(`⚠️ Image failed to load: ${event.target.src}`);
+
+    // Check for color variation
+    if (product?.details?.color?.length > 0) {
+      const color = product.details.color[0]?.color;
+      if (color) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+        event.target.src = fallbackImage; // Try alternative image
+        return;
+      }
     }
 
-    const color = product.details.color[0]?.color;
-    if (!color) {
-      console.log('⚠️ Color missing, using default image.');
-      event.target.src = 'assets/products/default.jpg';
-      return;
-    }
-
-    const fallbackImage = `assets/products/${product.name}_${color}.jpg`;
-    console.log(`🔄 Trying fallback image: ${fallbackImage}`);
-
-    // Create a new Image object to pre-check if the fallback image exists
-    const img = new Image();
-    img.src = fallbackImage;
-    img.onload = () => {
-      event.target.src = fallbackImage;
-    };
-    img.onerror = () => {
-      console.log('❌ Both images missing, using default.');
-      event.target.src = 'assets/products/default.jpg';
-    };
+    // ✅ Final fallback to default image
+    console.log('❌ Both images missing, using default.');
+    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
 
   showCategories() {

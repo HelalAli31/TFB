@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CategoryService } from 'src/app/serverServices/categoryService/category.service';
+import { environment } from '../../../../environments/environment'; // Import environment
 
 @Component({
   selector: 'app-admin-category',
@@ -14,6 +15,7 @@ export class AdminCategoryComponent implements OnInit {
   errorMessage: string = '';
   selectedFile: any = null;
   selectedEditFile: any = null;
+  apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
 
   constructor(private categoryService: CategoryService) {}
 
@@ -29,7 +31,9 @@ export class AdminCategoryComponent implements OnInit {
       reader.onerror = (error) => reject(error);
     });
   }
-
+  onImageError(event: any) {
+    event.target.src = this.apiUrl + '/assets/products/default.jpg';
+  }
   // ✅ Save Image to Local Storage
   async saveImageToLocal(categoryName: string, file: File) {
     const base64Image = await this.convertFileToBase64(file);

@@ -2,6 +2,9 @@ const fs = require("fs-extra");
 const path = require("path");
 const Category = require("../../models/categorySchema"); // Ensure this model exists
 
+// ✅ Define the correct path for category images in the backend server
+const categoriesDir = path.join(__dirname, "../../assets/categories");
+
 // ✅ Get All Categories
 const getAllCategories = async () => {
   return await Category.find({});
@@ -26,17 +29,15 @@ const addCategory = async (categoryName, imageFile) => {
 
     // Save image if uploaded
     if (imageFile) {
-      const uploadPath = path.join(
-        __dirname,
-        `../../../TFB-Front/src/assets/categories/${categoryName}.jpg`
-      );
+      const uploadPath = path.join(categoriesDir, `${categoryName}.jpg`);
       await fs.ensureDir(path.dirname(uploadPath)); // Ensure folder exists
       await fs.writeFile(uploadPath, imageFile.buffer); // Save the file
+      console.log(`✅ Image saved at: ${uploadPath}`);
     }
 
     return newCategory;
   } catch (error) {
-    console.error("Error adding category:", error);
+    console.error("❌ Error adding category:", error);
     return null;
   }
 };
@@ -47,32 +48,31 @@ const updateCategory = async (categoryId, newName, imageFile) => {
     const category = await Category.findById(categoryId);
     if (!category) return null;
 
-    const oldImagePath = path.join(
-      __dirname,
-      `../../../TFB-Front/src/assets/categories/${category.name}.jpg`
-    );
-    const newImagePath = path.join(
-      __dirname,
-      `../../../TFB-Front/src/assets/categories/${newName}.jpg`
-    );
+    const oldImagePath = path.join(categoriesDir, `${category.name}.jpg`);
+    const newImagePath = path.join(categoriesDir, `${newName}.jpg`);
 
     // If name is changed, rename the image file
     if (category.name !== newName) {
+      console.log(`🔄 Renaming category from ${category.name} to ${newName}`);
+
       category.name = newName;
+
       if (fs.existsSync(oldImagePath)) {
         await fs.rename(oldImagePath, newImagePath);
+        console.log(`✅ Renamed image: ${oldImagePath} → ${newImagePath}`);
       }
     }
 
     // If a new image is uploaded, replace the old one
     if (imageFile) {
       await fs.writeFile(newImagePath, imageFile.buffer);
+      console.log(`✅ Updated image for category: ${newName}`);
     }
 
     await category.save();
     return category;
   } catch (error) {
-    console.error("Error updating category:", error);
+    console.error("❌ Error updating category:", error);
     return null;
   }
 };
@@ -83,17 +83,17 @@ const deleteCategory = async (categoryId) => {
     const category = await Category.findByIdAndDelete(categoryId);
     if (!category) return null;
 
-    const imagePath = path.join(
-      __dirname,
-      `../../../TFB-Front/src/assets/categories/${category.name}.jpg`
-    );
+    const imagePath = path.join(categoriesDir, `${category.name}.jpg`);
+
     if (fs.existsSync(imagePath)) {
       await fs.unlink(imagePath); // Delete image
+      console.log(`🗑️ Deleted category image: ${imagePath}`);
     }
 
+    console.log(`✅ Category ${category.name} deleted successfully.`);
     return category;
   } catch (error) {
-    console.error("Error deleting category:", error);
+    console.error("❌ Error deleting category:", error);
     return null;
   }
 };

@@ -133,16 +133,35 @@ export class ProductService {
     return this.http.post(`${this.apiUrl}/addTopProduct`, body, { headers });
   }
 
-  updateProduct(product: any): Observable<any> {
+  updateProduct(product: any, imageFile?: File | null): Observable<any> {
     const headers = this.getAuthHeaders();
-    const body = { product };
-    return this.http.post(`${this.apiUrl}/updateProduct`, body, { headers });
+    const formData = new FormData();
+
+    // Append all product fields
+    Object.keys(product).forEach((key) => {
+      if (key === 'details') {
+        formData.append(key, JSON.stringify(product.details)); // Convert details to string
+      } else {
+        formData.append(key, product[key]);
+      }
+    });
+
+    // Append image if provided
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    return this.http.put(
+      `${this.apiUrl}/updateProduct/${product._id}`,
+      formData,
+      { headers }
+    );
   }
 
   deleteProduct(productId: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const body = { productId };
-    return this.http.post(`${this.apiUrl}/deleteProduct`, body, { headers });
+    return this.http.delete(`${this.apiUrl}/deleteProduct/${productId}`, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
   getProductsNumber(): Observable<any> {

@@ -1,0 +1,58 @@
+<h2>Edit Product</h2>
+
+<form [formGroup]="editProductForm" (ngSubmit)="onSubmit()">
+  <!-- Basic Fields -->
+  <label>Product Name</label>
+  <input type="text" formControlName="name" required />
+
+  <label>Brand</label>
+  <input type="text" formControlName="brand" required />
+
+  <label>Category</label>
+  <input type="text" formControlName="category" required />
+
+  <label>Price</label>
+  <input type="number" formControlName="price" required />
+
+  <label>Quantity</label>
+  <input type="number" formControlName="quantity" required />
+
+  <label>Description</label>
+  <textarea formControlName="description" required></textarea>
+
+  <!-- Optional Fields -->
+  <label>Wattage</label>
+  <input type="number" formControlName="details.wattage" />
+
+  <label>Capacity</label>
+  <input type="number" formControlName="details.capacity" />
+
+  <label>Customer Type</label>
+  <input type="text" formControlName="details.customerType" />
+
+  <!-- Main Image -->
+  <label>Product Image</label>
+  <input type="file" (change)="onFileSelected($event)" />
+  <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
+
+  <!-- Colors Section -->
+  <div *ngIf="product.details?.color?.length">
+    <h3>Colors</h3>
+    <div *ngFor="let color of product.details.color">
+      <span [style.backgroundColor]="color.color" class="color-circle"></span>
+      <input type="number" [(ngModel)]="color.quantity" />
+      <button type="button" (click)="removeColor(color.color)">❌</button>
+    </div>
+  </div>
+
+  <!-- Add New Color -->
+  <label>Add Color</label>
+  <input type="text" #colorInput placeholder="Color name" />
+  <input type="number" #quantityInput placeholder="Quantity" />
+  <button type="button" (click)="addColor(colorInput, quantityInput)">
+    Add
+  </button>
+
+  <!-- Submit Button -->
+  <button type="submit">Update Product</button>
+</form>
