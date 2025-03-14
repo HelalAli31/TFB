@@ -296,6 +296,112 @@ a {
 mat-icon {
   margin-bottom: -7%;
 }
+/* 🔹 NAVBAR CONTAINER */
+.Nav_Container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* ✅ Allows wrapping on smaller screens */
+  width: 100%;
+  padding: 8px 12px;
+  position: sticky; /* ✅ Keeps navbar visible */
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  min-height: auto; /* ✅ Prevents fixed height issues */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔹 Navbar Height Fix */
+.navbar {
+  min-height: auto !important; /* ✅ Allow natural height */
+  padding: 8px 0;
+}
+
+/* 🔹 LOGO & WEBSITE NAME */
+.Logo_Container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 🔹 Logo Image */
+.Logo {
+  width: 60px;
+  height: auto;
+  border-radius: 15%;
+  cursor: pointer;
+}
+
+/* 🔹 Website Name */
+.Website_Name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 🔹 SEARCH BAR */
+.Search_Bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 5px;
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+  width: 250px; /* ✅ Ensure width is enough */
+  position: relative;
+}
+
+/* 🔹 Search Input */
+.Search_Input {
+  border: none;
+  outline: none;
+  padding: 8px 35px 8px 10px;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 20px;
+}
+
+/* 🔹 Search Icon */
+.Search_Icon {
+  position: absolute;
+  right: 10px;
+  color: #555;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* 🔹 NAVBAR LINKS */
+.Nav_Links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-grow: 1;
+  flex-wrap: wrap; /* ✅ Allow wrapping if needed */
+  margin-right: 10%;
+}
+
+/* 🔹 Links Styling */
+.navbar-brand {
+  font-size: 14px;
+  text-decoration: none;
+  padding: 6px 10px;
+  color: #333;
+  transition: 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: #cc00ff;
+}
+
+/* 🔹 LOGIN CONTAINER */
+.Login_Container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
 /* RESPONSIVE DESIGN */
 @media (max-width: 768px) {
   .Category_Grid {

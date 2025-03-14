@@ -132,29 +132,38 @@ export class ProductService {
     const body = { productId };
     return this.http.post(`${this.apiUrl}/addTopProduct`, body, { headers });
   }
-
-  updateProduct(product: any, imageFile?: File | null): Observable<any> {
-    const headers = this.getAuthHeaders();
-    const formData = new FormData();
-
-    // Append all product fields
-    Object.keys(product).forEach((key) => {
-      if (key === 'details') {
-        formData.append(key, JSON.stringify(product.details)); // Convert details to string
-      } else {
-        formData.append(key, product[key]);
-      }
+  updateProduct(productId: string, formData: FormData): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: localStorage.getItem('token') || '',
     });
 
-    // Append image if provided
-    if (imageFile) {
-      formData.append('image', imageFile);
-    }
+    return this.http
+      .put(`${this.apiUrl}/updateProduct/${productId}`, formData, {
+        headers,
+      })
+      .pipe(
+        tap((response: any) => {
+          if (!response.success) {
+            console.error('❌ Server returned an error:', response.message);
+            throw new Error(response.message || 'Unknown server error');
+          }
+        }),
+        catchError((error: any) => {
+          console.error('❌ HTTP Error Response:', error);
+          return throwError(
+            () => new Error(error.error?.message || 'Failed to update product')
+          );
+        })
+      );
+  }
 
-    return this.http.put(
-      `${this.apiUrl}/updateProduct/${product._id}`,
-      formData,
-      { headers }
+  // ✅ Delete a specific color image
+  deleteColorImage(productId: string, color: string): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/deleteColorImage/${productId}/${color}`,
+      {
+        headers: this.getAuthHeaders(),
+      }
     );
   }
 

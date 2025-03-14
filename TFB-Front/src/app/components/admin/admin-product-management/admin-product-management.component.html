@@ -1,17 +1,25 @@
 <div class="admin-products-container">
   <h2>Manage Products</h2>
 
-  <!-- Search Bar -->
-  <div class="search-bar">
+  <div class="search-container">
+    <!-- Dropdown for Search Type -->
+    <select [(ngModel)]="searchType" class="search-dropdown">
+      <option value="name">🔤 Name</option>
+      <option value="category">📁 Category</option>
+      <option value="brand">🏷️ Brand</option>
+    </select>
+
+    <!-- Search Input -->
     <input
       type="text"
       [(ngModel)]="searchTerm"
-      placeholder="Search products..."
+      (input)="filterProducts()"
+      placeholder="🔍 Search..."
       class="search-input"
     />
   </div>
 
-  <!-- Product Table -->
+  <!-- 📜 Scrollable Table -->
   <div class="table-wrapper">
     <table class="product-table">
       <thead>
@@ -26,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products">
+        <tr *ngFor="let product of filteredProducts">
           <td>
             <img
               [src]="getProductImage(product)"
@@ -44,34 +52,15 @@
             <button class="edit-btn" (click)="openEditDialog(product)">
               ✏️ Edit
             </button>
-            <button class="delete-btn" (click)="deleteProduct(product._id)">
+            <button
+              class="delete-btn mt-2"
+              (click)="deleteProduct(product._id)"
+            >
               🗑️ Delete
             </button>
           </td>
         </tr>
       </tbody>
     </table>
-  </div>
-
-  <!-- Edit Product Modal -->
-  <div class="modal" *ngIf="editingProduct">
-    <div class="modal-content">
-      <h3>Edit Product</h3>
-      <label>Product Name</label>
-      <input type="text" [(ngModel)]="editingProduct.name" />
-
-      <label>Price (₪)</label>
-      <input type="number" [(ngModel)]="editingProduct.price" />
-
-      <label>Quantity</label>
-      <input type="number" [(ngModel)]="editingProduct.quantity" />
-
-      <div class="modal-actions">
-        <button class="save-btn" (click)="saveChanges()">Save</button>
-        <button class="cancel-btn" (click)="editingProduct = null">
-          Cancel
-        </button>
-      </div>
-    </div>
   </div>
 </div>

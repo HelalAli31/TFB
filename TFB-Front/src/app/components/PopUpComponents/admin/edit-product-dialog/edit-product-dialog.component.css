@@ -3,19 +3,36 @@ h2 {
   color: #333;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Scrollable Form Container */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto; /* Enable scrolling */
 }
 
+/* Form Group Styling */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+/* Input Fields */
 input,
 textarea {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  width: 100%;
 }
 
+/* Buttons */
 button {
   background-color: #34b814;
   color: white;
@@ -23,6 +40,7 @@ button {
   border: none;
   cursor: pointer;
   transition: 0.3s ease-in-out;
+  border-radius: 5px;
 }
 
 button:hover {
@@ -33,6 +51,20 @@ button:hover {
 .preview-img {
   max-width: 100px;
   margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Colors List */
+.color-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.color-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* Color Circles */
@@ -41,5 +73,64 @@ button:hover {
   height: 24px;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 10px;
+  border: 1px solid #999;
+}
+
+/* Color Input */
+.color-input {
+  width: 60px;
+  padding: 5px;
+  text-align: center;
+}
+
+/* Remove Color Button */
+.remove-btn {
+  background-color: #e63946;
+  padding: 5px 10px;
+}
+
+.remove-btn:hover {
+  background-color: #c62828;
+}
+
+/* Add Color Section */
+.color-add {
+  display: flex;
+  gap: 10px;
+}
+
+.add-btn {
+  background-color: #007bff;
+}
+
+.add-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .form-container {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .color-list {
+    flex-direction: column;
+  }
+
+  .color-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .color-add {
+    flex-direction: column;
+  }
 }

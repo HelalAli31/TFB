@@ -1,58 +1,86 @@
 <h2>Edit Product</h2>
 
-<form [formGroup]="editProductForm" (ngSubmit)="onSubmit()">
-  <!-- Basic Fields -->
-  <label>Product Name</label>
-  <input type="text" formControlName="name" required />
-
-  <label>Brand</label>
-  <input type="text" formControlName="brand" required />
-
-  <label>Category</label>
-  <input type="text" formControlName="category" required />
-
-  <label>Price</label>
-  <input type="number" formControlName="price" required />
-
-  <label>Quantity</label>
-  <input type="number" formControlName="quantity" required />
-
-  <label>Description</label>
-  <textarea formControlName="description" required></textarea>
-
-  <!-- Optional Fields -->
-  <label>Wattage</label>
-  <input type="number" formControlName="details.wattage" />
-
-  <label>Capacity</label>
-  <input type="number" formControlName="details.capacity" />
-
-  <label>Customer Type</label>
-  <input type="text" formControlName="details.customerType" />
-
-  <!-- Main Image -->
-  <label>Product Image</label>
-  <input type="file" (change)="onFileSelected($event)" />
-  <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
-
-  <!-- Colors Section -->
-  <div *ngIf="product.details?.color?.length">
-    <h3>Colors</h3>
-    <div *ngFor="let color of product.details.color">
-      <span [style.backgroundColor]="color.color" class="color-circle"></span>
-      <input type="number" [(ngModel)]="color.quantity" />
-      <button type="button" (click)="removeColor(color.color)">❌</button>
+<div class="form-container">
+  <form [formGroup]="editProductForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Product Name</label>
+      <input type="text" formControlName="name" readonly />
     </div>
-  </div>
 
-  <!-- Add New Color -->
-  <label>Add Color</label>
-  <input type="text" #colorInput placeholder="Color name" />
-  <input type="number" #quantityInput placeholder="Quantity" />
-  <button type="button" (click)="addColor(colorInput, quantityInput)">
-    Add
-  </button>
+    <div class="form-group">
+      <label>Brand</label>
+      <input type="text" formControlName="brand" required />
+    </div>
 
-  <!-- Submit Button -->
-  <button type="submit">Update Product</button>
-</form>
+    <div class="form-group">
+      <label>Category</label>
+      <select formControlName="category" required>
+        <option *ngFor="let cat of categoriesList" [value]="cat._id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Price</label>
+      <input type="number" formControlName="price" required />
+    </div>
+
+    <div class="form-group">
+      <label>Quantity</label>
+      <input type="number" formControlName="quantity" required />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea formControlName="description" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Product Image</label>
+      <input type="file" (change)="onFileSelected($event)" />
+      <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
+    </div>
+
+    <!-- Colors Section -->
+    <div class="form-group">
+      <label>Add Color</label>
+      <input type="text" #colorInput placeholder="Color name" />
+      <input type="number" #quantityInput placeholder="Quantity" />
+      <input type="file" #colorFileInput accept="image/*" />
+      <button
+        type="button"
+        (click)="addColor(colorInput, quantityInput, colorFileInput)"
+      >
+        Add
+      </button>
+    </div>
+
+    <!-- Colors List -->
+    <div class="form-group" *ngIf="colorArray.length > 0">
+      <h3>Colors</h3>
+      <div
+        *ngFor="let colorCtrl of colorArray.controls; let i = index"
+        [formGroup]="getColorFormGroup(colorCtrl)"
+      >
+        <span
+          [style.backgroundColor]="colorCtrl.value.color"
+          class="color-circle"
+        ></span>
+        <input class="mt-2" type="text" formControlName="color" required />
+        <input class="mt-2" type="number" formControlName="quantity" required />
+        <button class="mt-2" type="button" (click)="removeColor(i)">❌</button>
+      </div>
+    </div>
+
+    <button type="submit">Update Product</button>
+    <button
+      type="button"
+      class="ml-4"
+      style="background-color: red"
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+  </form>
+</div>

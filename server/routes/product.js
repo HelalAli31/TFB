@@ -9,6 +9,8 @@ const {
   addTopProduct,
 } = require("../controller/products/productsController");
 const axios = require("axios");
+const mongoose = require("mongoose");
+
 const router = express.Router();
 const productModel = require("../models/productSchema");
 
@@ -251,41 +253,6 @@ router.post("/addTopProduct", allowOnlyAdmin, async (req, res, next) => {
     return next({ message: "GENERAL ERROR", status: 400 });
   }
 });
-// ✅ Update Product - Should be PUT
-// ✅ Update Product with Image
-router.put("/updateProduct/:id", upload.single("image"), async (req, res) => {
-  try {
-    const { id } = req.params;
-    let updatedData = req.body;
-
-    if (typeof updatedData.details === "string") {
-      updatedData.details = JSON.parse(updatedData.details);
-    }
-
-    const product = await productModel.findById(id);
-    if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-
-    // ✅ Save updated image if provided
-    if (req.file) {
-      const imagePath = path.join(productImagesDir, `${product.name}.jpg`);
-      await fs.writeFile(imagePath, req.file.buffer);
-      console.log(`✅ Updated product image: ${imagePath}`);
-    }
-
-    const updatedProduct = await productModel.findByIdAndUpdate(
-      id,
-      updatedData,
-      { new: true }
-    );
-    res.json({ success: true, product: updatedProduct });
-  } catch (error) {
-    console.error("❌ Error updating product:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-});
 
 // ✅ DELETE PRODUCT (AND REMOVE IMAGES)
 router.delete("/deleteProduct/:id", async (req, res) => {
@@ -363,5 +330,111 @@ router.delete("/deleteProduct/:id", async (req, res) => {
     });
   }
 });
+// ✅ Update Product - Should be PUT
+
+async function ensureImageDirectoryExists() {
+  try {
+    await fs.mkdir(productImagesDir, { recursive: true });
+  } catch (error) {
+    console.error("❌ Error creating images directory:", error);
+  }
+}
+// ✅ Delete Specific Color Image
+router.delete("/deleteColorImage/:id/:color", async (req, res) => {
+  try {
+    const { id, color } = req.params;
+    const product = await productModel.findById(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    const imagePath = path.join(
+      __dirname,
+      "../assets/products",
+      `${product.name}_${color}.jpg`
+    );
+
+    if (fs.existsSync(imagePath)) {
+      await fs.unlink(imagePath);
+      console.log(`✅ Deleted color image: ${imagePath}`);
+    }
+
+    res.json({ success: true, message: `Color image ${color}.jpg deleted.` });
+  } catch (error) {
+    console.error("❌ Error deleting color image:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to delete color image." });
+  }
+});
+// ✅ Update Product with Image
+router.put(
+  "/updateProduct/:id",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "colorImages", maxCount: 10 },
+  ]),
+  async (req, res) => {
+    try {
+      await ensureImageDirectoryExists();
+      const { id } = req.params;
+      let updatedData = req.body;
+
+      if (typeof updatedData.details === "string") {
+        updatedData.details = JSON.parse(updatedData.details);
+      }
+
+      const product = await productModel.findById(id);
+      if (!product) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Product not found" });
+      }
+
+      // ✅ Save updated main image if provided
+      if (req.files.image) {
+        const mainImagePath = path.join(
+          productImagesDir,
+          `${product.name}.jpg`
+        );
+        await fs.writeFile(mainImagePath, req.files.image[0].buffer);
+        console.log(`✅ Updated main image: ${mainImagePath}`);
+      }
+
+      // ✅ Save new color images
+      if (req.files.colorImages) {
+        for (const file of req.files.colorImages) {
+          const colorName = path.parse(file.originalname).name.toLowerCase();
+          const colorImagePath = path.join(
+            productImagesDir,
+            `${product.name}_${colorName}.jpg`
+          );
+          await fs.writeFile(colorImagePath, file.buffer);
+          console.log(`✅ Saved color image: ${colorImagePath}`);
+        }
+      }
+
+      // ✅ Update product in MongoDB
+      const updatedProduct = await productModel.findByIdAndUpdate(
+        id,
+        updatedData,
+        { new: true }
+      );
+
+      return res.json({
+        success: true,
+        message: "Product updated successfully",
+        product: updatedProduct,
+      });
+    } catch (error) {
+      console.error("❌ Error updating product:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+);
 
 module.exports = router;

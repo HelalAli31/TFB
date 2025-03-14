@@ -285,6 +285,8 @@ export class ProductsComponent implements OnInit {
     });
   }
   getProductImage(product: any): string {
+    console.log(' ,P:', product.name);
+
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
       return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
@@ -305,18 +307,9 @@ export class ProductsComponent implements OnInit {
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
+    console.log('PKKK:', product);
 
     // Check for color variation
-    if (product?.details?.color?.length > 0) {
-      const color = product.details.color[0]?.color;
-      if (color) {
-        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
-        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
-
-        event.target.src = fallbackImage; // Try alternative image
-        return;
-      }
-    }
 
     // ✅ Final fallback to default image
     console.log('❌ Both images missing, using default.');

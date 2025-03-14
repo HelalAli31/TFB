@@ -3,6 +3,7 @@ const categoryModel = require("../../models/categorySchema");
 const TopProductsModel = require("../../models/topProductsSchema");
 const fs = require("fs-extra");
 const path = require("path");
+const fse = require("fs-extra"); // Ensure directory creation
 
 async function getTopProducts() {
   try {
@@ -125,7 +126,7 @@ const addProduct = async (productData, mainImage, colorImages) => {
       return { success: false, message: "Product name is required." };
     }
 
-    // ✅ Ensure `productName` is always available
+    // ✅ Processed product name (trim spaces and lowercase)
     const productName = productData.name
       .trim()
       .replace(/\s+/g, "")
@@ -136,9 +137,9 @@ const addProduct = async (productData, mainImage, colorImages) => {
     }
     console.log("📝 Processed product name:", productName);
 
-    // ✅ Change the Save Directory to `server/assets/products`
+    // ✅ Define product images directory
     const productImagesDir = path.join(__dirname, "../../assets/products");
-    await fs.ensureDir(productImagesDir);
+    await fse.ensureDir(productImagesDir);
     console.log("📂 Ensured product image directory exists:", productImagesDir);
 
     // ✅ Convert details to JSON object if needed
@@ -159,41 +160,42 @@ const addProduct = async (productData, mainImage, colorImages) => {
     await newProduct.save();
     console.log("✅ Product saved successfully:", newProduct);
 
-    // ✅ Save the Main Image (ONLY ONCE)
-    if (mainImage) {
-      const mainImagePath = path.join(productImagesDir, `${productName}.jpg`);
-      await fs.writeFile(mainImagePath, mainImage.buffer);
-      console.log("✅ Main image saved at:", mainImagePath);
-    } else {
-      console.log("⚠️ No main image provided");
-    }
-
-    // ✅ Save Color Images if Available
+    // ✅ Process color images
     console.log("\n🎨 Processing color images...");
     const colorDetailsArray = [];
 
-    for (const file of colorImages) {
-      console.log(`🔹 Processing file: ${file.originalname}`);
+    if (colorImages && colorImages.length > 0) {
+      for (const file of colorImages) {
+        console.log(`🔹 Processing file: ${file.originalname}`);
 
-      // ✅ Extract color name
-      const colorName = path.parse(file.originalname).name.toLowerCase();
+        // ✅ Extract and validate color name
+        let colorName = path.parse(file.originalname).name.toLowerCase().trim();
+        if (!colorName || colorName === "undefined") continue; // Prevent `undefined.jpg`
 
-      // ✅ Save image with `productName_color.jpg`
-      const colorImagePath = path.join(
-        productImagesDir,
-        `${productName}_${colorName}.jpg`
-      );
-      await fs.writeFile(colorImagePath, file.buffer);
-      console.log(`✅ Color image saved successfully: ${colorImagePath}`);
+        // ✅ Save image as `name_color.jpg`
+        const colorImagePath = path.join(
+          productImagesDir,
+          `${productName}_${colorName}.jpg`
+        );
+        await fs.writeFile(colorImagePath, file.buffer);
+        console.log(`✅ Color image saved: ${colorImagePath}`);
 
-      // ✅ Store color data in `details`
-      colorDetailsArray.push({ color: colorName });
-    }
+        // ✅ Store color data in `details`
+        colorDetailsArray.push({ color: colorName });
+      }
 
-    // ✅ Add color details to `details` if any colors exist
-    if (colorDetailsArray.length > 0) {
-      newProduct.details.color = colorDetailsArray;
-      await newProduct.save(); // Update MongoDB with color details
+      // ✅ Add color details to `details` in MongoDB
+      if (colorDetailsArray.length > 0) {
+        newProduct.details.color = colorDetailsArray;
+        await newProduct.save();
+      }
+    } else if (mainImage) {
+      // ✅ Only save `name.jpg` if no color variations exist
+      const mainImagePath = path.join(productImagesDir, `${productName}.jpg`);
+      await fs.writeFile(mainImagePath, mainImage.buffer);
+      console.log(`✅ Main image saved at: ${mainImagePath}`);
+    } else {
+      console.log("⚠️ No images provided.");
     }
 
     console.log(
@@ -207,7 +209,6 @@ const addProduct = async (productData, mainImage, colorImages) => {
     return { success: false, error: error.message };
   }
 };
-
 async function deleteProduct(productId) {
   try {
     const result = await productModel.findByIdAndDelete(productId);
