@@ -1,10 +1,27 @@
 <div class="dialog-container">
   <h2>Select Quantity</h2>
-  <p>{{ data.product.name }}</p>
+  <h3>{{ data.product.name }}</h3>
+  <!-- 🔹 Option Selection -->
+  <!-- 🔹 Option Selection -->
+  <ng-container *ngIf="data.product.details?.options?.length > 0">
+    <h3>Options</h3>
+    <div class="options-list">
+      <button
+        *ngFor="let option of data.product.details.options"
+        class="option-item"
+        [class.selected]="selectedOption === option.option"
+        (click)="selectOption(option.option)"
+      >
+        {{ option.option }}
+      </button>
+    </div>
+  </ng-container>
 
-  <!-- Quantity Slider -->
+  <!-- Quantity Selector -->
   <div class="quantity-selector">
-    <button class="editQuantity" (click)="decreaseQuantity()">➖</button>
+    <button class="editQuantity" (click)="adjustValue('quantity', -1)">
+      ➖
+    </button>
     <input
       type="range"
       min="1"
@@ -14,8 +31,61 @@
       class="quantity-slider"
     />
     <span class="quantity-box">{{ quantity }}</span>
-    <button class="editQuantity" (click)="increaseQuantity()">➕</button>
+    <button class="editQuantity" (click)="adjustValue('quantity', 1)">
+      ➕
+    </button>
   </div>
+
+  <!-- 🔹 Show NIC and ICE only if category is normal -->
+  <ng-container *ngIf="data.product.category?.name === 'Normal'">
+    <h3>Nic</h3>
+    <div class="quantity-selector">
+      <button class="editQuantity" (click)="adjustValue('nic', -1)">➖</button>
+      <input
+        type="range"
+        min="0"
+        max="20"
+        [(ngModel)]="nic"
+        (input)="onSliderChange()"
+        class="quantity-slider"
+      />
+      <span class="quantity-box">{{ nic }}</span>
+      <button class="editQuantity" (click)="adjustValue('nic', 1)">➕</button>
+    </div>
+
+    <h3>Ice</h3>
+    <div class="quantity-selector">
+      <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>
+      <input
+        type="range"
+        min="0"
+        max="10"
+        [(ngModel)]="ice"
+        (input)="onSliderChange()"
+        class="quantity-slider"
+      />
+      <span class="quantity-box">{{ ice }}</span>
+      <button class="editQuantity" (click)="adjustValue('ice', 1)">➕</button>
+    </div>
+  </ng-container>
+
+  <!-- 🔹 Show Only Ice if Category is Salt -->
+  <ng-container *ngIf="data.product.category?.name === 'Salt'">
+    <h3>Ice</h3>
+    <div class="quantity-selector">
+      <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>
+      <input
+        type="range"
+        min="0"
+        max="10"
+        [(ngModel)]="ice"
+        (input)="onSliderChange()"
+        class="quantity-slider"
+      />
+      <span class="quantity-box">{{ ice }}</span>
+      <button class="editQuantity" (click)="adjustValue('ice', 1)">➕</button>
+    </div>
+  </ng-container>
 
   <div class="dialog-buttons">
     <button (click)="dialogRef.close()">Cancel</button>

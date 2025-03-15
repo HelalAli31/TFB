@@ -19,6 +19,9 @@ export class ProductDetailComponent implements OnInit {
   public token: any = '';
   public isAdmin: any;
   apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
+  selectedImage: string = ''; // Store the selected image URL
+  selectedOption: string = ''; // Store selected option
+  maxAvailableQuantity: number = 0; // Store max available quantity
 
   constructor(
     private productService: ProductService,
@@ -55,6 +58,12 @@ export class ProductDetailComponent implements OnInit {
         this.product = data;
         console.log('🔍 Fetching product', this.product);
 
+        // ✅ If options exist & no option selected, set the first option as default
+        if (this.product.details?.options?.length > 0 && !this.selectedOption) {
+          this.selectedOption = this.product.details.options[0].option;
+          console.log('🎯 Default Option Selected:', this.selectedOption);
+        }
+
         this.checkIfProductInCart();
       },
       (error) => {
@@ -63,7 +72,25 @@ export class ProductDetailComponent implements OnInit {
     );
   }
 
-  // Check if the product is already in the cart
+  getMaxAvailableQuantity() {
+    if (this.product.details?.options?.length > 0) {
+      const selectedOptionDetails = this.product.details.options.find(
+        (opt: any) => opt.option === this.selectedOption
+      );
+
+      if (selectedOptionDetails) {
+        this.maxAvailableQuantity = selectedOptionDetails.quantity;
+      } else {
+        console.warn('⚠ Selected option not found in product details!');
+        this.maxAvailableQuantity = 0; // Prevent issues if option not found
+      }
+    } else {
+      this.maxAvailableQuantity = this.product.quantity;
+    }
+    console.log('🛒 Max Available Quantity:', this.maxAvailableQuantity);
+  }
+
+  // ✅ Check if product is in the cart
   checkIfProductInCart() {
     console.log('🛒 Checking if product is in the cart...');
     this.cartService.getCartItems().then((cartItems) => {
@@ -71,29 +98,31 @@ export class ProductDetailComponent implements OnInit {
       console.log('🔍 Cart Items:', this.cartItems);
 
       const cartItem = cartItems.find((item) => {
-        console.log('🔑 Product ID:', this.product._id); // Log the product ID
-        console.log('🔑 Cart Item ID:', item.product_id); // Log the cart item ID
-
-        // Make sure both product IDs are strings before comparing
         const productIdStr = String(this.product._id);
-
-        // If cartItem.product_id is an object, compare the _id field
         const cartItemIdStr = String(item.product_id?._id || item?.product_id);
-
-        console.log('🔑 Product ID (String):', productIdStr); // Debug log
-        console.log('🔑 Cart Item ID (String):', cartItemIdStr); // Debug log
-
-        return productIdStr === cartItemIdStr; // Compare both IDs as strings
+        return productIdStr === cartItemIdStr;
       });
 
       if (cartItem) {
         console.log(`🔄 Product ${this.product.name} found in cart`);
         this.existingQuantity = cartItem.amount;
+        this.selectedOption = cartItem.option || '';
       } else {
         console.log(`🔄 Product ${this.product.name} is NOT in cart`);
         this.existingQuantity = 0;
+        this.selectedOption = '';
       }
+
+      this.getMaxAvailableQuantity(); // ✅ Update max quantity based on option
     });
+  }
+  isItemInCart(): boolean {
+    return this.cartItems.some(
+      (item) =>
+        String(item.product_id?._id || item.product_id) ===
+          String(this.product._id) &&
+        (item.option || null) === (this.selectedOption || null)
+    );
   }
 
   // Open the quantity dialog to add/edit the product in the cart
@@ -101,107 +130,232 @@ export class ProductDetailComponent implements OnInit {
     console.log(
       `📌 Opening Quantity Dialog for: ${product.name}, existing quantity: ${this.existingQuantity}`
     );
+
     if (!this.token) {
-      alert('you need to login first.');
+      alert('❌ You need to login first.');
       return;
     }
+
+    if (product.details?.options?.length && !this.selectedOption) {
+      alert('❌ Please select an option before adding to cart.');
+      return;
+    }
+
+    this.getMaxAvailableQuantity(); // Ensure latest quantity before opening
+
     const dialogRef = this.dialog.open(QuantityDialogComponent, {
       width: '300px',
       data: {
         product,
-        existingQuantity: this.existingQuantity, // Pass the existing quantity if editing
+        existingQuantity: this.existingQuantity,
+        selectedOption: this.selectedOption,
+        maxAvailableQuantity: this.maxAvailableQuantity, // ✅ Pass max quantity
       },
     });
 
-    dialogRef.afterClosed().subscribe((selectedQuantity) => {
-      console.log(
-        `📩 Selected Quantity: ${selectedQuantity} for ${product.name}`
-      );
-      if (selectedQuantity !== undefined && selectedQuantity !== null) {
-        this.addToCart(product, selectedQuantity);
+    dialogRef.afterClosed().subscribe((selectedData) => {
+      if (selectedData) {
+        console.log(
+          `📩 Selected Quantity: ${selectedData.quantity}, Nic: ${selectedData.nic}, Ice: ${selectedData.ice}, Option: ${this.selectedOption} for ${product.name}`
+        );
+
+        this.addToCart(
+          product,
+          selectedData.quantity,
+          selectedData.nic,
+          selectedData.ice,
+          selectedData.option // ✅ Pass selected option
+        );
       }
     });
   }
 
+  selectColor(color: string) {
+    if (!this.product || !this.product.name) {
+      console.error('🚨 Product name is missing!');
+      return;
+    }
+
+    // ✅ Set the selected image based on color
+    this.selectedImage = `${this.apiUrl}/assets/products/${this.product.name}_${color}.jpg`;
+    console.log(`🎨 Switched to color image: ${this.selectedImage}`);
+  }
+  // ✅ Get all keys from the details object (ignoring empty values)
+  getDetailKeys(): string[] {
+    return Object.keys(this.product.details || {}).filter(
+      (key) =>
+        this.product.details[key] !== null && this.product.details[key] !== ''
+    );
+  }
+
+  // ✅ Determine if a key represents a color field
+  isColorField(key: string): boolean {
+    return key.toLowerCase().includes('color');
+  }
+
+  // ✅ Set option and update UI when an option is clicked
+  selectOption(option: string) {
+    if (!this.product || !this.product.name) {
+      console.error('🚨 Product name is missing!');
+      return;
+    }
+
+    this.selectedOption = option; // ✅ Set selected option
+    console.log(`🎨 Selected option: ${this.selectedOption}`);
+    this.getMaxAvailableQuantity(); // ✅ Update max quantity
+
+    // ✅ Ensure the selected image updates with the chosen option
+    this.selectedImage = `${this.apiUrl}/assets/products/${this.product.name}_${option}.jpg`;
+  }
+
+  // ✅ Check if "options" contain color values
+  isColorOptions(options: any[]): boolean {
+    const colorKeywords = [
+      'red',
+      'blue',
+      'black',
+      'green',
+      'yellow',
+      'white',
+      'purple',
+      'gray',
+      'orange',
+      'pink',
+    ];
+    return options.every((opt) =>
+      colorKeywords.includes(opt.option.toLowerCase())
+    );
+  }
+  // ✅ Get background color for multi-word colors
+  getBackgroundColor(option: string): string {
+    const colors = option.split(' '); // Handle multiple colors
+    return colors.length > 1
+      ? `linear-gradient(to right, ${colors.join(', ')})`
+      : option;
+  }
+
+  // ✅ Format keys to be more readable
+  formatKeyName(key: string): string {
+    return key
+      .replace(/([A-Z])/g, ' $1') // Insert spaces before uppercase letters
+      .replace(/^./, (str) => str.toUpperCase()); // Capitalize first letter
+  }
+
   // Handle Image Fallback
   getProductImage(product: any): string {
-    console.log(' ,P:', product.name);
-
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
       return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
 
     // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product.details?.options && product.details.options.length > 0) {
+      const option = product.details.options[0]?.option; // Get first option
+      if (option) {
+        return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 
-    // ✅ Default case: product without colors
+    // ✅ Default case: product without options
     return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
-    console.log('PKKK:', product);
 
     // Check for color variation
+    if (product?.details?.options?.length > 0) {
+      const option = product.details.options[0]?.option;
+      if (option) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
+        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+        event.target.src = fallbackImage; // Try alternative image
+        return;
+      }
+    }
 
     // ✅ Final fallback to default image
     console.log('❌ Both images missing, using default.');
     event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
   // Add the product to the cart or edit its quantity if it's already in the cart
-  async addToCart(product: any, quantity: number) {
+  async addToCart(
+    product: any,
+    quantity: number,
+    nic?: number,
+    ice?: number,
+    selectedOption?: string // ✅ Now explicitly passing the picked option
+  ) {
     console.log(
-      `🛒 Adding/Editing product: ${product.name}, quantity: ${quantity}`
+      `🛒 Attempting to add/edit product: ${product.name}, Quantity: ${quantity}`
     );
 
-    if (!product || !quantity) {
-      console.error('🚨 Product or quantity is undefined!');
+    if (!product || !product._id || quantity < 1) {
+      console.error('🚨 Invalid product or quantity!', product);
+      alert('❌ Invalid product or quantity!');
       return;
     }
 
     try {
-      // Fetch the current cart ID
       const cartId = await this.cartService.getCartId();
       if (!cartId) {
-        console.error('🚨 No active cart found for this user.');
+        console.error('🚨 No active cart found.');
         alert('❌ You need to login first.');
         return;
       }
 
-      // Determine the price: check if the product is on sale
       let finalPrice = product.sale?.isOnSale
         ? product.sale.salePrice
         : product.price;
 
-      // Find the product in the cart using the correct ID
+      if (!this.cartItems || !Array.isArray(this.cartItems)) {
+        console.error('🚨 cartItems is not an array:', this.cartItems);
+        this.cartItems = [];
+      }
+
+      console.log('📋 Checking if item exists in cart...');
+
+      // 🔍 Find an exact match in the cart (same product, same option)
       const cartItem = this.cartItems.find(
-        (item) => String(item.product_id._id) === String(product._id)
+        (item) =>
+          String(item.product_id._id) === String(product._id) &&
+          (item.option || null) === (selectedOption || null) // ✅ Use the picked option
       );
 
       if (cartItem) {
-        // If the product already exists in the cart, update the quantity
-        console.log(
-          `✏ Editing Cart Item for ${product.name} (ID: ${product._id})`
-        );
+        // ✅ If product exists with same option, override with new quantity
+        console.log('✏ Found existing cart item:', cartItem);
 
-        cartItem.amount = quantity;
-        cartItem.full_price = finalPrice * quantity;
+        const updatedAmount = quantity; // ✅ Override instead of adding
+        const updatedFullPrice = finalPrice * updatedAmount;
+
+        console.log('🔄 Updating existing item in cart:', {
+          amount: updatedAmount,
+          nic,
+          ice,
+          option: selectedOption, // ✅ Use the picked option
+        });
+
+        if (!cartItem._id) {
+          console.error('🚨 cartItem._id is undefined!', cartItem);
+          alert('❌ Error updating item in cart.');
+          return;
+        }
 
         await this.cartService.editItemAmount(
           cartItem._id,
-          cartItem.amount,
-          cartItem.full_price
+          updatedAmount, // ✅ Now setting, not adding
+          updatedFullPrice,
+          nic,
+          ice,
+          selectedOption // ✅ Ensure the selected option is passed
         );
-        alert(`✅ Updated ${product.name} quantity to ${quantity} in cart!`);
+
+        alert(`✅ Updated ${product.name} in cart!`);
       } else {
-        // If the product is not in the cart, add a new item
+        // 🛒 Add a new item **only if the selected option is different**
         console.log(`🛒 Adding New Item to Cart: ${product.name}`);
 
         const newCartItem = {
@@ -209,16 +363,22 @@ export class ProductDetailComponent implements OnInit {
           product_id: product._id,
           name: product.name,
           amount: quantity,
+          nic: nic ?? null,
+          ice: ice ?? null,
+          option: selectedOption || null, // ✅ Store the picked option
           full_price: finalPrice * quantity,
         };
 
+        console.log('NEW ITEM:', newCartItem);
+
         await this.cartService.addItemToCart(newCartItem);
-        alert(`✅ ${quantity}x ${product.name} added to cart!`);
+        alert(
+          `✅ ${quantity}x ${product.name} (Nic: ${nic}, Ice: ${ice}, Option: ${this.selectedOption}) added to cart!`
+        );
       }
 
-      // Refresh the cart and check if the product is in the cart
       await this.cartService.refreshCart();
-      this.checkIfProductInCart(); // Ensure that the quantity is updated
+      this.checkIfProductInCart();
     } catch (error) {
       console.error('❌ Failed to add/edit item in cart:', error);
       alert('❌ Failed to update cart.');

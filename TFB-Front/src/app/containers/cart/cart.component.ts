@@ -41,11 +41,16 @@ export class CartComponent implements OnInit {
     }
   }
 
-  // Calculate max available quantity based on available stock
+  // Get max available quantity (use option quantity if available)
   getMaxAvailableQuantity(item: any): number {
-    return item.product_id?.quantity; // Max quantity = available stock
+    if (item.option && item.product_id?.details?.options) {
+      const selectedOption = item.product_id.details.options.find(
+        (opt: any) => opt.option === item.option
+      );
+      return selectedOption?.quantity || item.product_id.quantity;
+    }
+    return item.product_id.quantity;
   }
-
   // Increase Quantity Function
   async increaseQuantity(index: number) {
     const item = this.cartItems[index];
@@ -68,31 +73,34 @@ export class CartComponent implements OnInit {
     }
   }
 
-  // Slider Input Change Handler
   async onSliderChange(index: number) {
     const item = this.cartItems[index];
     const maxAvailableQuantity = this.getMaxAvailableQuantity(item);
 
     if (item.amount > maxAvailableQuantity) {
-      item.amount = maxAvailableQuantity; // Prevent exceeding max quantity
+      item.amount = maxAvailableQuantity;
     }
-    await this.updateItemInDb(item); // Save the updated item to the DB
+    await this.updateItemInDb(item);
     this.updateTotalPrice();
   }
 
-  // Function to update the item in the database
   async updateItemInDb(item: any) {
     try {
       console.log(`🛒 Updating item in DB for item: ${item._id}`);
       await this.cartService.editItemAmount(
         item._id,
         item.amount,
-        item.product_id.price * item.amount
+        item.product_id.price * item.amount,
+        item.nic,
+        item.ice
       );
       console.log('✅ Item updated in DB!');
     } catch (error) {
       console.error('❌ Error updating item in DB:', error);
     }
+  }
+  async updateNicIce(item: any, type: string) {
+    await this.updateItemInDb(item);
   }
 
   // Remove Item from Cart
@@ -110,22 +118,15 @@ export class CartComponent implements OnInit {
       console.error('❌ Error removing item:', error);
     }
   }
-  getProductImage(product: any): string {
-    if (!product || !product.name) {
-      console.log('❌ No product found, using default image.');
-      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
+  getProductImage(item: any): string {
+    if (!item || !item.product_id)
+      return `${this.apiUrl}/assets/products/default.jpg`;
+
+    if (item.option) {
+      return `${this.apiUrl}/assets/products/${item.product_id.name}_${item.option}.jpg`;
     }
 
-    // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
-      }
-    }
-
-    // ✅ Default case: product without colors
-    return `${this.apiUrl}/assets/products/${product.name}.jpg`;
+    return `${this.apiUrl}/assets/products/${item.product_id.name}.jpg`;
   }
 
   // ✅ Handle Image Fallback if Not Found
@@ -133,10 +134,10 @@ export class CartComponent implements OnInit {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
 
     // Check for color variation
-    if (product?.details?.color?.length > 0) {
-      const color = product.details.color[0]?.color;
-      if (color) {
-        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product?.details?.options?.length > 0) {
+      const option = product.details.options[0]?.option;
+      if (option) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
         console.log(`🔄 Trying fallback image: ${fallbackImage}`);
 
         event.target.src = fallbackImage; // Try alternative image

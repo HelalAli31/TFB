@@ -9,12 +9,14 @@ import { AdminTopProductsComponent } from './components/admin/admin-top-products
 import { AdminCategoryComponent } from './components/admin/admin-category/admin-category.component';
 import { AdminAddProductComponent } from './components/admin/admin-add-product/admin-add-product.component';
 import { AdminProductManagementComponent } from './components/admin/admin-product-management/admin-product-management.component';
+import { AboutUsComponent } from './containers/about-us/about-us.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contactUs', component: ContactUsComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'aboutUs', component: AboutUsComponent },
   { path: 'addProduct', component: AdminAddProductComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'productManagment', component: AdminProductManagementComponent },

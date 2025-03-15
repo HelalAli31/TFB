@@ -56,39 +56,62 @@ export class ProductsComponent implements OnInit {
       this.loadProducts();
     });
   }
-  openQuantityDialog(product: any) {
-    console.log(
-      `📌 Opening Quantity Dialog for: ${product.name}, isInCart: ${product.isInCart}`
+  async openQuantityDialog(product: any) {
+    console.log(`📌 Opening Quantity Dialog for: ${product.name}`);
+
+    // Get existing cart item details
+    const cartItems = await this.cartService.getCartItems();
+    const existingCartItem = cartItems.find(
+      (item) =>
+        String(item.product_id?._id || item.product_id) === String(product._id)
     );
 
+    // Pass correct existing quantity, nic, ice, and option
     const dialogRef = this.dialog.open(QuantityDialogComponent, {
       width: '300px',
       data: {
         product,
-        existingQuantity: product.cartQuantity || 0, // ✅ Ensure correct quantity is passed
+        existingQuantity: existingCartItem?.amount || 0,
+        nic: existingCartItem?.nic || 0,
+        ice: existingCartItem?.ice || 0,
+        selectedOption:
+          existingCartItem?.option ||
+          product.details?.options?.[0]?.option ||
+          '',
       },
     });
 
-    dialogRef.afterClosed().subscribe((selectedQuantity) => {
-      if (selectedQuantity !== undefined && selectedQuantity !== null) {
-        console.log(
-          `📩 Selected Quantity: ${selectedQuantity} for ${product.name}`
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log(`📩 Selected Data from Dialog:`, result);
+        this.addToCart(
+          product,
+          result.quantity,
+          result.nic,
+          result.ice,
+          result.option
         );
-        this.addToCart(product, selectedQuantity);
       }
     });
   }
 
-  async addToCart(product: any, quantity: number) {
-    if (!product || !quantity) {
-      console.error('🚨 Product or quantity is undefined!');
+  async addToCart(
+    product: any,
+    quantity: number,
+    nic: number,
+    ice: number,
+    option: string
+  ) {
+    console.log(`🛒 Adding/Editing Cart Item: ${product.name}`);
+
+    if (!product || quantity < 1) {
+      console.error('🚨 Invalid product or quantity!');
       return;
     }
 
     try {
       const cartId = await this.cartService.getCartId();
       if (!cartId) {
-        console.error('🚨 No active cart found for this user.');
         alert('❌ You need to login first.');
         return;
       }
@@ -97,52 +120,44 @@ export class ProductsComponent implements OnInit {
       const existingCartItem = cartItems.find(
         (item) =>
           String(item.product_id?._id || item.product_id) ===
-          String(product._id)
+            String(product._id) && (item.option || '') === (option || '')
       );
 
-      let finalPrice =
-        product.sale?.isOnSale &&
-        new Date(product.sale.saleStartDate) <= new Date() &&
-        new Date(product.sale.saleEndDate) >= new Date()
-          ? product.sale.salePrice
-          : product.price;
+      let finalPrice = product.sale?.isOnSale
+        ? product.sale.salePrice
+        : product.price;
 
       if (existingCartItem) {
-        // ✅ If the item is already in the cart, update its quantity
-        console.log(
-          `✏ Editing Cart Item for ${product.name} (ID: ${product._id})`
-        );
-
-        existingCartItem.amount = quantity;
-        existingCartItem.full_price = finalPrice * quantity;
-
+        console.log('✏ Updating existing item in cart');
         await this.cartService.editItemAmount(
           existingCartItem._id,
-          existingCartItem.amount,
-          existingCartItem.full_price
+          quantity,
+          finalPrice * quantity,
+          nic,
+          ice,
+          option
         );
-
-        alert(`✅ Updated ${product.name} quantity to ${quantity} in cart!`);
+        alert(`✅ Updated ${product.name} in cart!`);
       } else {
-        // ✅ If the item is NOT in the cart, add it
-        console.log(`🛒 Adding New Item to Cart: ${product.name}`);
-
-        const cartItem = {
+        console.log('🛒 Adding new item to cart');
+        await this.cartService.addItemToCart({
           cart_id: cartId,
           product_id: product._id,
           name: product.name,
           amount: quantity,
+          nic,
+          ice,
+          option,
           full_price: finalPrice * quantity,
-        };
-
-        await this.cartService.addItemToCart(cartItem);
-        alert(`✅ ${quantity}x ${product.name} added to cart!`);
+        });
+        alert(`✅ Added ${quantity}x ${product.name} to cart!`);
       }
 
       await this.cartService.refreshCart();
-      this.loadProducts(); // ✅ Refresh products after update
+      this.loadProducts();
     } catch (error) {
       console.error('❌ Failed to update cart:', error);
+      alert('❌ Error updating cart.');
     }
   }
   isCurrentlyOnSale(sale: any): boolean {
@@ -284,32 +299,40 @@ export class ProductsComponent implements OnInit {
       },
     });
   }
+  // Handle Image Fallback
   getProductImage(product: any): string {
-    console.log(' ,P:', product.name);
-
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
       return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
 
     // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product.details?.options && product.details.options.length > 0) {
+      const option = product.details.options[0]?.option; // Get first option
+      if (option) {
+        return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 
-    // ✅ Default case: product without colors
+    // ✅ Default case: product without options
     return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
-    console.log('PKKK:', product);
 
     // Check for color variation
+    if (product?.details?.options?.length > 0) {
+      const option = product.details.options[0]?.option;
+      if (option) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
+        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+        event.target.src = fallbackImage; // Try alternative image
+        return;
+      }
+    }
 
     // ✅ Final fallback to default image
     console.log('❌ Both images missing, using default.');

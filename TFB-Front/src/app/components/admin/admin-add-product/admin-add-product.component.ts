@@ -14,12 +14,12 @@ export class AdminAddProductComponent {
   selectedFile: File | null = null;
   categories: any[] = [];
   isLoading: boolean = false;
-  colorImages: { [color: string]: string | null } = {}; // Store color images
-  colorsWithDetails: {
-    color: string;
+  optionImages: { [option: string]: string | null } = {}; // Store option images
+  optionsWithDetails: {
+    option: string;
     quantity: number;
     image?: File | null;
-  }[] = []; // Store color, quantity & image
+  }[] = []; // Store option, quantity & image
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +35,9 @@ export class AdminAddProductComponent {
       description: ['', Validators.required],
       sale: this.fb.group({
         isOnSale: [false],
+        salePrice: [''],
+        saleStartDate: [''],
+        saleEndDate: [''],
       }),
       details: this.fb.group({
         customerType: [''], // Optional
@@ -70,14 +73,16 @@ export class AdminAddProductComponent {
     }
   }
 
-  // ✅ Handle Color Image Selection
-  async onColorImageSelected(event: any, color: string) {
+  // ✅ Handle option Image Selection
+  async onoptionImageselected(event: any, option: string) {
     const file = event.target.files[0];
     if (file) {
-      this.colorImages[color] = await this.convertFileToBase64(file);
-      const colorEntry = this.colorsWithDetails.find((c) => c.color === color);
-      if (colorEntry) {
-        colorEntry.image = file;
+      this.optionImages[option] = await this.convertFileToBase64(file);
+      const optionEntry = this.optionsWithDetails.find(
+        (c) => c.option === option
+      );
+      if (optionEntry) {
+        optionEntry.image = file;
       }
     }
   }
@@ -92,33 +97,33 @@ export class AdminAddProductComponent {
     });
   }
 
-  // ✅ Add New Color with Quantity
-  addColor(colorInput: any, quantityInput: any) {
-    const color = colorInput.value.trim().toLowerCase();
+  // ✅ Add New option with Quantity
+  addOption(optionInput: any, quantityInput: any) {
+    const option = optionInput.value.trim().toLowerCase();
     const quantity = parseInt(quantityInput.value, 10);
 
     if (
-      color &&
+      option &&
       quantity >= 0 &&
-      !this.colorsWithDetails.find((c) => c.color === color)
+      !this.optionsWithDetails.find((c) => c.option === option)
     ) {
-      this.colorsWithDetails.push({ color, quantity, image: null });
-      this.colorImages[color] = null; // Placeholder
+      this.optionsWithDetails.push({ option, quantity, image: null });
+      this.optionImages[option] = null; // Placeholder
     }
 
-    colorInput.value = '';
+    optionInput.value = '';
     quantityInput.value = '';
   }
 
   // ✅ Generate Image Filenames
   getImageFilename(): string {
-    const name = this.productForm.value.name.replace(/\s+/g, '').toLowerCase();
+    const name = this.productForm.value.name.toLowerCase();
     return `${name}.jpg`;
   }
 
-  getColorImageFilename(color: string): string {
-    const name = this.productForm.value.name.replace(/\s+/g, '').toLowerCase();
-    return `${name}_${color}.jpg`;
+  getoptionImageFilename(option: string): string {
+    const name = this.productForm.value.name.toLowerCase();
+    return `${name}_${option}.jpg`;
   }
 
   // ✅ Submit Product with Multiple Images
@@ -133,28 +138,29 @@ export class AdminAddProductComponent {
       ...this.productForm.value,
       details: {
         ...this.productForm.value.details,
-        color: this.colorsWithDetails, // ✅ Include color array inside details
+        name: this.productForm.value.name.trim(),
+        options: this.optionsWithDetails, // ✅ Include options array inside details
       },
     };
 
-    // ✅ Store color details with image filenames
-    let colorImageFiles: { [color: string]: File } | null = null;
+    // ✅ Store option details with image filenames
+    let optionImageFiles: { [option: string]: File } | null = null;
 
-    if (this.colorsWithDetails.length > 0) {
-      colorImageFiles = {}; // ✅ Initialize only if there are color images
-      for (const colorData of this.colorsWithDetails) {
-        if (colorData.image) {
-          colorImageFiles[colorData.color] = colorData.image;
+    if (this.optionsWithDetails.length > 0) {
+      optionImageFiles = {}; // ✅ Initialize only if there are option images
+      for (const optionData of this.optionsWithDetails) {
+        if (optionData.image) {
+          optionImageFiles[optionData.option] = optionData.image;
         }
       }
     }
 
     console.log('📩 Sending product with:', productData);
-    console.log('🎨 Color images:', colorImageFiles);
+    console.log('🎨 option images:', optionImageFiles);
 
     // ✅ Send Data to Backend
     this.productService
-      .addProduct(productData, this.selectedFile || null, colorImageFiles)
+      .addProduct(productData, this.selectedFile || null, optionImageFiles)
       .subscribe(
         (response: any) => {
           alert('✅ Product added successfully!');
@@ -172,7 +178,7 @@ export class AdminAddProductComponent {
     this.productForm.reset();
     this.productForm.patchValue({ sale: { isOnSale: false } });
     this.previewImage = null;
-    this.colorImages = {};
-    this.colorsWithDetails = [];
+    this.optionImages = {};
+    this.optionsWithDetails = [];
   }
 }

@@ -26,6 +26,7 @@
             *ngFor="let product of searchResults"
             class="Search_Item"
             (click)="searchValue = product.name; isSearchVisible = false"
+            [routerLink]="['/product', product._id]"
           >
             <img
               *ngIf="product"
@@ -36,6 +37,7 @@
               class="Search_Item_Image"
               width="100px"
               height="100px"
+              [routerLink]="['/product', product._id]"
             />
             <span class="Search_Item_Text">{{ product.name }}</span>
           </div>

@@ -37,9 +37,10 @@ export class ProductService {
   }
 
   getTopProducts(): Observable<any> {
-    const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}/topProducts`, { headers });
+    const headers = this.getAuthHeaders(); // Ensure headers are properly set
+    return this.http.post(`${this.apiUrl}/topProducts`, {}, { headers }); // ✅ Fix: Pass headers correctly
   }
+
   addProduct(
     product: any,
     mainImage: File | null,
@@ -157,10 +158,10 @@ export class ProductService {
       );
   }
 
-  // ✅ Delete a specific color image
-  deleteColorImage(productId: string, color: string): Observable<any> {
+  // ✅ Delete a specific option image
+  deleteOptionImage(productId: string, option: string): Observable<any> {
     return this.http.delete(
-      `${this.apiUrl}/deleteColorImage/${productId}/${color}`,
+      `${this.apiUrl}/deleteOptionImage/${productId}/${option}`,
       {
         headers: this.getAuthHeaders(),
       }

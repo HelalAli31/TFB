@@ -24,7 +24,9 @@
         {{ item.product_id?.name || "Unnamed Product" }}
       </h3>
       <p class="cart-brand">Brand: {{ item.product_id?.brand || "Unknown" }}</p>
-
+      <p class="product-option" *ngIf="item.option">
+        Option: <span>{{ item.option }}</span>
+      </p>
       <!-- Price Section -->
       <p class="cart-price">
         💰 <b>Unit Price:</b>
@@ -45,34 +47,65 @@
       </p>
     </div>
 
-    <div class="quantity-selector">
-      <!-- Decrease Quantity Button -->
-      <button class="editQuantity" (click)="decreaseQuantity(i)">➖</button>
+    <!-- Quantity & Nic/Ice Selector -->
+    <div class="controls-container">
+      <!-- Quantity Selector -->
+      <div class="quantity-selector">
+        <button class="editQuantity" (click)="decreaseQuantity(i)">➖</button>
+        <input
+          type="range"
+          min="1"
+          [max]="getMaxAvailableQuantity(item)"
+          [(ngModel)]="item.amount"
+          (input)="onSliderChange(i)"
+          class="quantity-slider"
+          [style.backgroundSize]="
+            (item.amount / getMaxAvailableQuantity(item)) * 100 + '% 100%'
+          "
+        />
+        <span class="quantity-box">{{ item.amount }}</span>
+        <button
+          class="editQuantity"
+          [disabled]="item.amount >= getMaxAvailableQuantity(item)"
+          (click)="increaseQuantity(i)"
+        >
+          ➕
+        </button>
+      </div>
 
-      <!-- Quantity Slider -->
-      <input
-        type="range"
-        min="1"
-        [max]="item.product_id?.quantity"
-        [(ngModel)]="item.amount"
-        (input)="onSliderChange(i)"
-        class="quantity-slider"
-        [style.backgroundSize]="
-          (item.amount / item.product_id?.quantity) * 100 + '% 100%'
-        "
-      />
-
-      <!-- Quantity Display -->
-      <span class="quantity-box">{{ item.amount }}</span>
-
-      <!-- Increase Quantity Button -->
-      <button
-        class="editQuantity"
-        [disabled]="item.amount >= item.product_id?.quantity"
-        (click)="increaseQuantity(i)"
+      <!-- Nicotine & Ice Levels -->
+      <div
+        class="nic-ice-container"
+        *ngIf="item.nic !== null || item.ice !== null"
       >
-        ➕
-      </button>
+        <div class="nic-ice-item">
+          <label>🧪 Nicotine:</label>
+          <input
+            type="range"
+            min="0"
+            max="20"
+            step="1"
+            [(ngModel)]="item.nic"
+            (change)="updateNicIce(item, 'nic')"
+            class="nic-ice-slider"
+          />
+          <span class="nic-ice-value">{{ item.nic }} mg</span>
+        </div>
+
+        <div class="nic-ice-item">
+          <label>❄ Ice Level:</label>
+          <input
+            type="range"
+            min="0"
+            max="10"
+            step="1"
+            [(ngModel)]="item.ice"
+            (change)="updateNicIce(item, 'ice')"
+            class="nic-ice-slider"
+          />
+          <span class="nic-ice-value">{{ item.ice }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Remove Button -->
@@ -84,8 +117,6 @@
     <h3>
       <span class="total-price">Total: {{ getTotalPrice() }} ₪</span>
     </h3>
-
-    <!-- Buy Now Button -->
     <button class="buy-now-button">🛒 Buy Now</button>
   </div>
 </div>

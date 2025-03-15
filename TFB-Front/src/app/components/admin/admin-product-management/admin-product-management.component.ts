@@ -120,10 +120,10 @@ export class AdminProductManagementComponent implements OnInit {
     }
 
     // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product.details?.options && product.details.options.length > 0) {
+      const option = product.details.options[0]?.option; // Get first color
+      if (option) {
+        return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 

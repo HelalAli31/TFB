@@ -2,6 +2,15 @@ h2 {
   text-align: center;
   color: #6a0dad;
 }
+/* Centering the Labels Above Sliders */
+h3 {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
 
 .quantity-selector {
   display: flex;
@@ -97,4 +106,32 @@ h2 {
 
 .dialog-buttons .confirm-button:hover {
   background: darkgreen; /* Darker green on hover */
+}
+/* Style options for selection */
+.options-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.option-item {
+  padding: 10px 14px;
+  border: 2px solid #6a0dad;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease, color 0.3s ease;
+  background: white;
+}
+
+.option-item:hover {
+  background: #6a0dad;
+  color: white;
+}
+
+.option-item.selected {
+  background: #6a0dad;
+  color: white;
+  border-color: #6a0dad;
 }

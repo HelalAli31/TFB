@@ -114,7 +114,17 @@ export class CartService {
       const response: any = await this.httpService
         .put(
           `${CART_URL}/AddItems`,
-          { item: cartItem },
+          {
+            item: {
+              cart_id: cartItem.cart_id,
+              product_id: cartItem.product_id,
+              amount: cartItem.amount,
+              full_price: cartItem.full_price,
+              option: cartItem.option || null,
+              nic: cartItem.nic || null,
+              ice: cartItem.ice || null,
+            },
+          },
           {
             headers: new HttpHeaders({
               Authorization: `Bearer ${token}`,
@@ -146,23 +156,46 @@ export class CartService {
   }
 
   // ✏️ **Edit Item Amount**
-  async editItemAmount(itemId: string, amount: number, fullPrice: number) {
+  async editItemAmount(
+    itemId: string,
+    amount: number,
+    fullPrice: number,
+    nic?: number,
+    ice?: number,
+    option?: string
+  ) {
     const token = this.getToken();
     if (!token) return;
 
     try {
-      await this.httpService
+      console.log('🔄 Sending Update Request:', {
+        itemId,
+        amount,
+        fullPrice,
+        nic,
+        ice,
+        option,
+      });
+
+      const requestData: any = { fullPrice, amount, itemId };
+      if (nic !== undefined) requestData.nic = nic;
+      if (ice !== undefined) requestData.ice = ice;
+      if (option !== undefined) requestData.option = option;
+
+      console.log('📦 Request Payload:', requestData);
+
+      const response = await this.httpService
         .post(
           `${CART_URL}/editItemAmount`,
-          { data: { fullPrice, amount, itemId } },
+          { data: requestData },
           {
             headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
           }
         )
         .toPromise();
 
-      console.log('✅ Quantity Updated in Backend');
-      this.refreshCart();
+      console.log('✅ Quantity Updated in Backend:', response);
+      this.refreshCart(); // Refresh cart after updating
     } catch (error) {
       console.error('❌ Update Failed:', error);
     }

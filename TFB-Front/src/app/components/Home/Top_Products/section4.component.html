@@ -12,29 +12,33 @@
           class="Product_Image"
           alt="{{ product.name }}"
           height="10%"
+          [routerLink]="['/product', product._id]"
         />
 
-        <div class="Product_Details row">
-          <h3 class="Product_Name col-12">{{ product.name }}</h3>
-          <p class="Product_Brand col-6">{{ product.brand }}</p>
+        <div class="Product_Details">
+          <div [routerLink]="['/product', product._id]" class="row">
+            <h3 class="Product_Name col-12">{{ product.name }}</h3>
+            <p class="Product_Brand col-6">{{ product.brand }}</p>
 
-          <!-- ✅ Show sale price if applicable -->
-          <p class="Product_Price col-6">
-            <span
-              *ngIf="
-                product.sale?.isOnSale &&
-                product.price !== product.originalPrice
-              "
-              class="old-price"
-            >
-              {{ product.originalPrice }} ₪
-            </span>
-            <span class="sale-price" *ngIf="product.sale?.isOnSale">
-              {{ product.price }} ₪
-            </span>
-            <span *ngIf="!product.sale?.isOnSale"> {{ product.price }} ₪ </span>
-          </p>
-
+            <!-- ✅ Show sale price if applicable -->
+            <p class="Product_Price col-6 row">
+              <span
+                *ngIf="
+                  product.sale?.isOnSale &&
+                  product.price !== product.originalPrice
+                "
+                class="old-price col-4"
+              >
+                {{ product.originalPrice }}
+              </span>
+              <span class="sale-price col-4" *ngIf="product.sale?.isOnSale">
+                {{ product.price }}₪
+              </span>
+              <span *ngIf="!product.sale?.isOnSale">
+                {{ product.price }} ₪
+              </span>
+            </p>
+          </div>
           <button
             *ngIf="isAdmin"
             class="delete mt-3"

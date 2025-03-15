@@ -91,31 +91,59 @@ export class Section4Component implements OnInit {
       `📌 Opening Quantity Dialog for: ${product.name}, isInCart: ${product.isInCart}`
     );
 
-    const dialogRef = this.dialog.open(QuantityDialogComponent, {
-      width: '300px',
-      data: { product },
-    });
-
-    dialogRef.afterClosed().subscribe((selectedQuantity) => {
-      console.log(
-        `📩 Selected Quantity: ${selectedQuantity} for ${product.name}`
+    this.cartService.getCartItems().then((cartItems) => {
+      const existingCartItem = cartItems.find(
+        (item: any) =>
+          String(item.product_id?._id || item.product_id) ===
+          String(product._id)
       );
-      if (selectedQuantity) {
-        this.addToCart(product, selectedQuantity);
-      }
+
+      const dialogRef = this.dialog.open(QuantityDialogComponent, {
+        width: '300px',
+        data: {
+          product,
+          existingQuantity: existingCartItem?.amount || 0,
+          nic: existingCartItem?.nic || 0,
+          ice: existingCartItem?.ice || 0,
+          selectedOption:
+            existingCartItem?.option ||
+            product.details?.options?.[0]?.option ||
+            '',
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          console.log(`📩 Selected Data from Dialog:`, result);
+          this.addToCart(
+            product,
+            result.quantity,
+            result.nic,
+            result.ice,
+            result.option
+          );
+        }
+      });
     });
   }
 
-  async addToCart(product: any, quantity: number) {
-    if (!product || !quantity) {
-      console.error('🚨 Product or quantity is undefined!');
+  async addToCart(
+    product: any,
+    quantity: number,
+    nic: number,
+    ice: number,
+    option: string
+  ) {
+    console.log(`🛒 Adding/Editing Cart Item: ${product.name}`);
+
+    if (!product || quantity < 1) {
+      console.error('🚨 Invalid product or quantity!');
       return;
     }
 
     try {
       const cartId = await this.cartService.getCartId();
       if (!cartId) {
-        console.error('🚨 No active cart found for this user.');
         alert('❌ You need to login first.');
         return;
       }
@@ -126,63 +154,51 @@ export class Section4Component implements OnInit {
       const existingCartItem = cartItems.find(
         (item: any) =>
           String(item.product_id?._id || item.product_id) ===
-          String(product._id)
+            String(product._id) && (item.option || '') === (option || '')
       );
 
-      let finalPrice = product.price;
-      if (product.sale?.isOnSale) {
-        const currentDate = new Date();
-        if (
-          new Date(product.sale.saleStartDate) <= currentDate &&
-          new Date(product.sale.saleEndDate) >= currentDate
-        ) {
-          finalPrice = product.sale.salePrice;
-        }
-      }
-
-      console.log(
-        `🛒 Processing ${quantity}x ${product.name} (ID: ${product._id})`
-      );
+      let finalPrice = product.sale?.isOnSale
+        ? product.sale.salePrice
+        : product.price;
 
       if (existingCartItem) {
-        const totalQuantity = quantity;
+        console.log('✏ Updating existing item in cart');
 
-        if (totalQuantity <= product.quantity) {
-          existingCartItem.amount = totalQuantity;
-          existingCartItem.full_price = finalPrice * totalQuantity;
-
+        if (quantity <= product.quantity) {
           await this.cartService.editItemAmount(
             existingCartItem._id,
-            existingCartItem.amount,
-            existingCartItem.full_price
+            quantity,
+            finalPrice * quantity,
+            nic,
+            ice,
+            option
           );
-
-          alert(
-            `✅ Updated ${product.name} quantity to ${totalQuantity} in cart!`
-          );
+          alert(`✅ Updated ${product.name} in cart!`);
         } else {
           alert(
             `❌ You cannot add more than ${product.quantity} of ${product.name}.`
           );
         }
       } else {
+        console.log('🛒 Adding new item to cart');
+
         if (quantity > product.quantity) {
           quantity = product.quantity;
           alert(`❌ Maximum ${product.quantity} of ${product.name} allowed.`);
         }
 
-        const cartItem = {
+        await this.cartService.addItemToCart({
           cart_id: cartId,
           product_id: product._id,
           name: product.name,
           amount: quantity,
+          nic,
+          ice,
+          option,
           full_price: finalPrice * quantity,
-        };
+        });
 
-        console.log('🛒 Adding to cart:', cartItem);
-
-        await this.cartService.addItemToCart(cartItem);
-        alert(`✅ ${quantity}x ${product.name} added to cart!`);
+        alert(`✅ Added ${quantity}x ${product.name} to cart!`);
       }
 
       await this.cartService.refreshCart();
@@ -193,6 +209,7 @@ export class Section4Component implements OnInit {
       alert('❌ Failed to update cart.');
     }
   }
+
   openDeleteDialog(productId: any, productName: any) {
     const dialogRef = this.dialog.open(PopUpDeleteItemComponent, {
       data: {
@@ -217,6 +234,7 @@ export class Section4Component implements OnInit {
       }
     });
   }
+  // Handle Image Fallback
   getProductImage(product: any): string {
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
@@ -224,14 +242,14 @@ export class Section4Component implements OnInit {
     }
 
     // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product.details?.options && product.details.options.length > 0) {
+      const option = product.details.options[0]?.option; // Get first option
+      if (option) {
+        return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 
-    // ✅ Default case: product without colors
+    // ✅ Default case: product without options
     return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
@@ -240,10 +258,10 @@ export class Section4Component implements OnInit {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
 
     // Check for color variation
-    if (product?.details?.color?.length > 0) {
-      const color = product.details.color[0]?.color;
-      if (color) {
-        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product?.details?.options?.length > 0) {
+      const option = product.details.options[0]?.option;
+      if (option) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
         console.log(`🔄 Trying fallback image: ${fallbackImage}`);
 
         event.target.src = fallbackImage; // Try alternative image

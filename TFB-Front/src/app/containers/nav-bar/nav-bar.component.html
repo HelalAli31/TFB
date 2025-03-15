@@ -26,6 +26,7 @@
             *ngFor="let product of searchResults"
             class="Search_Item"
             (click)="searchValue = product.name; isSearchVisible = false"
+            [routerLink]="['/product', product._id]"
           >
             <img
               *ngIf="product"
@@ -118,8 +119,14 @@
         </div>
       </div>
 
-      <a *ngIf="token" class="navbar-brand" href="/cart">
-        <mat-icon fontIcon="shopping_cart"></mat-icon> Cart
+      <a *ngIf="token" class="navbar-brand cart-container" href="/cart">
+        <div class="cart-icon-wrapper">
+          <mat-icon class="cart-icon" fontIcon="shopping_cart"></mat-icon>
+          <span *ngIf="cartItems.length > 0" class="cart-badge">{{
+            cartItems.length
+          }}</span>
+        </div>
+        <span class="cart-text">Cart</span>
       </a>
 
       <a class="navbar-brand" href="/contactUs">

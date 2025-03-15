@@ -16,6 +16,7 @@ const productSchema = new mongoose.Schema({
   sale: {
     isOnSale: { type: Boolean, default: false },
     salePrice: { type: Number, default: null },
+    salePercent: { type: Number, default: 0 },
     saleStartDate: { type: Date, default: null },
     saleEndDate: { type: Date, default: null },
   },

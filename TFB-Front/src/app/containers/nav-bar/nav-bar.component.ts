@@ -7,6 +7,7 @@ import { CategoryService } from '../../serverServices/categoryService/category.s
 import { ProductService } from '../../serverServices/productService/product.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment'; // Import environment
+import { CartService } from 'src/app/serverServices/cart/cart.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -25,12 +26,14 @@ export class NavBarComponent implements OnInit {
   isSearchVisible: boolean = false;
   isMenuOpen: boolean = false; // Define isMenuOpen state
   apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
+  public cartItems: any[] = [];
 
   constructor(
     public dialog: MatDialog,
     private catService: CategoryService,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {}
 
   toggleMenu(): void {
@@ -91,32 +94,40 @@ export class NavBarComponent implements OnInit {
   onImageCateError(event: any) {
     event.target.src = this.apiUrl + '/assets/categories/default.jpg';
   }
+  // Handle Image Fallback
   getProductImage(product: any): string {
-    console.log(' ,P:', product.name);
-
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
       return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
 
     // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product.details?.options && product.details.options.length > 0) {
+      const option = product.details.options[0]?.option; // Get first option
+      if (option) {
+        return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 
-    // ✅ Default case: product without colors
+    // ✅ Default case: product without options
     return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
-    console.log('PKKK:', product);
 
     // Check for color variation
+    if (product?.details?.options?.length > 0) {
+      const option = product.details.options[0]?.option;
+      if (option) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
+        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
+
+        event.target.src = fallbackImage; // Try alternative image
+        return;
+      }
+    }
 
     // ✅ Final fallback to default image
     console.log('❌ Both images missing, using default.');
@@ -155,8 +166,28 @@ export class NavBarComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
+  async loadCartItems() {
+    try {
+      const response = await this.cartService.getCartItems();
+      if (Array.isArray(response)) {
+        this.cartItems = response;
+      } else {
+        console.warn('⚠️ No items found in cart.');
+        this.cartItems = [];
+      }
+    } catch (error) {
+      console.error('❌ Error fetching cart items:', error);
+    }
+  }
+
+  async ngOnInit() {
     this.token = localStorage.getItem('token') || '';
     this.getCategories();
+    await this.loadCartItems();
+    // ✅ Subscribe to cart updates so the cart count updates dynamically
+    this.cartService.cartUpdated$.subscribe((updatedCart) => {
+      console.log('🛒 Cart updated:', updatedCart);
+      this.cartItems = updatedCart;
+    });
   }
 }

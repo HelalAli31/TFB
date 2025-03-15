@@ -9,30 +9,38 @@
   gap: 50px; /* Slightly larger gap for better spacing */
 }
 
-/* Image Section */
-.product-image-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 550px; /* Increased width slightly */
-  width: 100%;
-}
-
-/* Product Image - Bigger and High Quality */
+/* Product Image - Ensure uniform size */
 .product-detail-image {
   width: 100%;
-  max-width: 520px; /* Slightly increased max width */
-  height: auto;
-  max-height: 520px;
-  object-fit: cover;
+  max-width: 500px; /* Set a standard max width */
+  height: 500px; /* Set a fixed height for consistency */
+  object-fit: cover; /* Ensure image covers area without stretching */
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   transition: transform 0.25s ease-in-out;
 }
+/* Style for Selected Option */
+.selected-option {
+  background: #6a0dad !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
 
 .product-detail-image:hover {
   transform: scale(1.06);
+}
+
+/* Ensure all images align properly */
+.product-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 550px;
+  height: 500px; /* Match the image height */
+  overflow: hidden;
 }
 
 /* Product Details Section */
@@ -63,23 +71,25 @@
 }
 
 /* Buttons */
-.View_Button {
+.view-button {
   background-color: #34b814;
   color: white;
-  padding: 10px 15px;
+  padding: 12px 20px;
   border: none;
-  width: 75%;
   font-size: 1.1rem;
-  border-radius: 20px;
+  border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  display: block;
+  text-align: center;
+  width: 80%;
+  margin: 10px auto;
 }
 
-.View_Button:hover {
+.view-button:hover {
   background-color: #cc00ff;
   transform: scale(1.05);
 }
-
 /* ❌ Unavailable Product Button */
 .Unavailable_Button {
   background: red !important;
@@ -155,6 +165,28 @@
   color: #444;
   line-height: 1.6;
 }
+/* ✅ Style Option List */
+.option-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.option-list li {
+  background: #f3f3f3;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.option-list li:hover {
+  background: #cc00ff;
+  color: white;
+}
 
 /* Color Section */
 .color-section {
@@ -179,6 +211,16 @@
   display: inline-block;
   cursor: pointer;
   transition: transform 0.2s ease-in-out, border-color 0.2s;
+}
+.color-circle.option-clickable {
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform 0.2s ease-in-out, border-color 0.2s;
+}
+
+.color-circle.option-clickable:hover {
+  transform: scale(1.2);
+  border-color: black;
 }
 
 .color-circle:hover {

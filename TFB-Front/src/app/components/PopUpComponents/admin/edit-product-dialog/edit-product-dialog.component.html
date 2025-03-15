@@ -36,41 +36,115 @@
       <textarea formControlName="description" required></textarea>
     </div>
 
+    <!-- Sale Section -->
+    <div class="form-group">
+      <label>Sale</label>
+      <div class="sale-toggle">
+        <label>
+          <input
+            type="checkbox"
+            formControlName="isOnSale"
+            (change)="toggleSale()"
+          />
+          Enable Sale
+        </label>
+      </div>
+
+      <div *ngIf="editProductForm.get('isOnSale')?.value">
+        <!-- Original Price Display -->
+        <p>
+          <strong>Original Price:</strong>
+          {{ editProductForm.get("price")?.value }} ₪
+        </p>
+
+        <!-- Sale Percentage Input -->
+        <label>Sale Percentage (%)</label>
+        <input
+          type="number"
+          formControlName="salePercent"
+          (input)="updateSalePrice()"
+          min="1"
+          max="100"
+          required
+        />
+
+        <!-- Calculated Sale Price (Read-Only) -->
+        <label>Sale Price (Calculated)</label>
+        <input type="number" [value]="calculatedSalePrice" readonly />
+
+        <!-- Sale Start Date -->
+        <label>Sale Start Date</label>
+        <input
+          type="date"
+          formControlName="saleStartDate"
+          [value]="saleStartDate"
+          required
+        />
+
+        <!-- Sale End Date -->
+        <label>Sale End Date</label>
+        <input
+          type="date"
+          formControlName="saleEndDate"
+          [value]="saleEndDate"
+          required
+        />
+
+        <button type="button" class="remove-sale" (click)="removeSale()">
+          Remove Sale
+        </button>
+      </div>
+    </div>
+
+    <!-- Product Image Upload -->
     <div class="form-group">
       <label>Product Image</label>
       <input type="file" (change)="onFileSelected($event)" />
       <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
     </div>
 
-    <!-- Colors Section -->
+    <!-- ✅ Options Section -->
+    <div class="form-group" *ngIf="optionsArray.length > 0">
+      <h3>Available Options</h3>
+      <div
+        *ngFor="let optionCtrl of optionsArray.controls; let i = index"
+        [formGroup]="getOptionFormGroup(optionCtrl)"
+      >
+        <!-- Editable Option Name -->
+        <label>Option:</label>
+        <input type="text" formControlName="option" required />
+
+        <!-- Editable Quantity -->
+        <label>Quantity:</label>
+        <input type="number" formControlName="quantity" min="0" required />
+
+        <!-- Upload New Image for Option -->
+        <label>Update Option Image:</label>
+        <input
+          type="file"
+          (change)="onOptionImageSelected($event, optionCtrl.value.option)"
+          accept="image/*"
+        />
+
+        <!-- Delete Option Button -->
+        <button type="button" class="mt-3" (click)="removeOption(i)">
+          ❌ Remove
+        </button>
+      </div>
+    </div>
+
+    <!-- ✅ Add New Option -->
     <div class="form-group">
-      <label>Add Color</label>
-      <input type="text" #colorInput placeholder="Color name" />
+      <label>Add Option</label>
+      <input type="text" #optionInput placeholder="Option name" />
       <input type="number" #quantityInput placeholder="Quantity" />
-      <input type="file" #colorFileInput accept="image/*" />
+      <input type="file" #optionFileInput accept="image/*" />
       <button
         type="button"
-        (click)="addColor(colorInput, quantityInput, colorFileInput)"
+        (click)="addOption(optionInput, quantityInput, optionFileInput)"
       >
         Add
       </button>
-    </div>
-
-    <!-- Colors List -->
-    <div class="form-group" *ngIf="colorArray.length > 0">
-      <h3>Colors</h3>
-      <div
-        *ngFor="let colorCtrl of colorArray.controls; let i = index"
-        [formGroup]="getColorFormGroup(colorCtrl)"
-      >
-        <span
-          [style.backgroundColor]="colorCtrl.value.color"
-          class="color-circle"
-        ></span>
-        <input class="mt-2" type="text" formControlName="color" required />
-        <input class="mt-2" type="number" formControlName="quantity" required />
-        <button class="mt-2" type="button" (click)="removeColor(i)">❌</button>
-      </div>
     </div>
 
     <button type="submit">Update Product</button>

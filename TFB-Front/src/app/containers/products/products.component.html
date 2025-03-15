@@ -77,70 +77,70 @@
           {{ product.quantity === 0 ? "Out of Stock" : "Low Stock" }}
         </div>
 
-        <img
-          [routerLink]="['/product', product._id]"
-          [src]="getProductImage(product)"
-          (error)="onImageError($event, product)"
-          alt="{{ product.name }}"
-          class="Product_Image"
-        />
-
         <div class="Product_Details">
-          <h3 class="Product_Name">{{ product.name }}</h3>
+          <div [routerLink]="['/product', product._id]">
+            <img
+              [src]="getProductImage(product)"
+              (error)="onImageError($event, product)"
+              alt="{{ product.name }}"
+              class="Product_Image"
+            />
+            <h3 class="Product_Name">{{ product.name }}</h3>
 
-          <div class="Product_Info">
-            <p class="Product_Brand">{{ product.brand }}</p>
-            <span class="Separator">|</span>
-            <p class="Product_Price">
-              <!-- Show old price if there's a sale and the price is different -->
-              <span
-                *ngIf="
-                  isCurrentlyOnSale(product.sale) &&
-                  product.price !== product.sale.salePrice
-                "
-                class="old-price"
-              >
-                {{ product.price }} ₪
-              </span>
+            <div class="Product_Info">
+              <p class="Product_Brand">{{ product.brand }}</p>
+              <span class="Separator">|</span>
+              <p class="Product_Price">
+                <!-- Show old price if there's a sale and the price is different -->
+                <span
+                  *ngIf="
+                    isCurrentlyOnSale(product.sale) &&
+                    product.price !== product.sale.salePrice
+                  "
+                  class="old-price"
+                >
+                  {{ product.price }} ₪
+                </span>
 
-              <!-- Show sale price if there's a sale and price is different -->
-              <span
-                *ngIf="
-                  isCurrentlyOnSale(product.sale) &&
-                  product.price !== product.sale.salePrice
-                "
-                class="sale-price"
-              >
-                {{ product.sale.salePrice }} ₪
-              </span>
+                <!-- Show sale price if there's a sale and price is different -->
+                <span
+                  *ngIf="
+                    isCurrentlyOnSale(product.sale) &&
+                    product.price !== product.sale.salePrice
+                  "
+                  class="sale-price"
+                >
+                  {{ product.sale.salePrice }} ₪
+                </span>
 
-              <!-- If there's no sale or price is the same, show only one price -->
-              <span
-                *ngIf="
-                  !isCurrentlyOnSale(product.sale) ||
-                  product.price === product.sale.salePrice
-                "
-              >
-                {{ product.price }} ₪
-              </span>
-            </p>
+                <!-- If there's no sale or price is the same, show only one price -->
+                <span
+                  *ngIf="
+                    !isCurrentlyOnSale(product.sale) ||
+                    product.price === product.sale.salePrice
+                  "
+                >
+                  {{ product.price }} ₪
+                </span>
+              </p>
+            </div>
+            <h5
+              *ngIf="
+                isCurrentlyOnSale(product.sale) &&
+                product.price !== product.sale.salePrice
+              "
+            >
+              * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
+            </h5>
+            <h5
+              *ngIf="
+                !isCurrentlyOnSale(product.sale) &&
+                product.price !== product.sale.salePrice
+              "
+            >
+              <br />
+            </h5>
           </div>
-          <h5
-            *ngIf="
-              isCurrentlyOnSale(product.sale) &&
-              product.price !== product.sale.salePrice
-            "
-          >
-            * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
-          </h5>
-          <h5
-            *ngIf="
-              !isCurrentlyOnSale(product.sale) &&
-              product.price !== product.sale.salePrice
-            "
-          >
-            <br />
-          </h5>
           <button
             class="View_Button"
             [ngClass]="{ Unavailable_Button: product.quantity === 0 }"

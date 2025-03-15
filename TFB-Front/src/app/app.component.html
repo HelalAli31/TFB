@@ -1,7 +1,10 @@
 <app-nav-bar *ngIf="!isAdmin"></app-nav-bar>
 <app-admin-nav-bar *ngIf="isAdmin" class="Admin"></app-admin-nav-bar>
 
-<div class="router-container">
+<div *ngIf="isAdmin" class="router-container">
+  <router-outlet></router-outlet>
+</div>
+<div *ngIf="!isAdmin">
   <router-outlet></router-outlet>
 </div>
 <app-bottom-side></app-bottom-side>

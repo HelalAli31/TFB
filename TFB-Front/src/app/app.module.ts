@@ -44,6 +44,7 @@ import { AdminCategoryComponent } from './components/admin/admin-category/admin-
 import { AdminAddProductComponent } from './components/admin/admin-add-product/admin-add-product.component';
 import { AdminProductManagementComponent } from './components/admin/admin-product-management/admin-product-management.component';
 import { EditProductDialogComponent } from './components/PopUpComponents/admin/edit-product-dialog/edit-product-dialog.component';
+import { AboutUsComponent } from './containers/about-us/about-us.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,6 +72,7 @@ import { EditProductDialogComponent } from './components/PopUpComponents/admin/e
     AdminAddProductComponent,
     AdminProductManagementComponent,
     EditProductDialogComponent,
+    AboutUsComponent,
   ],
   imports: [
     BrowserModule,

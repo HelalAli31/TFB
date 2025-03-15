@@ -3,7 +3,7 @@
     <!-- Left Side: Product Image -->
     <div class="product-image-container">
       <img
-        [src]="getProductImage(product)"
+        [src]="selectedImage || getProductImage(product)"
         alt="{{ product.name }}"
         (error)="onImageError($event, product)"
         class="product-detail-image"
@@ -41,48 +41,64 @@
       </div>
 
       <!-- Product Details -->
-      <div class="product-details-card">
+      <div class="product-details-card" *ngIf="product.details">
         <h3 class="section-title">Product Details</h3>
         <div class="decorative-line"></div>
-        <!-- Decorative line added -->
 
-        <p *ngIf="product.details?.wattage">
-          <strong>Wattage:</strong> {{ product.details.wattage }}W
-        </p>
-        <p *ngIf="product.details?.capacity">
-          <strong>Capacity:</strong> {{ product.details.capacity }}mAh/ml
-        </p>
-        <p *ngIf="product.details?.customerType">
-          <strong>Customer Type:</strong> {{ product.details.customerType }}
-        </p>
-
-        <!-- Color Display (Circles) -->
-        <div *ngIf="product.details?.color?.length" class="color-section">
-          <strong>Available Colors:</strong>
-          <div class="color-circles">
-            <span
-              *ngFor="let color of product.details.color"
-              class="color-circle"
-              [style.backgroundColor]="color.color"
-              [title]="color.color"
-            ></span>
+        <ng-container *ngFor="let key of getDetailKeys()">
+          <!-- Display Colors -->
+          <div *ngIf="isColorField(key)" class="color-section">
+            <strong>{{ formatKeyName(key) }}:</strong>
+            <div class="color-circles">
+              <span
+                *ngFor="let color of product.details[key]"
+                class="color-circle"
+                [style.backgroundColor]="color"
+                [title]="color"
+                (click)="selectColor(color)"
+              ></span>
+            </div>
           </div>
-        </div>
 
-        <!-- Add/Edit to Cart Button -->
-        <button
-          class="View_Button mt-4"
-          [disabled]="product.quantity === 0"
-          (click)="openQuantityDialog(product)"
-        >
-          {{ existingQuantity > 0 ? "Edit" : "Add to Cart" }}
-        </button>
+          <!-- Show all details except "Options" -->
+          <p
+            *ngIf="
+              key !== 'options' && !isColorField(key) && product.details[key]
+            "
+          >
+            <strong>{{ formatKeyName(key) }}:</strong>
+            {{ product.details[key] }}
+          </p>
+        </ng-container>
+
+        <!-- Display "Options" only once -->
+        <div *ngIf="product.details?.options?.length">
+          <strong>Options:</strong>
+          <ul class="option-list">
+            <li
+              *ngFor="let option of product.details.options"
+              [class.selected-option]="selectedOption === option.option"
+              (click)="selectOption(option.option)"
+            >
+              <span class="option-name">{{ option.option }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
+
+      <!-- Add/Edit to Cart Button -->
+      <button
+        class="view-button"
+        [disabled]="product.quantity === 0"
+        (click)="openQuantityDialog(product)"
+      >
+        {{ isItemInCart() ? "Edit" : "Add to Cart" }}
+      </button>
     </div>
   </div>
 
   <!-- Description Section at the Bottom -->
-  <div class="product-description-container">
+  <div class="product-description-container" *ngIf="product.description">
     <h3>Description</h3>
     <p>{{ product.description }}</p>
   </div>

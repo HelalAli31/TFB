@@ -38,14 +38,14 @@ export class AdminNavBarComponent implements OnInit {
     }
 
     // ✅ Check if product has colors
-    if (product.details?.color && product.details.color.length > 0) {
-      const color = product.details.color[0]?.color; // Get first color
-      if (color) {
-        return `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product.details?.options && product.details.options.length > 0) {
+      const option = product.details.options[0]?.option; // Get first option
+      if (option) {
+        return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 
-    // ✅ Default case: product without colors
+    // ✅ Default case: product without options
     return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
@@ -54,10 +54,10 @@ export class AdminNavBarComponent implements OnInit {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
 
     // Check for color variation
-    if (product?.details?.color?.length > 0) {
-      const color = product.details.color[0]?.color;
-      if (color) {
-        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${color}.jpg`;
+    if (product?.details?.options?.length > 0) {
+      const option = product.details.options[0]?.option;
+      if (option) {
+        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
         console.log(`🔄 Trying fallback image: ${fallbackImage}`);
 
         event.target.src = fallbackImage; // Try alternative image

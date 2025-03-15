@@ -403,12 +403,35 @@ router.put(
       if (typeof updatedData.details === "string") {
         updatedData.details = JSON.parse(updatedData.details);
       }
-
       const product = await productModel.findById(id);
       if (!product) {
         return res
           .status(404)
           .json({ success: false, message: "Product not found" });
+      }
+      // ✅ Ensure `sale` fields are included properly
+      updatedData.sale = {
+        isOnSale: updatedData.isOnSale === "true", // Convert string to boolean
+        salePercent: updatedData.salePercent
+          ? Number(updatedData.salePercent)
+          : 0,
+        saleStartDate: updatedData.saleStartDate
+          ? new Date(updatedData.saleStartDate)
+          : null,
+        saleEndDate: updatedData.saleEndDate
+          ? new Date(updatedData.saleEndDate)
+          : null,
+      };
+
+      // ✅ Calculate sale price if sale is active
+      if (updatedData.sale.isOnSale && updatedData.sale.salePercent > 0) {
+        updatedData.sale.salePrice =
+          product.price * ((100 - updatedData.sale.salePercent) / 100);
+      } else {
+        // If no sale, reset salePrice
+        updatedData.sale.salePrice = null;
+        updatedData.sale.saleStartDate = null;
+        updatedData.sale.saleEndDate = null;
       }
 
       // ✅ Save updated main image if provided

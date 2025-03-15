@@ -62,30 +62,30 @@
 
     <!-- Main Image Upload -->
     <!-- ✅ Upload Main Product Image -->
-    <label>Upload Main Image (*not kits)</label>
+    <label>Upload Main Image (* not kits)</label>
     <input type="file" (change)="onFileSelected($event)" required />
     <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
 
     <!-- ✅ Colors and Image Upload -->
-    <label>Colors (*kits)</label>
+    <label>Colors (* kits)</label>
     <input type="text" #colorInput />
     <input type="number" #quantityInput placeholder="Quantity" />
-    <button type="button" (click)="addColor(colorInput, quantityInput)">
-      Add Color
+    <button type="button" (click)="addOption(colorInput, quantityInput)">
+      Add Option
     </button>
 
-    <div *ngFor="let colorData of colorsWithDetails">
+    <div *ngFor="let optionData of optionsWithDetails">
       <label
-        >Upload Image for {{ colorData.color }} (Quantity:
-        {{ colorData.quantity }})</label
+        >Upload Image for {{ optionData.option }} (Quantity:
+        {{ optionData.quantity }})</label
       >
       <input
         type="file"
-        (change)="onColorImageSelected($event, colorData.color)"
+        (change)="onoptionImageselected($event, optionData.option)"
       />
       <img
-        *ngIf="colorImages[colorData.color]"
-        [src]="colorImages[colorData.color]"
+        *ngIf="optionImages[optionData.option]"
+        [src]="optionImages[optionData.option]"
         class="preview-img"
       />
     </div>
