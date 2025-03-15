@@ -14,20 +14,24 @@ const getItemsSchema = Joi.object().keys({
   cartId: Joi.required(),
   Authorization: Joi.string(),
 });
-const AddItemsSchema = Joi.object().keys({
-  product_id: Joi.string().required(),
-  cart_id: Joi.string().required(),
-  amount: Joi.number().required(),
-  full_price: Joi.number().required(),
-});
+const AddItemsSchema = Joi.object()
+  .keys({
+    product_id: Joi.string().required(),
+    cart_id: Joi.string().required(),
+    amount: Joi.number().required(),
+    full_price: Joi.number().required(),
+  })
+  .unknown(true);
 const deleteItemSchema = Joi.object().keys({
   itemId: Joi.string().required(),
 });
-const editItemAmountSchema = Joi.object().keys({
-  itemId: Joi.string().required(),
-  amount: Joi.number().required(),
-  fullPrice: Joi.number().required(),
-});
+const editItemAmountSchema = Joi.object()
+  .keys({
+    itemId: Joi.string().required(),
+    amount: Joi.number().required(),
+    fullPrice: Joi.number().required(),
+  })
+  .unknown(true);
 const clearCartSchema = Joi.object().keys({
   cartId: Joi.string().required(),
 });

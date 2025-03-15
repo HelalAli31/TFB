@@ -91,15 +91,18 @@ const allowOnlyAdmin = async (req, res, next) => {
 
 router.post("/topProducts", async (req, res, next) => {
   try {
-    console.log("TOPPP PRODUCTS: ");
+    console.log("🔍 Fetching Top Products...");
     const result = await getTopProducts();
+
     if (!result.length) {
-      return;
+      console.log("⚠️ No top products found.");
+      return res.json([]); // ✅ Always return an empty array instead of exiting
     }
-    console.log(result);
+
+    console.log("✅ Top Products Found:", result);
     return res.json(result);
   } catch (error) {
-    console.log("Error fetching top products:", error);
+    console.error("❌ Error fetching top products:", error);
     return next({ message: "GENERAL ERROR", status: 500 });
   }
 });
@@ -174,7 +177,6 @@ router.get("/productsNumber", async (req, res, next) => {
 });
 
 // add product (product)
-// ✅ Add Product (with Image Upload)
 router.post(
   "/addProduct",
   upload.fields([
@@ -189,6 +191,7 @@ router.post(
       const mainImage = req.files?.image ? req.files.image[0] : null;
       const colorImages = req.files?.colorImages || [];
 
+      // ✅ Add product first
       const product = await addProduct(productData, mainImage, colorImages);
       if (!product) {
         return res
@@ -196,19 +199,33 @@ router.post(
           .json({ success: false, error: "Failed to add product" });
       }
 
-      // ✅ Save the image if provided
+      // ✅ Save main image if provided
       if (mainImage) {
-        const imagePath = path.join(productImagesDir, `${product.name}.jpg`);
+        const imagePath = path.join(
+          productImagesDir,
+          `${product.product.name}.jpg`
+        );
         await fs.writeFile(imagePath, mainImage.buffer);
         console.log(`✅ Saved main image: ${imagePath}`);
       }
 
-      // ✅ Save color images if available
+      // ✅ Save color images if available (Ensure valid names)
       for (const colorImage of colorImages) {
+        let colorName = path.parse(colorImage.originalname).name.trim(); // ✅ Keep spaces
+
+        // ✅ Prevent saving invalid files
+        if (!colorName || colorName.toLowerCase() === "undefined") {
+          console.warn(
+            `⚠️ Skipping invalid color image: ${colorImage.originalname}`
+          );
+          continue;
+        }
+
         const imagePath = path.join(
           productImagesDir,
-          `${product.name}_${colorImage.originalname}`
+          `${product.product.name}_${colorName}.jpg`
         );
+
         await fs.writeFile(imagePath, colorImage.buffer);
         console.log(`✅ Saved color image: ${imagePath}`);
       }
@@ -339,10 +356,10 @@ async function ensureImageDirectoryExists() {
     console.error("❌ Error creating images directory:", error);
   }
 }
-// ✅ Delete Specific Color Image
-router.delete("/deleteColorImage/:id/:color", async (req, res) => {
+// ✅ Delete Specific Option Image
+router.delete("/deleteOptionImage/:id/:option", async (req, res) => {
   try {
-    const { id, color } = req.params;
+    const { id, option } = req.params;
     const product = await productModel.findById(id);
     if (!product) {
       return res
@@ -353,28 +370,29 @@ router.delete("/deleteColorImage/:id/:color", async (req, res) => {
     const imagePath = path.join(
       __dirname,
       "../assets/products",
-      `${product.name}_${color}.jpg`
+      `${product.name}_${option}.jpg`
     );
 
     if (fs.existsSync(imagePath)) {
       await fs.unlink(imagePath);
-      console.log(`✅ Deleted color image: ${imagePath}`);
+      console.log(`✅ Deleted option image: ${imagePath}`);
     }
 
-    res.json({ success: true, message: `Color image ${color}.jpg deleted.` });
+    res.json({ success: true, message: `Option image ${option}.jpg deleted.` });
   } catch (error) {
-    console.error("❌ Error deleting color image:", error);
+    console.error("❌ Error deleting option image:", error);
     res
       .status(500)
-      .json({ success: false, message: "Failed to delete color image." });
+      .json({ success: false, message: "Failed to delete option image." });
   }
 });
+
 // ✅ Update Product with Image
 router.put(
   "/updateProduct/:id",
   upload.fields([
     { name: "image", maxCount: 1 },
-    { name: "colorImages", maxCount: 10 },
+    { name: "optionImages", maxCount: 10 }, // ✅ Handle option images
   ]),
   async (req, res) => {
     try {
@@ -403,16 +421,16 @@ router.put(
         console.log(`✅ Updated main image: ${mainImagePath}`);
       }
 
-      // ✅ Save new color images
-      if (req.files.colorImages) {
-        for (const file of req.files.colorImages) {
-          const colorName = path.parse(file.originalname).name.toLowerCase();
-          const colorImagePath = path.join(
+      // ✅ Save new option images while keeping spaces in filenames
+      if (req.files.optionImages) {
+        for (const file of req.files.optionImages) {
+          const optionName = path.parse(file.originalname).name.trim(); // ✅ KEEP SPACES
+          const optionImagePath = path.join(
             productImagesDir,
-            `${product.name}_${colorName}.jpg`
+            `${product.name}_${optionName}.jpg`
           );
-          await fs.writeFile(colorImagePath, file.buffer);
-          console.log(`✅ Saved color image: ${colorImagePath}`);
+          await fs.writeFile(optionImagePath, file.buffer);
+          console.log(`✅ Saved option image: ${optionImagePath}`);
         }
       }
 

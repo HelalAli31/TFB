@@ -10,18 +10,26 @@ async function getTopProducts() {
     const topProducts = await TopProductsModel.find()
       .populate({
         path: "product_id",
-        model: "Products", // ✅ Ensure model reference is correct
-        select: "name image price brand category quantity sale details", // ✅ Added "details"
+        model: "Products", // ✅ Ensure correct model name
+        select: "name image price brand category quantity sale details",
         populate: {
           path: "category",
           model: "category", // ✅ Ensure correct category model name
           select: "name",
         },
       })
-      .lean();
+      .lean()
+      .exec(); // ✅ Ensure execution
 
-    // ✅ Filter out items without product data or out-of-stock products
-    return topProducts
+    console.log("📌 Raw Top Products (After Populate):", topProducts);
+
+    if (!topProducts || topProducts.length === 0) {
+      console.warn("⚠️ No top products found in database.");
+      return [];
+    }
+
+    // ✅ Ensure that populated data is available
+    const filteredProducts = topProducts
       .filter((item) => item.product_id && item.product_id.quantity > 0)
       .map((item) => {
         const product = item.product_id;
@@ -43,12 +51,15 @@ async function getTopProducts() {
           category: product.category?.name || "Unknown",
           quantity: product.quantity,
           originalPrice: product.price,
-          details: product.details, // ✅ Ensure details are returned
+          details: product.details,
           sale: product.sale,
         };
       });
+
+    console.log("✅ Filtered Top Products:", filteredProducts);
+    return filteredProducts;
   } catch (error) {
-    console.error("Error fetching top products:", error);
+    console.error("❌ Error fetching top products:", error);
     return [];
   }
 }
@@ -113,8 +124,7 @@ async function getAllProducts(
     return { products: [], totalProducts: 0 };
   }
 }
-
-const addProduct = async (productData, mainImage, colorImages) => {
+const addProduct = async (productData, mainImage, optionImages) => {
   try {
     console.log(
       "\n🚀 Received productData:",
@@ -126,11 +136,8 @@ const addProduct = async (productData, mainImage, colorImages) => {
       return { success: false, message: "Product name is required." };
     }
 
-    // ✅ Processed product name (trim spaces and lowercase)
-    const productName = productData.name
-      .trim()
-      .replace(/\s+/g, "")
-      .toLowerCase();
+    // ✅ Keep original product name with spaces
+    const productName = productData.name.trim();
     if (!productName) {
       console.error("❌ ERROR: Processed product name is empty");
       return { success: false, message: "Invalid product name." };
@@ -148,6 +155,7 @@ const addProduct = async (productData, mainImage, colorImages) => {
     } else if (typeof productData.details === "string") {
       try {
         productData.details = JSON.parse(productData.details);
+        delete productData.details.name;
       } catch (error) {
         console.error("❌ Error parsing `details` JSON:", error);
         return { success: false, error: "Invalid details format" };
@@ -160,37 +168,44 @@ const addProduct = async (productData, mainImage, colorImages) => {
     await newProduct.save();
     console.log("✅ Product saved successfully:", newProduct);
 
-    // ✅ Process color images
-    console.log("\n🎨 Processing color images...");
-    const colorDetailsArray = [];
+    // ✅ Process option images
+    console.log("\n🎨 Processing option images...");
+    const optionDetailsArray = [];
 
-    if (colorImages && colorImages.length > 0) {
-      for (const file of colorImages) {
+    if (optionImages && optionImages.length > 0) {
+      for (const file of optionImages) {
         console.log(`🔹 Processing file: ${file.originalname}`);
 
-        // ✅ Extract and validate color name
-        let colorName = path.parse(file.originalname).name.toLowerCase().trim();
-        if (!colorName || colorName === "undefined") continue; // Prevent `undefined.jpg`
+        // ✅ Extract and validate option name correctly
+        let optionName = path.parse(file.originalname).name.trim(); // ✅ Keep spaces
 
-        // ✅ Save image as `name_color.jpg`
-        const colorImagePath = path.join(
+        // ✅ Skip invalid option names (empty, "undefined", or missing name)
+        if (!optionName || optionName.toLowerCase() === "undefined") {
+          console.warn(
+            `⚠️ Skipping invalid option image: ${file.originalname}`
+          );
+          continue;
+        }
+
+        // ✅ Save image with spaces intact
+        const optionImagePath = path.join(
           productImagesDir,
-          `${productName}_${colorName}.jpg`
+          `${productName}_${optionName}.jpg`
         );
-        await fs.writeFile(colorImagePath, file.buffer);
-        console.log(`✅ Color image saved: ${colorImagePath}`);
+        await fs.writeFile(optionImagePath, file.buffer);
+        console.log(`✅ Option image saved: ${optionImagePath}`);
 
-        // ✅ Store color data in `details`
-        colorDetailsArray.push({ color: colorName });
+        // ✅ Store option data in `details`
+        optionDetailsArray.push({ option: optionName });
       }
 
-      // ✅ Add color details to `details` in MongoDB
-      if (colorDetailsArray.length > 0) {
-        newProduct.details.color = colorDetailsArray;
+      // ✅ Add option details to `details` in MongoDB
+      if (optionDetailsArray.length > 0) {
+        newProduct.details.options = optionDetailsArray;
         await newProduct.save();
       }
     } else if (mainImage) {
-      // ✅ Only save `name.jpg` if no color variations exist
+      // ✅ Only save `name.jpg` if no option variations exist
       const mainImagePath = path.join(productImagesDir, `${productName}.jpg`);
       await fs.writeFile(mainImagePath, mainImage.buffer);
       console.log(`✅ Main image saved at: ${mainImagePath}`);
@@ -209,6 +224,7 @@ const addProduct = async (productData, mainImage, colorImages) => {
     return { success: false, error: error.message };
   }
 };
+
 async function deleteProduct(productId) {
   try {
     const result = await productModel.findByIdAndDelete(productId);

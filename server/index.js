@@ -18,6 +18,15 @@ app.use(express.static("public"));
 app.use(bodyParser.json());
 
 createConnection();
+const cron = require("node-cron");
+
+// Run check every 5 minutes (adjust as needed)
+cron.schedule("0 0 * * *", async () => {
+  console.log("⏳ Running daily sale expiration check...");
+  await checkAndUpdateSales();
+  console.log("✅ Daily sale check complete.");
+});
+
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 app.use("/auth", userRoute);

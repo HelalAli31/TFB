@@ -15,6 +15,9 @@ const productSchema = new mongoose.Schema({
   description: { type: String, required: true },
   sale: {
     isOnSale: { type: Boolean, default: false },
+    salePrice: { type: Number, default: null },
+    saleStartDate: { type: Date, default: null },
+    saleEndDate: { type: Date, default: null },
   },
   // Type-specific details
   details: {

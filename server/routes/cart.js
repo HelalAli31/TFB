@@ -13,6 +13,8 @@ const router = express.Router();
 const { verifyJWT } = require("../controller/JWT/jwt");
 const logger = require("../logger/index");
 const getValidationFunction = require("../validations/cartValidation");
+const cartItemsModel = require("../models/cartItemsSchema");
+
 const allowUserOrAdmin = async (req, res, next) => {
   try {
     if (!req || !req.headers) {
@@ -145,29 +147,62 @@ router.put("/AddItems", allowUserOrAdmin, async (req, res, next) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 });
-
-router.post("/editItemAmount", allowUserOrAdmin, async (req, res, next) => {
+router.post("/editItemAmount", allowUserOrAdmin, async (req, res) => {
   try {
-    const { fullPrice, amount, itemId } = req.body.data;
+    const { itemId, amount, fullPrice, nic, ice, option } = req.body.data;
 
-    // Validate input
+    console.log("🛠 Received Edit Request:", {
+      itemId,
+      fullPrice,
+      amount,
+      nic,
+      ice,
+      option,
+    });
+
     if (!itemId || amount < 1 || fullPrice < 0) {
+      console.error("🚨 Invalid input data:", { itemId, fullPrice, amount });
       return res.status(400).json({ message: "Invalid input data" });
     }
 
-    // Update item quantity
-    const updatedCartItem = await editAmount(itemId, amount, fullPrice);
-    if (!updatedCartItem) {
+    // ✅ Find the existing cart item
+    const cartItem = await cartItemsModel.findById(itemId);
+
+    if (!cartItem) {
+      console.error("🚨 Item not found in DB:", itemId);
       return res.status(404).json({ message: "Item not found" });
     }
 
+    console.log("✅ Found Item in Cart:", cartItem);
+
+    // ✅ Ensure it sets, not adds to amount
+    const updateFields = {
+      amount, // ✅ Now setting new quantity instead of adding
+      full_price: fullPrice,
+    };
+
+    if (nic !== undefined) updateFields.nic = nic;
+    if (ice !== undefined) updateFields.ice = ice;
+    if (option !== undefined) updateFields.option = option;
+
+    console.log("🔄 Updating Cart Item with Fields:", updateFields);
+
+    // ✅ Perform update in MongoDB
+    const updatedCartItem = await cartItemsModel.findByIdAndUpdate(
+      itemId,
+      { $set: updateFields },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedCartItem) {
+      console.error("❌ Failed to update item:", itemId);
+      return res.status(500).json({ message: "Failed to update item" });
+    }
+
     console.log("🛒 Cart item successfully updated:", updatedCartItem);
-    return res.json({
-      message: "Item quantity updated successfully!",
-      updatedCartItem,
-    });
+    return res.json({ message: "Item updated successfully!", updatedCartItem });
   } catch (error) {
-    console.error("❌ Error updating item quantity:", error);
+    console.error("❌ Error updating item:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });

@@ -85,7 +85,7 @@ async function addItemToCart(item) {
   try {
     console.log("📤 Adding item to cart:", item);
 
-    const { cart_id, product_id, amount, full_price } = item;
+    const { cart_id, product_id, amount, full_price, option, nic, ice } = item;
 
     if (!cart_id || !product_id || !amount || !full_price) {
       console.error("🚨 Invalid item data:", item);
@@ -104,12 +104,21 @@ async function addItemToCart(item) {
       return null;
     }
 
-    let cartItem = await cartItemsModel.findOne({ cart_id, product_id });
+    let cartItem = await cartItemsModel.findOne({
+      cart_id,
+      product_id,
+      option: option || null, // Match option if it exists
+      nic: nic || null, // Match nicotine if it exists
+      ice: ice || null, // Match ice if it exists
+    });
 
     if (cartItem) {
       console.log("🔄 Item already in cart, updating quantity.");
       cartItem.amount += amount;
       cartItem.full_price += full_price;
+      cartItem.nic = nic !== undefined ? nic : cartItem.nic;
+      cartItem.ice = ice !== undefined ? ice : cartItem.ice;
+      cartItem.option = option !== undefined ? option : cartItem.option;
       await cartItem.save();
     } else {
       console.log("🆕 Adding new item to cart.");
@@ -118,6 +127,9 @@ async function addItemToCart(item) {
         product_id,
         amount,
         full_price,
+        option: option || null,
+        nic: nic || null,
+        ice: ice || null,
       });
       await cartItem.save();
     }
@@ -128,6 +140,8 @@ async function addItemToCart(item) {
     return null;
   }
 }
+
+module.exports = addItemToCart;
 
 async function addCart(userId) {
   try {
@@ -149,12 +163,25 @@ async function deleteItemFromCart(itemId) {
     console.log(error);
   }
 }
-async function editAmount(itemId, amount, fullPrice) {
+async function editAmount(
+  itemId,
+  amount,
+  fullPrice,
+  nic = null,
+  ice = null,
+  option = null
+) {
   try {
+    const updateFields = { amount, full_price: fullPrice };
+
+    if (nic !== null) updateFields.nic = nic;
+    if (ice !== null) updateFields.ice = ice;
+    if (option !== null) updateFields.option = option;
+
     const result = await cartItemsModel.findOneAndUpdate(
       { _id: itemId },
-      { $set: { amount: amount, full_price: fullPrice } }, // ✅ Ensure correct field names
-      { new: true, runValidators: true } // ✅ Returns the updated document
+      { $set: updateFields }, // ✅ Only update provided fields
+      { new: true, runValidators: true }
     );
 
     if (!result) {
@@ -169,6 +196,8 @@ async function editAmount(itemId, amount, fullPrice) {
     throw error;
   }
 }
+
+module.exports = editAmount;
 
 async function clearCart(cartId) {
   try {
