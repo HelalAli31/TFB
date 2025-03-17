@@ -172,20 +172,35 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  justify-content: start; /* Align options nicely */
 }
 
 .option-list li {
   background: #f3f3f3;
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+  border: 2px solid transparent;
 }
 
+/* ✅ Hover effect */
 .option-list li:hover {
   background: #cc00ff;
   color: white;
+  transform: scale(1.05);
+}
+
+/* ✅ Selected option */
+.option-list .selected-option {
+  background: #cc00ff;
+  color: white;
+  border: 2px solid #9900cc;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(204, 0, 255, 0.4);
+  transform: scale(1.1);
 }
 
 /* Color Section */

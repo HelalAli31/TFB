@@ -28,17 +28,21 @@
         Option: <span>{{ item.option }}</span>
       </p>
       <!-- Price Section -->
+      <!-- Unit Price Section -->
       <p class="cart-price">
         💰 <b>Unit Price:</b>
-        <span *ngIf="item.product_id?.sale?.isOnSale; else normalPrice">
+        <span *ngIf="isSaleActive(item.product_id); else normalPrice">
           {{ item.product_id?.sale?.salePrice }} ₪
         </span>
         <ng-template #normalPrice>
           {{ item.product_id?.price || 0 }} ₪
         </ng-template>
-        <br />
+      </p>
+
+      <!-- Total Price Section -->
+      <p class="cart-price">
         🔹 <b>Total Price:</b>
-        <span *ngIf="item.product_id?.sale?.isOnSale; else totalNormalPrice">
+        <span *ngIf="isSaleActive(item.product_id); else totalNormalPrice">
           {{ (item.product_id?.sale?.salePrice || 0) * item.amount }} ₪
         </span>
         <ng-template #totalNormalPrice>

@@ -1,0 +1,130 @@
+/* ✅ General Container */
+.bulk-sale-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+}
+
+/* ✅ Section Titles */
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* ✅ Flexbox for Categories & Sale Inputs */
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* ✅ Categories in a Horizontal Row */
+.category-selection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-selection label {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 12px;
+  background: #e6e6fa;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.category-selection label:hover {
+  background: #d1c4e9;
+}
+
+.category-selection input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+/* ✅ Sale Input Section */
+.sale-input {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sale-input div {
+  flex: 1;
+}
+
+.sale-input label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.sale-input input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.sale-input input:focus {
+  border-color: #6a5acd;
+  outline: none;
+  box-shadow: 0 0 5px rgba(106, 90, 205, 0.5);
+}
+
+/* ✅ Apply Sale Button */
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #6a5acd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 15px;
+}
+
+button:hover {
+  background: #483d8b;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
+  .sale-input {
+    flex-direction: column;
+  }
+
+  .category-selection {
+    flex-direction: column;
+    align-items: center;
+  }
+}

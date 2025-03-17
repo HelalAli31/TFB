@@ -10,6 +10,7 @@ import { AdminCategoryComponent } from './components/admin/admin-category/admin-
 import { AdminAddProductComponent } from './components/admin/admin-add-product/admin-add-product.component';
 import { AdminProductManagementComponent } from './components/admin/admin-product-management/admin-product-management.component';
 import { AboutUsComponent } from './containers/about-us/about-us.component';
+import { ProfileComponent } from './containers/profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,8 @@ const routes: Routes = [
   { path: 'aboutUs', component: AboutUsComponent },
   { path: 'addProduct', component: AdminAddProductComponent },
   { path: 'product/:id', component: ProductDetailComponent },
+  { path: 'profile', component: ProfileComponent },
+
   { path: 'productManagment', component: AdminProductManagementComponent },
 
   {

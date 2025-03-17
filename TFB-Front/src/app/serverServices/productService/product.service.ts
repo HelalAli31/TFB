@@ -12,8 +12,9 @@ export class ProductService {
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
     return new HttpHeaders({
-      Authorization: localStorage.getItem('token') || '',
+      Authorization: `Bearer ${token}`, // ✅ Fix: Add 'Bearer' prefix
     });
   }
   // product.service.ts
@@ -124,6 +125,19 @@ export class ProductService {
 
     return this.http.post(`${this.apiUrl}/upload-product-image`, formData, {
       headers,
+    });
+  }
+  applyBulkSale(
+    categories: string[],
+    salePercent: number,
+    saleStartDate: string,
+    saleEndDate: string
+  ) {
+    return this.http.put(`${this.apiUrl}/products/applyBulkSale`, {
+      categories,
+      salePercent,
+      saleStartDate,
+      saleEndDate,
     });
   }
 

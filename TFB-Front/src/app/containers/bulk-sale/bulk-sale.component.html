@@ -1,0 +1,50 @@
+<div *ngIf="isAdmin">
+  <h2>Bulk Sale by Category</h2>
+
+  <div class="bulk-sale-container">
+    <!-- Category Selection -->
+    <div class="category-selection">
+      <label>
+        <input
+          type="checkbox"
+          [(ngModel)]="selectAll"
+          (change)="toggleSelectAll()"
+        />
+        Select All Categories
+      </label>
+
+      <div *ngFor="let category of categoriesList">
+        <label>
+          <input
+            type="checkbox"
+            [(ngModel)]="selectedCategories[category._id]"
+          />
+          {{ category.name }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Sale Input -->
+    <div class="sale-input">
+      <label>Sale Percentage (%)</label>
+      <input
+        type="number"
+        [(ngModel)]="salePercent"
+        min="1"
+        max="100"
+        required
+      />
+
+      <label>Sale Start Date</label>
+      <input type="date" [(ngModel)]="saleStartDate" required />
+
+      <label>Sale End Date</label>
+      <input type="date" [(ngModel)]="saleEndDate" required />
+    </div>
+
+    <!-- Apply Sale Button -->
+    <button (click)="applySale()" [disabled]="!isValidSale()">
+      Apply Sale to Selected Categories
+    </button>
+  </div>
+</div>

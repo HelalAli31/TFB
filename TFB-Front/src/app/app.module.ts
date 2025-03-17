@@ -45,6 +45,8 @@ import { AdminAddProductComponent } from './components/admin/admin-add-product/a
 import { AdminProductManagementComponent } from './components/admin/admin-product-management/admin-product-management.component';
 import { EditProductDialogComponent } from './components/PopUpComponents/admin/edit-product-dialog/edit-product-dialog.component';
 import { AboutUsComponent } from './containers/about-us/about-us.component';
+import { BulkSaleComponent } from './containers/bulk-sale/bulk-sale.component';
+import { ProfileComponent } from './containers/profile/profile.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,6 +75,8 @@ import { AboutUsComponent } from './containers/about-us/about-us.component';
     AdminProductManagementComponent,
     EditProductDialogComponent,
     AboutUsComponent,
+    BulkSaleComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

@@ -151,8 +151,22 @@ export class CartComponent implements OnInit {
   }
   updateTotalPrice() {
     this.totalPrice = this.cartItems.reduce((total, item) => {
-      return total + item.product_id.price * item.amount;
+      const product = item.product_id;
+      const unitPrice = this.isSaleActive(product)
+        ? product.sale.salePrice
+        : product.price;
+      return total + unitPrice * item.amount;
     }, 0);
+  }
+
+  isSaleActive(product: any): boolean {
+    if (!product?.sale?.isOnSale) return false; // Sale must be enabled
+
+    const currentDate = new Date();
+    const startDate = new Date(product.sale.saleStartDate);
+    const endDate = new Date(product.sale.saleEndDate);
+
+    return startDate <= currentDate && currentDate <= endDate;
   }
 
   getTotalPrice(): number {

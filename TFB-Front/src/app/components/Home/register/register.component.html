@@ -1,47 +1,61 @@
 <div class="Register_Main">
-  <div><h1>יצירת חשבון חדש</h1></div>
+  <div><h1>Sign Up</h1></div>
   <form [formGroup]="userForm">
-    <ng-template>תמלא את כל הפרטים בבקשה</ng-template>
     <mat-form-field>
-      <mat-label>טלפון</mat-label>
-      <input
-        matInput
-        placeholder=" מספר טלפון"
-        formControlName="phone"
-        required
-      />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>שם</mat-label>
-      <input
-        matInput
-        placeholder="שם פרטי"
-        type="name"
-        formControlName="first_name"
-        required
-      />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label> משפחה</mat-label>
-      <input
-        matInput
-        placeholder="שם משפחה"
-        type="name"
-        formControlName="last_name"
-        required
-      />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>סיסמה</mat-label>
-      <input matInput placeholder="סיסמה" formControlName="password" required />
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" required />
     </mat-form-field>
 
-    <div>
-      <button mat-raised-button (click)="signUp()">הרשמה</button>
-      <button mat-raised-button (click)="closeDialog()" class="mr-2">
-        יציאה
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        placeholder="Password"
+        formControlName="password"
+        type="password"
+        required
+      />
+      <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
+        ❌ Password must be at least 6 characters long.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="first_name" required />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="last_name" required />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="Email" formControlName="email" required />
+      <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+        ❌ Invalid email format. Please enter a valid email.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" required />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="address" required />
+    </mat-form-field>
+
+    <div class="Button_Group">
+      <button mat-raised-button color="primary" (click)="signUp()">
+        Confirm
+      </button>
+      <button mat-raised-button color="warn" (click)="closeDialog()">
+        Close
       </button>
     </div>
   </form>
-  <h3 class="mt-2" *ngIf="messageServer?.length">* {{ messageServer }}</h3>
+  <h3 class="Error_Message mt-2" *ngIf="messageServer?.length">
+    * {{ messageServer }}
+  </h3>
 </div>

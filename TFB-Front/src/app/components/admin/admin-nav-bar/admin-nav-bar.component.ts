@@ -69,6 +69,7 @@ export class AdminNavBarComponent implements OnInit {
     console.log('❌ Both images missing, using default.');
     event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
+
   searchProducts() {
     if (this.searchValue.trim().length === 0) {
       this.isSearchVisible = false;

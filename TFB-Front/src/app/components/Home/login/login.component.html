@@ -1,26 +1,27 @@
 <div class="Login_Main">
-  <div><h1>כניסה לחשבון</h1></div>
+  <div><h1>Login</h1></div>
   <div>
     <div mat-dialog-content>
-      <p>טלפון</p>
+      <p>username</p>
       <mat-form-field appearance="fill">
-        <mat-label>מספר טלפון</mat-label>
-        <input matInput [(ngModel)]="phone" />
+        <mat-label>username</mat-label>
+        <input matInput [(ngModel)]="username" />
       </mat-form-field>
     </div>
     <div mat-dialog-content>
-      <p>סיסמה</p>
+      <p>password</p>
       <mat-form-field appearance="fill">
-        <mat-label>סיסמה</mat-label>
+        <mat-label>password</mat-label>
         <input matInput [(ngModel)]="password" />
       </mat-form-field>
     </div>
   </div>
   <div>
-    <button mat-button class="mr-2" (click)="openDialog()">
-      יצירת חשבון חדש
-    </button>
-    <button mat-raised-button (click)="login()">כניסה</button>
+    <button mat-raised-button (click)="login()">login</button>
+
+    <button mat-button class="mr-2" (click)="openDialog()">sign up</button>
   </div>
-  <div class="mt-2">{{ serverMsg }}</div>
+  <div *ngIf="loginFailed" class="mt-2" style="color: red">
+    {{ loginFailed }}
+  </div>
 </div>

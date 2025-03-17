@@ -16,7 +16,7 @@ import { UserService } from 'src/app/serverServices/user/user.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  public phone: string;
+  public username: string;
   public password: string = '';
   public token: any;
   public loginFailed: string = '';
@@ -31,20 +31,32 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private userService: UserService
   ) {
-    this.phone = '';
+    this.username = '';
     this.password = '';
   }
   async login() {
     this.loginFailed = '';
-    this.token = await this.userService.login(this.phone, this.password);
-    this.serverMsg = this.token.msg;
-    console.log('token', this.token);
-    if (this.token.userToken) {
-      localStorage.setItem('token', this.token.userToken); // ✅ Store token as raw string (not JSON.stringify)
-      this.dialogRef.close();
-      window.location.reload();
-    } else this.loginFailed = this.token;
+    try {
+      this.token = await this.userService.login(this.username, this.password);
+      console.log('🔑 Token Response:', this.token);
+
+      if (this.token.userToken) {
+        localStorage.setItem('token', this.token.userToken);
+        localStorage.setItem('name', this.token.user.first_name);
+
+        this.dialogRef.close();
+        window.location.reload();
+      } else {
+        this.loginFailed =
+          this.token.msg || 'Failed to login. Please try again.';
+      }
+    } catch (error) {
+      console.error('❌ Login failed:', error);
+      this.loginFailed =
+        'An unexpected error occurred. Please try again later.';
+    }
   }
+
   openDialog(): void {
     this.dialogRef.close();
     this.dialog.open(RegisterComponent, {

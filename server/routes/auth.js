@@ -9,116 +9,224 @@ const router = express.Router();
 const { signJWT, verifyJWT } = require("../controller/JWT/jwt");
 const logger = require("../logger/index");
 console.log("LOGIN");
+const bcrypt = require("bcryptjs");
+const usersModel = require("../models/usersSchema");
+
 const allowUserOrAdmin = async (req, res, next) => {
   try {
-    const clientJwt = req.headers.authorization; // Get the token directly
-    console.log("Authorization Header:", clientJwt); // Log the received token
-
-    if (!clientJwt) {
-      throw new Error("Missing Authorization token");
+    if (!req.headers || !req.headers.authorization) {
+      console.error("🚨 Missing Authorization Header!");
+      return res.status(403).json({ message: "Unauthorized: Missing Token" });
     }
 
-    const verify = await verifyJWT(clientJwt); // Verify the token
-    const role = verify?.data?.[0]?.role;
-    // if logged in
-    if (role) {
-      req.user = verify.data[0]; // Attach user data to the request
-      return next(); // Proceed to the next middleware or route
+    let authHeader = req.headers.authorization;
+
+    if (!authHeader.startsWith("Bearer ")) {
+      console.error("🚨 Invalid Token Format:", authHeader);
+      return res
+        .status(403)
+        .json({ message: "Unauthorized: Invalid Token Format" });
     }
 
-    throw new Error("Unauthorized role");
+    let token = authHeader.split(" ")[1].trim(); // ✅ Extract token correctly
+
+    if (!token) {
+      console.error("🚨 Empty Token Received");
+      return res.status(403).json({ message: "Unauthorized: Empty Token" });
+    }
+
+    const verify = await verifyJWT(token); // ✅ Verify token
+
+    if (!verify || !verify.data || !verify.data._id) {
+      console.error("🚨 Invalid Token Data", verify);
+      return res
+        .status(403)
+        .json({ message: "Unauthorized: Invalid Token Data" });
+    }
+
+    req.user = verify.data; // ✅ Attach user to request
+    next();
   } catch (error) {
-    logger.error("Authorization error:", error);
+    console.error("❌ JWT Verification Error:", error.message);
     return res
       .status(403)
-      .json({ message: "Access Denied", error: error.message });
+      .json({ message: "Unauthorized: Invalid Token", error: error.message });
   }
 };
 
-router.post(
-  "/login",
-  getValidationFunction("login"),
-  async (req, res, next) => {
-    console.log("Incoming Request Body:", req.body); // Add this for debugging
+router.get("/profile", allowUserOrAdmin, async (req, res) => {
+  try {
+    console.log("🔍 Requesting user profile for:", req.user); // Debugging line
 
-    const { username, password } = req.body;
-    if (!username || !password) {
+    if (!req.user || !req.user._id) {
+      return res
+        .status(401)
+        .json({ message: "❌ Unauthorized: Invalid token." });
+    }
+
+    const user = await usersModel.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "❌ User not found." });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("❌ Error fetching user profile:", error);
+    return res.status(500).json({ message: "❌ Internal server error." });
+  }
+});
+
+router.post("/changePassword", allowUserOrAdmin, async (req, res) => {
+  try {
+    const { userId, old_password, new_password } = req.body;
+    console.log("🛠️ Received password change request:", req.body);
+
+    if (!userId || !old_password || !new_password) {
+      return res.status(400).json({ message: "❌ All fields are required." });
+    }
+
+    // ✅ Find the user in the database
+    const user = await usersModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "❌ User not found." });
+    }
+
+    // ✅ Compare plain text passwords
+    if (user.password !== old_password) {
+      console.log(`🚨 Incorrect old password for user: ${userId}`);
+      return res.status(400).json({ message: "❌ Incorrect old password." });
+    }
+
+    // ✅ Update password in database
+    user.password = new_password;
+    await user.save();
+
+    console.log(`✅ Password updated successfully for user: ${userId}`);
+    return res.json({ message: "✅ Password updated successfully!" });
+  } catch (error) {
+    console.error("❌ Error changing password:", error);
+    return res.status(500).json({ message: "❌ Internal server error." });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ message: "❌ Username and password are required." });
+  }
+
+  try {
+    const user = await isUserRegistered(username, password);
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "❌ Invalid username or password." });
+    }
+
+    // Remove password before sending the response
+    const { password: _, ...userWithoutPassword } = user.toObject();
+
+    // Generate token
+    const userToken = await signJWT(userWithoutPassword);
+
+    return res.json({ userToken, user: userWithoutPassword });
+  } catch (error) {
+    console.error("❌ Login Error:", error);
+    return res.status(500).json({ message: "❌ Internal server error." });
+  }
+});
+
+// ✅ Register Route
+router.post("/register", async (req, res) => {
+  const { first_name, last_name, username, email, phone, address, password } =
+    req.body;
+
+  if (
+    !first_name ||
+    !last_name ||
+    !username ||
+    !email ||
+    !phone ||
+    !address ||
+    !password
+  ) {
+    return res.status(400).json({ message: "❌ All fields are required." });
+  }
+
+  try {
+    // ✅ Ensure isUserRegistered always returns an array
+    const existingUser = await isUserRegistered(email);
+
+    if (existingUser.length > 0) {
+      // ✅ This will not crash anymore
       return res
         .status(400)
-        .json({ message: "Username and password are required" });
+        .json({ message: `❌ User ${email} already exists.` });
     }
 
-    logger.info(`${username} is trying to login`);
+    // ✅ Create new user with hashed password
+    const newUser = await createUser({
+      first_name,
+      last_name,
+      username,
+      email,
+      phone,
+      address,
+      password,
+    });
 
-    const result = await isUserRegistered(username, password);
-    if (result?.length) {
-      const userToken = await signJWT(result);
-      return res.json({ userToken });
+    if (newUser) {
+      return res
+        .status(201)
+        .json({ message: "✅ Registration successful!", user: newUser });
     } else {
-      logger.error(`Login failed for user: ${username}`);
-      return res.status(401).json({ message: "Login Failed" });
+      throw new Error("❌ Registration failed.");
     }
+  } catch (error) {
+    logger.error("❌ Registration error:", error);
+    return res.status(500).json({ message: "❌ Internal server error." });
   }
-);
+});
 
-router.post(
-  `/register`,
-  getValidationFunction("register"),
-  async (req, res, next) => {
-    const { email } = req.body;
-    if (!email) throw new Error("general error");
-    try {
-      const result = await isUserRegistered(email);
-      if (result[0]) {
-        console.log("found");
-        throw new Error(`User ${email} is already exist`);
-      }
-      const create = await createUser(req.body);
-      console.log(create);
-      if (create) {
-        logger.info(`${req.body.email} has just joined us `);
-        return res.json(`Registration completed`);
-      } else throw new Error("Registration Failed");
-    } catch (ex) {
-      logger.error("userName is already exists");
-      return res.json({
-        message: "this userName is already exists!",
-        data: email,
-      });
-    }
-  }
-);
-router.post(
-  "/updateUser",
-  allowUserOrAdmin, // Middleware to allow both users and admins
-  getValidationFunction("updateUser"), // Correct validation middleware
-  async (req, res, next) => {
+// ✅ Update User Route
+router.post("/updateUser", allowUserOrAdmin, async (req, res) => {
+  try {
     const { userId, updateData } = req.body;
 
     if (!userId || !updateData) {
       return res
         .status(400)
-        .json({ message: "User ID and update data are required" });
+        .json({ message: "❌ User ID and update data are required" });
     }
 
-    try {
-      const updatedUser = await updateUser(userId, updateData);
-      if (!updatedUser) {
-        return res
-          .status(404)
-          .json({ message: "User not found or update failed" });
-      }
-      logger.info(`User with ID ${userId} has been updated`);
-      return res
-        .status(200)
-        .json({ message: "User updated successfully", user: updatedUser });
-    } catch (error) {
-      logger.error("Error updating user:", error);
-      return res
-        .status(500)
-        .json({ message: "Failed to update user", error: error.message });
+    // ✅ Allow only the logged-in user to update their own data
+    if (String(req.user._id) !== String(userId)) {
+      return res.status(403).json({
+        message: "❌ Unauthorized: You can only update your own profile!",
+      });
     }
+
+    const updatedUser = await updateUser(userId, updateData);
+    if (!updatedUser) {
+      return res
+        .status(404)
+        .json({ message: "❌ User not found or update failed" });
+    }
+
+    logger.info(`✅ User with ID ${userId} has been updated`);
+    return res
+      .status(200)
+      .json({ message: "✅ User updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error("❌ Error updating user:", error);
+    return res
+      .status(500)
+      .json({ message: "❌ Internal server error.", error: error.message });
   }
-);
+});
 
 module.exports = router;

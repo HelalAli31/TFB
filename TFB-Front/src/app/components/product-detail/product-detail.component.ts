@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
 import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
 import { environment } from '../../../environments/environment'; // Import environment
+import { ChangeDetectorRef } from '@angular/core'; // ✅ Import ChangeDetectorRef
 
 @Component({
   selector: 'app-product-detail',
@@ -27,7 +28,8 @@ export class ProductDetailComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private cdRef: ChangeDetectorRef // ✅ Inject ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -62,9 +64,13 @@ export class ProductDetailComponent implements OnInit {
         if (this.product.details?.options?.length > 0 && !this.selectedOption) {
           this.selectedOption = this.product.details.options[0].option;
           console.log('🎯 Default Option Selected:', this.selectedOption);
+          this.selectedImage = `${this.apiUrl}/assets/products/${this.product.name}_${this.selectedOption}.jpg`;
+
+          this.cdRef.detectChanges(); // ✅ Ensure UI detects changes
         }
 
         this.checkIfProductInCart();
+        this.getMaxAvailableQuantity(); // ✅ Update quantity based on the first option
       },
       (error) => {
         console.error('❌ Error fetching product details:', error);
@@ -137,10 +143,12 @@ export class ProductDetailComponent implements OnInit {
     }
 
     if (product.details?.options?.length && !this.selectedOption) {
+      this.selectedOption = product.details.options[0].option; // ✅ Set the default option here as well
+    }
+    if (!this.selectedOption) {
       alert('❌ Please select an option before adding to cart.');
       return;
     }
-
     this.getMaxAvailableQuantity(); // Ensure latest quantity before opening
 
     const dialogRef = this.dialog.open(QuantityDialogComponent, {
@@ -372,9 +380,7 @@ export class ProductDetailComponent implements OnInit {
         console.log('NEW ITEM:', newCartItem);
 
         await this.cartService.addItemToCart(newCartItem);
-        alert(
-          `✅ ${quantity}x ${product.name} (Nic: ${nic}, Ice: ${ice}, Option: ${this.selectedOption}) added to cart!`
-        );
+        alert(`✅ ${quantity}x ${product.name}  added to cart!`);
       }
 
       await this.cartService.refreshCart();

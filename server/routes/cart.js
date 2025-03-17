@@ -175,19 +175,18 @@ router.post("/editItemAmount", allowUserOrAdmin, async (req, res) => {
 
     console.log("✅ Found Item in Cart:", cartItem);
 
-    // ✅ Ensure it sets, not adds to amount
-    const updateFields = {
-      amount, // ✅ Now setting new quantity instead of adding
-      full_price: fullPrice,
-    };
-
-    if (nic !== undefined) updateFields.nic = nic;
-    if (ice !== undefined) updateFields.ice = ice;
-    if (option !== undefined) updateFields.option = option;
+    // ✅ Prepare update fields
+    const updateFields = {};
+    if (cartItem.amount !== amount) updateFields.amount = amount;
+    if (cartItem.full_price !== fullPrice) updateFields.full_price = fullPrice;
+    if (nic !== undefined && cartItem.nic !== nic) updateFields.nic = nic;
+    if (ice !== undefined && cartItem.ice !== ice) updateFields.ice = ice;
+    if (option !== undefined && cartItem.option !== option)
+      updateFields.option = option;
 
     console.log("🔄 Updating Cart Item with Fields:", updateFields);
 
-    // ✅ Perform update in MongoDB
+    // ✅ Perform the update in MongoDB
     const updatedCartItem = await cartItemsModel.findByIdAndUpdate(
       itemId,
       { $set: updateFields },

@@ -1,0 +1,102 @@
+<div class="profile-container">
+  <h2 class="title">
+    <mat-icon class="profile-icon" fontIcon="person"></mat-icon> Profile
+  </h2>
+  <form [formGroup]="userForm">
+    <div class="profile-field">
+      <label>First Name</label>
+      <input type="text" formControlName="first_name" [readonly]="!isEditing" />
+    </div>
+
+    <div class="profile-field">
+      <label>Last Name</label>
+      <input type="text" formControlName="last_name" [readonly]="!isEditing" />
+    </div>
+
+    <div class="profile-field">
+      <label>Email</label>
+      <input type="email" formControlName="email" [readonly]="!isEditing" />
+    </div>
+
+    <div class="profile-field">
+      <label>Phone</label>
+      <input type="text" formControlName="phone" [readonly]="!isEditing" />
+    </div>
+
+    <div class="profile-field">
+      <label>Address</label>
+      <input type="text" formControlName="address" [readonly]="!isEditing" />
+    </div>
+
+    <div class="profile-field">
+      <label>Username</label>
+      <input type="text" formControlName="username" [readonly]="!isEditing" />
+    </div>
+
+    <p class="server-message" *ngIf="messageServer.length">
+      * {{ messageServer }}
+    </p>
+
+    <button
+      *ngIf="!isEditing"
+      (click)="toggleEdit()"
+      type="button"
+      class="edit-btn"
+    >
+      Edit
+    </button>
+    <button
+      *ngIf="isEditing"
+      (click)="updateProfile()"
+      type="button"
+      class="save-btn"
+    >
+      Save
+    </button>
+    <button
+      *ngIf="isEditing"
+      (click)="toggleEdit()"
+      type="button"
+      class="cancel-btn"
+    >
+      Cancel
+    </button>
+
+    <!-- 🔐 Change Password Button -->
+    <button
+      (click)="toggleChangePassword()"
+      type="button"
+      class="change-password-btn"
+    >
+      Change Password
+    </button>
+  </form>
+
+  <!-- 🔑 Change Password Form -->
+  <div *ngIf="isChangingPassword" class="password-container">
+    <h3>Change Password</h3>
+    <form [formGroup]="passwordForm">
+      <div class="profile-field">
+        <label>Old Password</label>
+        <input type="password" formControlName="old_password" />
+      </div>
+      <div class="profile-field">
+        <label>New Password</label>
+        <input type="password" formControlName="new_password" />
+      </div>
+      <div class="profile-field">
+        <label>Confirm Password</label>
+        <input type="password" formControlName="confirm_password" />
+      </div>
+      <p class="server-message" *ngIf="passwordMessage.length">
+        * {{ passwordMessage }}
+      </p>
+      <button (click)="changePassword()" type="button" class="save-btn">
+        Change Password
+      </button>
+      <button (click)="toggleChangePassword()" type="button" class="cancel-btn">
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>

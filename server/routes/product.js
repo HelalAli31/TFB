@@ -68,21 +68,33 @@ const allowUserOrAdmin = async (req, res, next) => {
 // Middleware to allow only admins
 const allowOnlyAdmin = async (req, res, next) => {
   try {
-    const clientJwt = req.headers.authorization; // Extract token from headers
-    if (!clientJwt) {
-      throw new Error("Missing Authorization token");
+    const clientJwt = req.headers.authorization;
+    console.log("🔍 Received Authorization Header:", clientJwt);
+
+    if (!clientJwt || !clientJwt.startsWith("Bearer ")) {
+      console.error("🚨 Missing or invalid token!");
+      return res.status(403).json({ message: "Missing or invalid token" });
     }
 
-    const verify = await verifyJWT(clientJwt); // Verify the token
-    const role = verify?.data?.[0]?.role;
-    if (role === "admin") {
-      req.user = verify.data[0]; // Attach user data to the request
-      return next(); // Proceed to the next middleware or route
+    const token = clientJwt.split(" ")[1]; // ✅ Extract token correctly
+    console.log("🔍 Extracted Token:", token);
+
+    const verify = await verifyJWT(token);
+    console.log("🔍 Decoded JWT Data:", verify);
+
+    // ✅ Fix role extraction
+    const user = Array.isArray(verify.data) ? verify.data[0] : verify.data;
+    console.log("🔍 Extracted User Data:", user);
+
+    if (!user || user.role !== "admin") {
+      console.error("🚨 Admin access required!");
+      return res.status(403).json({ message: "Admin access required" });
     }
 
-    throw new Error("Admin access required"); // If role is not admin
+    req.user = user; // ✅ Attach user data to request
+    next(); // Proceed to next middleware
   } catch (error) {
-    logger.error("Admin access error:", error);
+    console.error("❌ Admin access error:", error);
     return res
       .status(403)
       .json({ message: "Admin Access Required", error: error.message });
@@ -93,11 +105,12 @@ router.post("/topProducts", async (req, res, next) => {
   try {
     console.log("🔍 Fetching Top Products...");
     const result = await getTopProducts();
+    console.log("TOPPPP PRODUCTS:", result);
 
-    if (!result.length) {
-      console.log("⚠️ No top products found.");
-      return res.json([]); // ✅ Always return an empty array instead of exiting
-    }
+    // if (!result.length) {
+    //   console.log("⚠️ No top products found.");
+    //   return res.json([]); // ✅ Always return an empty array instead of exiting
+    // }
 
     console.log("✅ Top Products Found:", result);
     return res.json(result);
@@ -477,5 +490,67 @@ router.put(
     }
   }
 );
+router.put("/products/applyBulkSale", async (req, res) => {
+  try {
+    const { categories, salePercent, saleStartDate, saleEndDate } = req.body;
+
+    if (!categories || !salePercent || !saleStartDate || !saleEndDate) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+
+    console.log("📢 Bulk Sale Data Received:", req.body);
+
+    const salePercentDecimal = Number(salePercent) / 100;
+
+    // ✅ Fetch products from selected categories
+    const products = await productModel.find({ category: { $in: categories } });
+
+    if (!products.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found in selected categories",
+      });
+    }
+
+    // ✅ Apply sale price calculation
+    const bulkUpdates = products.map((product) => {
+      const salePrice = Math.round(product.price * (1 - salePercentDecimal));
+
+      return {
+        updateOne: {
+          filter: { _id: product._id },
+          update: {
+            $set: {
+              "sale.isOnSale": true,
+              "sale.salePercent": salePercent,
+              "sale.salePrice": salePrice,
+              "sale.saleStartDate": new Date(saleStartDate),
+              "sale.saleEndDate": new Date(saleEndDate),
+            },
+          },
+        },
+      };
+    });
+
+    console.log("🔄 Bulk update operations:", bulkUpdates);
+
+    if (bulkUpdates.length > 0) {
+      const result = await productModel.bulkWrite(bulkUpdates);
+      console.log("✅ Bulk update result:", result);
+    }
+
+    res.json({
+      success: true,
+      message: `Sale applied to ${bulkUpdates.length} products`,
+    });
+  } catch (error) {
+    console.error("❌ Error applying bulk sale:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error });
+  }
+});
 
 module.exports = router;

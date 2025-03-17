@@ -40,7 +40,6 @@ export class AdminAddProductComponent {
         saleEndDate: [''],
       }),
       details: this.fb.group({
-        customerType: [''], // Optional
         wattage: [null], // Optional
         capacity: [null], // Optional
       }),

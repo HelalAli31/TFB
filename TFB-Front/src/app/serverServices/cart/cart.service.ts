@@ -230,31 +230,44 @@ export class CartService {
   getUserId(): string | undefined {
     const token = this.getToken();
     if (!token) {
-      console.error('🚨 No token found in localStorage.');
+      console.warn('🚨 No token found in localStorage.');
       return undefined;
     }
 
     try {
-      const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT
-      console.log('🔍 Extracted Token Payload:', payload);
+      const payloadBase64 = token.split('.')[1];
+      if (!payloadBase64) {
+        console.error('🚨 Invalid JWT format. Missing payload.');
+        return undefined;
+      }
 
-      const userId = payload?.data?.[0]?._id || payload?.user_id || payload?.id;
+      const decodedPayload = JSON.parse(atob(payloadBase64)); // Decode JWT
+      console.log('🔍 Extracted Token Payload:', decodedPayload);
+
+      const userId =
+        decodedPayload?.data?._id ||
+        decodedPayload?.data?.[0]?._id ||
+        decodedPayload?.user_id ||
+        decodedPayload?.id;
 
       if (!userId) {
-        console.error('🚨 Extracted User ID is undefined or invalid!', payload);
+        console.error(
+          '🚨 Extracted User ID is undefined or invalid!',
+          decodedPayload
+        );
         return undefined;
       }
 
       return userId;
     } catch (error) {
-      console.error('❌ Error decoding token:', error);
+      console.error('❌ Error decoding JWT:', error);
       return undefined;
     }
   }
 
-  // 🔑 **Get Token**
+  // 🔑 **Get Token Safely**
   getToken(): string | null {
-    let token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
     return token ? token.replace(/^"(.*)"$/, '$1') : null;
   }
 }

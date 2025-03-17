@@ -8,11 +8,19 @@ if (!SECRET_KEY) {
 }
 
 // ✅ Generate JWT Token
-async function signJWT(data) {
+async function signJWT(user) {
   return new Promise((resolve, reject) => {
     jwt.sign(
-      { exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, data }, // 24 hours expiration
-      SECRET_KEY, // ✅ Ensure correct secret key
+      {
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24-hour expiration
+        data: {
+          _id: user._id,
+          role: user.role, // ✅ Ensure role is included
+          first_name: user.first_name,
+          email: user.email,
+        },
+      },
+      SECRET_KEY,
       (err, token) => {
         if (err) {
           console.error("❌ Error Generating Token:", err);

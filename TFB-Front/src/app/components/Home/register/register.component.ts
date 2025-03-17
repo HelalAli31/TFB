@@ -15,40 +15,60 @@ import { UserService } from 'src/app/serverServices/user/user.service';
 })
 export class RegisterComponent implements OnInit {
   public userForm: any;
-  public result: any = '';
+  public result: any = null;
   public messageServer = '';
   constructor(
     public dialogRef: MatDialogRef<RegisterComponent>,
     private formBuilder: FormBuilder,
     private userService: UserService
   ) {
+    // ✅ Form with all fields included
     this.userForm = this.formBuilder.group({
-      phone: ['', Validators.required],
-      first_name: ['', Validators.required],
-      password: ['', Validators.required],
-      last_name: ['', Validators.required],
+      first_name: ['', [Validators.required, Validators.minLength(2)]],
+      last_name: ['', [Validators.required, Validators.minLength(2)]],
+      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]], // ✅ Ensure valid email format
+      phone: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]], // ✅ Ensure valid phone number
+      address: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]], // ✅ Ensure password is at least 6 chars
     });
   }
 
   async signUp() {
-    if (this.getValidationValues()) {
-      this.result = await this.userService.signUP(this.userForm.value);
-    } else {
-      alert('תמלא את כל הפרטים בבקשה');
+    this.messageServer = ''; // Reset message
+    console.log('userForm:', this.userForm);
+    if (!this.getValidationValues()) {
+      this.messageServer = '❌ Please fill in all required fields correctly.';
+
+      return;
     }
-    console.log(this.result);
-    this.messageServer = this.result.message;
+
+    try {
+      const result = await this.userService.signUP(this.userForm.value);
+      console.log('✅ Signup result:', result);
+
+      if (result?.user) {
+        this.messageServer = '✅ Registration successful!';
+      } else {
+        this.messageServer = result.message || '❌ Signup failed. Try again.';
+      }
+    } catch (error) {
+      console.error('❌ Signup error:', error);
+      this.messageServer = '❌ An error occurred. Please try again.';
+    }
   }
 
-  getValidationValues() {
-    let validationSuccess = true;
-    for (var key in this.userForm) {
-      if (this.userForm.hasOwnProperty(key)) {
-        if (!this.userForm[key]?.length) validationSuccess = false;
-      }
+  getValidationValues(): boolean {
+    if (this.userForm.invalid) {
+      console.log('🚨 Form is invalid!', this.userForm.errors);
+      Object.keys(this.userForm.controls).forEach((key) => {
+        console.log(`Field: ${key}, Errors:`, this.userForm.get(key)?.errors);
+      });
+      return false;
     }
-    return validationSuccess;
+    return true;
   }
+
   ngOnInit(): void {}
   closeDialog() {
     this.dialogRef.close();

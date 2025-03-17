@@ -1,4 +1,6 @@
 <div class="Products_Container">
+  <app-bulk-sale></app-bulk-sale>
+
   <h2 class="Products_Title">All Products</h2>
 
   <div class="Filter_Bar">
@@ -20,8 +22,8 @@
         <option value="name">Name</option>
         <option value="price">Price (Low to High)</option>
         <option value="price_desc">Price (High to Low)</option>
-        <option value="stock">Stock (Low to High)</option>
-        <option value="stock_desc">Stock (High to Low)</option>
+        <option *ngIf="isAdmin" value="stock">Stock (Low to High)</option>
+        <option *ngIf="isAdmin" value="stock_desc">Stock (High to Low)</option>
       </select>
     </div>
 
@@ -46,19 +48,6 @@
         <option *ngFor="let brand of brands" [value]="brand">
           {{ brand }}
         </option>
-      </select>
-    </div>
-
-    <div class="Sort_Container">
-      <label>Customer Type:</label>
-      <select
-        [(ngModel)]="selectedCustomerType"
-        (change)="filterByCustomerType()"
-      >
-        <option value="All">All</option>
-        <option value="New">New</option>
-        <option value="Normal">Normal</option>
-        <option value="High Level">High Level</option>
       </select>
     </div>
   </div>

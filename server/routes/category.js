@@ -20,18 +20,33 @@ const upload = multer({ storage });
 // ✅ Middleware to allow only admins
 const allowOnlyAdmin = async (req, res, next) => {
   try {
-    const clientJwt = req.headers?.authorization;
-    if (!clientJwt) throw new Error("Missing Authorization token");
+    const clientJwt = req.headers.authorization;
+    console.log("🔍 Received Authorization Header:", clientJwt);
 
-    const verify = await verifyJWT(clientJwt);
-    const role = verify?.data?.[0]?.role;
-    if (role === "admin") {
-      req.user = verify.data[0];
-      return next();
+    if (!clientJwt || !clientJwt.startsWith("Bearer ")) {
+      console.error("🚨 Missing or invalid token!");
+      return res.status(403).json({ message: "Missing or invalid token" });
     }
 
-    throw new Error("Admin access required");
+    const token = clientJwt.split(" ")[1]; // ✅ Extract token correctly
+    console.log("🔍 Extracted Token:", token);
+
+    const verify = await verifyJWT(token);
+    console.log("🔍 Decoded JWT Data:", verify);
+
+    // ✅ Fix role extraction
+    const user = Array.isArray(verify.data) ? verify.data[0] : verify.data;
+    console.log("🔍 Extracted User Data:", user);
+
+    if (!user || user.role !== "admin") {
+      console.error("🚨 Admin access required!");
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    req.user = user; // ✅ Attach user data to request
+    next(); // Proceed to next middleware
   } catch (error) {
+    console.error("❌ Admin access error:", error);
     return res
       .status(403)
       .json({ message: "Admin Access Required", error: error.message });

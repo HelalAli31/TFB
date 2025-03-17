@@ -27,6 +27,7 @@ export class NavBarComponent implements OnInit {
   isMenuOpen: boolean = false; // Define isMenuOpen state
   apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
   public cartItems: any[] = [];
+  public firstName: string = ''; // Store user's first name
 
   constructor(
     public dialog: MatDialog,
@@ -88,6 +89,7 @@ export class NavBarComponent implements OnInit {
 
   logOut() {
     localStorage.removeItem('token');
+    localStorage.removeItem('name');
     window.location.reload();
   }
 
@@ -179,9 +181,21 @@ export class NavBarComponent implements OnInit {
       console.error('❌ Error fetching cart items:', error);
     }
   }
+  getTotalCartItems(): number {
+    return this.cartItems.reduce(
+      (total, item) => total + (item.amount || 1),
+      0
+    );
+  }
 
   async ngOnInit() {
     this.token = localStorage.getItem('token') || '';
+    if (this.token) {
+      const payload = await getPayload(); // Decode the JWT payload
+      if (payload && payload.data) {
+        this.firstName = localStorage.getItem('name') || '';
+      }
+    }
     this.getCategories();
     await this.loadCartItems();
     // ✅ Subscribe to cart updates so the cart count updates dynamically
@@ -189,5 +203,9 @@ export class NavBarComponent implements OnInit {
       console.log('🛒 Cart updated:', updatedCart);
       this.cartItems = updatedCart;
     });
+  }
+  onProfileUpdated(newFirstName: string) {
+    console.log('🔄 Navbar Updated First Name:', newFirstName);
+    this.firstName = newFirstName;
   }
 }

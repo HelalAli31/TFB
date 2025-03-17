@@ -17,7 +17,6 @@ export class ProductsComponent implements OnInit {
   allProducts: any[] = [];
   categories: string[] = [];
   brands: string[] = [];
-  customerTypes: string[] = ['New', 'Normal', 'High Level'];
   currentPage: number = 1;
   totalPages: number = 1;
   itemsPerPage: number = 30;
@@ -26,7 +25,6 @@ export class ProductsComponent implements OnInit {
   searchValue: string = '';
   selectedCategory: string = 'All';
   selectedBrand: string = 'All';
-  selectedCustomerType: string = 'All';
   searchResults: any[] = []; // ✅ Store search results separately
   public isAdmin: any;
   topProducts: any = []; // ✅ Store all top product IDs
@@ -42,7 +40,6 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.selectedCategory = params['category'] || 'All';
-      this.selectedCustomerType = params['customerType'] || 'All';
       this.fetchAllProducts();
       this.isAdmin = getIsAdmin();
       this.getTopProducts();
@@ -137,7 +134,6 @@ export class ProductsComponent implements OnInit {
           ice,
           option
         );
-        alert(`✅ Updated ${product.name} in cart!`);
       } else {
         console.log('🛒 Adding new item to cart');
         await this.cartService.addItemToCart({
@@ -150,7 +146,6 @@ export class ProductsComponent implements OnInit {
           option,
           full_price: finalPrice * quantity,
         });
-        alert(`✅ Added ${quantity}x ${product.name} to cart!`);
       }
 
       await this.cartService.refreshCart();
@@ -206,16 +201,6 @@ export class ProductsComponent implements OnInit {
             (product) =>
               product.brand?.toLowerCase() === this.selectedBrand.toLowerCase()
           );
-        }
-
-        if (this.selectedCustomerType !== 'All') {
-          filteredProducts = filteredProducts.filter((product) => {
-            if (this.selectedCustomerType === 'New')
-              return product.newCustomerDiscount;
-            if (this.selectedCustomerType === 'High Level')
-              return product.highLevelExclusive;
-            return true;
-          });
         }
       }
 
@@ -283,7 +268,6 @@ export class ProductsComponent implements OnInit {
         console.log('ADDDD TO TO2P');
         this.productService.addTopProduct(productId).subscribe({
           next: (response) => {
-            alert(`${response.message}`);
             console.log('Top product added:', response);
           },
           error: (error) => {
