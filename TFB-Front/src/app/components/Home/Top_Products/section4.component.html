@@ -6,38 +6,38 @@
     <h2 class="Category_Title m-4">TOP {{ category.key }}</h2>
     <div class="Product_Grid p-4">
       <div *ngFor="let product of category.value" class="Product_Card">
-        <img
-          [src]="getProductImage(product)"
-          (error)="onImageError($event, product)"
-          class="Product_Image"
-          alt="{{ product.name }}"
-          height="10%"
-          [routerLink]="['/product', product._id]"
-        />
+        <div class="product-image-container">
+          <img
+            [src]="getProductImage(product)"
+            (error)="onImageError($event, product)"
+            class="Product_Image"
+            alt="{{ product.name }}"
+            [routerLink]="['/product', product._id]"
+          />
+        </div>
 
         <div class="Product_Details">
-          <div [routerLink]="['/product', product._id]" class="row">
-            <h3 class="Product_Name col-12">{{ product.name }}</h3>
-            <p class="Product_Brand col-6">{{ product.brand }}</p>
+          <div [routerLink]="['/product', product._id]" class="product-info">
+            <h3 class="Product_Name">{{ product.name }}</h3>
+            <p class="Product_Brand">{{ product.brand }}</p>
 
-            <!-- ✅ Show sale price if applicable -->
-            <p class="Product_Price col-6 row">
+            <div class="price-container">
               <span
                 *ngIf="
                   product.sale?.isOnSale &&
                   product.price !== product.originalPrice
                 "
-                class="old-price col-4"
+                class="old-price"
               >
                 {{ product.originalPrice }}
               </span>
-              <span class="sale-price col-4" *ngIf="product.sale?.isOnSale">
+              <span class="sale-price" *ngIf="product.sale?.isOnSale">
                 {{ product.price }}₪
               </span>
-              <span *ngIf="!product.sale?.isOnSale">
+              <span class="regular-price" *ngIf="!product.sale?.isOnSale">
                 {{ product.price }} ₪
               </span>
-            </p>
+            </div>
           </div>
           <button
             *ngIf="isAdmin"

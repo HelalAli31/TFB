@@ -1,69 +1,145 @@
 /* Contact Container */
 .Contact_Container {
   display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Changed from center to better align content */
   background: #fff;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   padding: 30px;
   border-radius: 12px;
   max-width: 1000px;
   margin: auto;
+  gap: 20px; /* Add gap between wrapped elements */
 }
 
+a {
+  text-decoration: none; /* Removes underline from all anchor tags */
+}
 /* Left Side - Contact Info */
 .Contact_Info {
-  width: 40%;
+  width: calc(50% - 20px); /* Account for gap */
   text-align: left;
 }
 
-.Contact_Info h3 {
-  font-size: 22px;
+.contact-heading {
+  font-size: 28px;
+  font-weight: bold;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
 }
 
-.Contact_Info p {
+.contact-heading::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #34b814;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.contact-subheading {
   font-size: 16px;
   color: #555;
+  margin-bottom: 25px;
+}
+
+.contact-details-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
   margin-bottom: 20px;
 }
 
 .Contact_Detail {
   display: flex;
-  flex-direction: column; /* Stacks items vertically */
-  align-items: center; /* Centers them */
-}
-mat-icon {
-  margin-bottom: -3%;
-  color: #34b814;
+  align-items: flex-start;
+  margin-bottom: 15px;
 }
 
-.Contact_Detail i {
-  font-size: 18px;
-  color: #cc00ff;
+.location-details,
+.phone-details {
+  width: 100%;
+}
+
+.detail-icon {
   margin-right: 10px;
+  color: #34b814;
+  min-width: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.detail-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-text span {
+  display: block;
+  font-size: 14px;
+  color: #555;
+}
+
+.email-detail {
+  margin-top: 10px;
+}
+
+.email-detail h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+  color: #555;
+}
+
+mat-icon {
+  color: #34b814;
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
 }
 
 /* Social Media Icons */
 .Social_Media {
-  margin-top: 20px;
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
 }
 
 .Social_Media a {
-  font-size: 20px;
-  color: #cc00ff;
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
   transition: 0.3s ease-in-out;
 }
 
+.Social_Media a i {
+  font-size: 18px;
+  color: #cc00ff;
+}
+
 .Social_Media a:hover {
-  color: #a000cc;
+  background-color: #cc00ff;
+  transform: translateY(-3px);
+}
+
+.Social_Media a:hover i {
+  color: white;
 }
 
 /* Right Side - Contact Form */
 .Contact_Form {
-  width: 50%;
+  width: calc(50% - 20px); /* Account for gap */
 }
 
 .Input_Group {
@@ -78,6 +154,12 @@ mat-icon {
   border-radius: 6px;
   font-size: 16px;
   outline: none;
+  transition: border-color 0.3s;
+}
+
+.Input_Group input:focus,
+.Input_Group textarea:focus {
+  border-color: #34b814;
 }
 
 .Input_Group textarea {
@@ -89,18 +171,20 @@ mat-icon {
 .Send_Button {
   width: 100%;
   padding: 12px;
-  background: #239508;
+  background: #34b814;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
   transition: 0.3s ease-in-out;
 }
 
 .Send_Button:hover {
-  background: #a000cc;
+  background: #cc00ff;
 }
+
 .Contact_Title {
   font-size: 22px;
   font-weight: bold;
@@ -109,23 +193,155 @@ mat-icon {
   margin-bottom: 20px;
   text-align: center;
   position: relative;
-  display: inline-block; /* Makes the element fit its content */
-  padding-bottom: 8px; /* Space between text and line */
-}
-.img {
-  width: 17%;
-}
-.New_Row {
-  width: 100%; /* Ensures it takes full width */
-  text-align: center;
+  display: inline-block;
+  padding-bottom: 8px;
 }
 
-/* Underline effect */
 .Contact_Title::after {
   content: "";
   display: block;
-  width: 100%; /* Matches text width */
-  height: 4px; /* Line thickness */
-  background-color: #cc00ff; /* Line color */
-  margin: 5px auto 0; /* Centers the line */
+  width: 100%;
+  height: 4px;
+  background-color: #cc00ff;
+  margin: 5px auto 0;
+}
+
+.Contact_Section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  padding: 30px 15px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .Contact_Container {
+    padding: 25px;
+  }
+
+  .contact-heading {
+    font-size: 24px;
+  }
+
+  .contact-subheading {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .Contact_Container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .Contact_Info,
+  .Contact_Form {
+    width: 100%;
+  }
+
+  .Contact_Info {
+    margin-bottom: 30px;
+  }
+
+  .contact-details-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .Contact_Section {
+    padding: 20px 10px;
+    margin-bottom: 15px;
+  }
+
+  .contact-heading {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 576px) {
+  .Contact_Container {
+    padding: 15px;
+  }
+
+  .Contact_Section {
+    padding: 15px 10px;
+    margin-bottom: 10px;
+    border-width: 5px;
+  }
+
+  .contact-heading {
+    font-size: 20px;
+  }
+
+  .contact-subheading {
+    font-size: 14px;
+  }
+
+  .detail-text span {
+    font-size: 13px;
+  }
+
+  .Input_Group input,
+  .Input_Group textarea {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .Send_Button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .Social_Media {
+    gap: 10px;
+  }
+
+  .Social_Media a {
+    width: 32px;
+    height: 32px;
+  }
+
+  .Social_Media a i {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .Contact_Container {
+    padding: 12px;
+  }
+
+  .contact-heading {
+    font-size: 18px;
+  }
+
+  .contact-subheading {
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+
+  .detail-text span {
+    font-size: 12px;
+  }
+
+  .Input_Group {
+    margin-bottom: 12px;
+  }
+
+  .Input_Group input,
+  .Input_Group textarea {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .Input_Group textarea {
+    height: 100px;
+  }
+
+  .Send_Button {
+    padding: 8px;
+    font-size: 13px;
+  }
 }

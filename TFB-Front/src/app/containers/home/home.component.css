@@ -1,16 +1,17 @@
 .Main_Content {
   text-align: right;
   font-size: 16px;
+  width: 100%;
 }
 
 .Home_Image {
-  background-image: url("/assets/homepage.jpg"); /* ✅ Add leading slash */
+  background-image: url("/assets/homepage.jpg");
   height: 550px;
   width: 100%;
-  background-position: center; /* Adjust for better positioning */
-  background-repeat: no-repeat; /* Prevent repeating */
-  background-size: cover; /* Make sure the image covers the entire area */
-  background-attachment: fixed; /* Enables parallax scrolling effect */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
   position: relative;
 }
 
@@ -26,6 +27,13 @@
   font-size: 40px;
   font-weight: bold;
 }
+
+.subtitle {
+  color: #cc00ff !important;
+  font-size: 32px;
+  margin-right: 32%;
+}
+
 /* Contact Section Styling */
 .Contact_Section {
   width: 100%;
@@ -37,6 +45,7 @@
   padding: 50px 0;
   border-radius: 12px;
 }
+
 .Contact_Title {
   text-align: center;
   font-family: "Cinzel", serif;
@@ -46,4 +55,111 @@
   color: #cc00ff;
   margin-right: 5%;
   text-shadow: 1px 1px 2px grey, 0 0 1em grey, 0 0 0.2em grey;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .Home_Image {
+    height: 500px;
+  }
+
+  .Title {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 992px) {
+  .Home_Image {
+    height: 450px;
+    background-attachment: scroll;
+  }
+
+  .Title {
+    font-size: 32px;
+  }
+
+  .subtitle {
+    font-size: 24px;
+  }
+
+  .Contact_Title {
+    font-size: 220%;
+  }
+}
+
+@media (max-width: 768px) {
+  .Home_Image {
+    height: 400px;
+  }
+
+  .Home_Title {
+    top: 25%;
+  }
+
+  .Title {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 22px;
+    margin-right: 20%;
+  }
+
+  .Contact_Section {
+    padding: 30px 0;
+  }
+
+  .Contact_Title {
+    font-size: 180%;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .Home_Image {
+    height: 300px;
+  }
+
+  .Home_Title {
+    top: 20%;
+    left: 3%;
+  }
+
+  .Title {
+    font-size: 24px;
+    margin-bottom: 10px !important;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    margin-right: 10%;
+  }
+
+  .Contact_Section {
+    padding: 20px 0;
+    border-width: 5px;
+  }
+
+  .Contact_Title {
+    font-size: 150%;
+  }
+}
+
+@media (max-width: 400px) {
+  .Home_Image {
+    height: 250px;
+  }
+
+  .Title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    margin-right: 5%;
+  }
 }

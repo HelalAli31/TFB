@@ -1,358 +1,788 @@
-  /* NAVBAR CONTAINER */
-  .Nav_Container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 8px 12px;
-  }
-  .navbar {
-    height: 11%;
-  }
-  /* LEFT CONTAINER (LOGO & SEARCH) */
-  .Left_Container {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
+/* NAVBAR CONTAINER */
+.Nav_Container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  flex-wrap: wrap;
+}
 
-  /* LOGO & WEBSITE NAME */
-  .Logo_Container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  /* Search Bar */
-  /* 🔹 Search Bar */
-  .Search_Bar {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    padding: 5px;
-    border-radius: 20px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-    width: 200px; /* Adjust width */
-    position: relative;
-  }
+.navbar {
+  height: auto;
+  min-height: 120px;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
 
-  /* 🔹 Search Input */
-  .Search_Input {
-    border: none;
-    outline: none;
-    padding: 8px 35px 8px 10px; /* Space for icon */
-    width: 100%;
-    font-size: 14px;
-    border-radius: 20px;
-  }
+/* LEFT CONTAINER (LOGO) */
+.Left_Container {
+  display: flex;
+  align-items: center;
+  width: 25%;
+  min-width: 120px;
+  justify-content: flex-start; /* Force left alignment */
+}
 
-  /* 🔹 Search Icon - Move to the Right */
-  .Search_Icon {
-    position: absolute;
-    right: 10px;
-    color: #555;
+/* CENTER CONTAINER (SEARCH) */
+.Center_Container {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+  align-items: center;
+}
+
+/* RIGHT CONTAINER (LOGIN) */
+.Login_Container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Force right alignment */
+  width: 25%;
+}
+
+/* LOGO & WEBSITE NAME */
+.Logo_Container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-left: 0; /* Ensure no left margin */
+}
+
+.Logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 20%;
+  cursor: pointer;
+  object-fit: cover;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.Logo:hover {
+  transform: scale(1.05);
+}
+
+.Website_Name {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+  font-size: 20px;
+  justify-content: center;
+}
+
+.Website_Name div:first-child {
+  color: #cc00ff;
+}
+
+.Website_Name div:last-child {
+  font-weight: 600;
+}
+
+/* LOGIN ELEMENTS */
+.LoginDiv {
+  display: flex;
+  justify-content: flex-end; /* Force right alignment */
+  align-items: center;
+  gap: 5px;
+  height: 40px;
+}
+
+.welcome-text,
+.sign-out-text,
+.login-text {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.LoginImage {
+  margin-left: 5px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* SEARCH BAR */
+.Search_Bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 5px;
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+}
+
+.Search_Input {
+  border: none;
+  outline: none;
+  padding: 8px 35px 8px 10px;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 20px;
+}
+
+.Search_Icon {
+  position: absolute;
+  right: 10px;
+  color: #555;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* SEARCH RESULTS DROPDOWN */
+.Search_Results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.Search_Item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.Search_Item:hover {
+  background: #cc00ff;
+  color: white;
+}
+
+.Search_Item_Image {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid #cc00ff;
+  margin-right: 10px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.Search_Item_Text {
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+  transition: 0.3s;
+}
+
+.Search_Item:hover .Search_Item_Text {
+  color: white;
+}
+
+/* NAVBAR LINKS (BOTTOM) */
+.Nav_Links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  width: 100%;
+  order: 3;
+  margin-top: 20px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Nav Item with Icon and Text */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 60px;
+  justify-content: center;
+}
+
+.nav-icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.nav-icon {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 5px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-text {
+  font-size: 12px;
+  color: #333;
+  line-height: 1;
+  height: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* Custom icons alignment */
+.Cigarette_Icon,
+.Profile_Icon {
+  font-size: 20px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+/* Cart Container */
+.cart-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Wrapper for Cart Icon & Badge */
+.cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+/* Cart Icon */
+.cart-icon {
+  color: #e91e63;
+}
+
+/* Cart Badge - Positioned on Icon */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 4px;
+  border-radius: 50%;
+  min-width: 15px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* CATEGORY SECTION */
+.Category_Section {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  border-radius: 6px;
+  text-align: left;
+  z-index: 1000;
+  width: 600px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.Category_Section.show {
+  display: block;
+}
+
+.Category_Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.Category_Header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.View_All_Link {
+  color: #cc00ff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.View_All_Link:hover {
+  text-decoration: underline;
+}
+
+.Category_Footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  display: none;
+}
+
+.Close_Categories_Button {
+  background-color: #cc00ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* CATEGORY GRID */
+.Category_Grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+/* CATEGORY ITEM */
+.Category_Item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 6px;
+  background: #fff;
+  transition: 0.2s;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.Category_Item:hover {
+  background: #34b814;
+  color: white;
+  transform: scale(1.02);
+  padding: 10px;
+}
+
+.Category_Text {
+  font-size: 12px;
+  font-weight: bold;
+  color: black;
+  transition: 0.3s;
+  display: inline-block;
+  margin-right: 8%;
+  margin-top: 5px;
+}
+
+.Category_Item:hover .Category_Text {
+  color: white;
+  cursor: pointer;
+}
+
+/* CATEGORY LABELS */
+.Category_Labels {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.Category_Item:hover .Category_Labels {
+  display: flex;
+}
+
+/* LABEL STYLES */
+.Label {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 3px;
+  text-align: center;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.Label::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  margin-top: 3px;
+  transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.Label:hover::after {
+  background-color: white;
+}
+
+/* Remove underlines from all links */
+a {
+  text-decoration: none;
+}
+
+/* Touch device support for categories */
+@media (hover: none) {
+  .Dropdown {
     cursor: pointer;
-    font-size: 18px;
-  }
-
-  /* 🔹 Search Results Dropdown */
-  .Search_Results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: white;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
-    overflow: hidden;
-    max-height: 250px;
-    overflow-y: auto;
-    z-index: 1000;
-  }
-
-  /* 🔹 Each Search Result Item */
-  .Search_Item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    transition: 0.3s;
-    cursor: pointer;
-  }
-
-  .Search_Item:hover {
-    background: #cc00ff;
-    color: white;
-  }
-
-  /* 🔹 Search Image - Make Bigger */
-  .Search_Item_Image {
-    width: 50px; /* Bigger image */
-    height: 50px;
-    border-radius: 5px;
-    border: 1px solid #cc00ff;
-    margin-right: 10px;
-    object-fit: cover;
-    cursor: pointer;
-  }
-
-  /* 🔹 Search Text */
-  .Search_Item_Text {
-    font-size: 14px;
-    font-weight: bold;
-    color: black;
-    transition: 0.3s;
-  }
-
-  .Search_Item:hover .Search_Item_Text {
-    color: white;
-  }
-
-  /* 🔹 Responsive Adjustments */
-  @media (max-width: 768px) {
-    .Search_Bar {
-      width: 100%;
-    }
-  }
-
-  .Logo {
-    width: 60px;
-    border-radius: 19%;
-    height: auto;
-    margin-bottom: 2%;
-    cursor: pointer;
-  }
-
-  .Website_Name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-  }
-
-  /* SEARCH BAR */
-  .Search_Bar {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    padding: 4px;
-    border-radius: 15px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .Search_Input {
-    border: none;
-    outline: none;
-    padding: 4px;
-    width: 120px;
-    font-size: 12px;
-    border-radius: 15px;
-  }
-
-  .Search_Icon {
-    color: #555;
-    margin-left: 6px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  /* NAVBAR LINKS (CENTERED) */
-  .Nav_Links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    flex-grow: 1;
-    margin-right: 10%;
-  }
-
-  a {
-    font-size: 14px !important;
-    text-decoration: none;
-  }
-
-  /* LOGIN CONTAINER (RIGHT) */
-  .Login_Container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-
-  /* CATEGORY SECTION */
-  .Category_Section {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
-    padding: 12px;
-    border-radius: 6px;
-    text-align: left;
-    z-index: 1000;
-    width: 600px;
-    transition: opacity 0.2s ease-in-out;
   }
 
   .Category_Section.show {
     display: block;
   }
 
-  /* CATEGORY GRID */
-  .Category_Grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+  .Category_Footer {
+    display: block;
+  }
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1200px) {
+  .Nav_Links {
+    gap: 20px;
+  }
+
+  .Category_Section {
+    width: 500px;
+  }
+
+  .Logo {
+    width: 55px;
+    height: 55px;
+  }
+
+  .Website_Name {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 992px) {
+  .navbar {
+    min-height: 110px;
+  }
+
+  .Logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .Website_Name {
+    font-size: 16px;
+  }
+
+  .Nav_Links {
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .Category_Section {
+    width: 450px;
+  }
+
+  .Search_Bar {
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    min-height: 160px;
+  }
+
+  .Nav_Container {
+    flex-wrap: wrap;
+  }
+
+  /* First row: Logo and Login */
+  .Left_Container {
+    width: 50%;
+    justify-content: flex-start;
+  }
+
+  .Login_Container {
+    width: 50%;
+    justify-content: flex-end;
+  }
+
+  /* Second row: Search bar centered */
+  .Center_Container {
+    width: 100%;
+    order: 2;
+    margin-top: 15px;
+  }
+
+  .Search_Bar {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  .Nav_Links {
+    width: 100%;
+    justify-content: space-between;
+    padding: 5px 0;
+    margin-top: 15px;
+    overflow-x: auto;
+    order: 3;
     gap: 10px;
-    width: 100%;
   }
-  .navbar-brand {
-    cursor: pointer;
+
+  .Category_Grid {
+    grid-template-columns: repeat(3, 1fr);
   }
-  /* CATEGORY ITEM */
-  .Category_Item {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-radius: 6px;
-    background: #fff;
-    transition: 0.2s;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    flex-direction: column;
+
+  .Category_Section {
+    width: 90vw;
+    left: 50%;
+  }
+
+  .welcome-text,
+  .sign-out-text,
+  .login-text {
     font-size: 12px;
   }
 
-  /* Hover Effect */
-  .Category_Item:hover {
-    background: #34b814;
-    color: white;
-    transform: scale(1.02);
-    padding: 10px;
+  /* Show close button on mobile */
+  .Category_Footer {
+    display: block;
   }
 
-  /* CATEGORY IMAGE */
-  .Category_Image {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid #cc00ff;
-    margin-bottom: 4px;
-    cursor: pointer;
+  /* Make category section fixed position on mobile */
+  .Category_Section.show {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 1001;
   }
 
-  /* Category Text */
-  .Category_Text {
-    font-size: 12px;
-    font-weight: bold;
-    color: black;
-    transition: 0.3s;
-    display: inline-block;
-    margin-right: 8%;
+  /* Add overlay for mobile */
+  .Category_Section.show::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
   }
 
-  .Category_Item:hover .Category_Text {
-    color: white;
-    cursor: pointer;
+  .Logo {
+    width: 80px;
+    height: 80px;
   }
 
-  /* CATEGORY LABELS */
-  .Category_Labels {
-    width: 100%;
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 4px;
+  .Website_Name {
+    font-size: 15px;
   }
-  /* Cart Container */
-  .cart-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    min-height: 150px;
   }
 
-  /* Wrapper for Cart Icon & Badge */
-  .cart-icon-wrapper {
-    position: relative;
-    display: inline-block;
+  .Logo {
+    width: 40px;
+    height: 40px;
   }
 
-  /* Cart Icon */
-  .cart-icon {
-    font-size: 28px; /* Adjust icon size */
-    color: black;
-  }
-
-  /* Cart Badge - Positioned on Icon */
-  .cart-badge {
-    position: absolute;
-    top: -10px;
-    right: -1px;
-    background-color: red;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 50%;
-    min-width: 18px;
-    text-align: center;
-    line-height: 1;
-    transform: scale(0.9);
-  }
-
-  /* Cart Text */
-  .cart-text {
+  .Website_Name {
     font-size: 14px;
   }
 
-  .Category_Item:hover .Category_Labels {
-    display: flex;
-  }
-  .LoginDiv {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
+  .Nav_Links {
+    gap: 8px;
+    margin-top: 10px;
   }
 
-  /* LABEL STYLES */
-  .Label {
+  .Category_Grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .welcome-text {
+    display: none;
+  }
+
+  .sign-out-text,
+  .login-text {
+    font-size: 11px;
+  }
+
+  .Category_Section {
+    width: 95vw;
+  }
+
+  .nav-item {
+    height: 50px;
+  }
+
+  .nav-icon {
+    height: 20px;
+  }
+
+  .Search_Bar {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar {
+    min-height: 140px;
+  }
+
+  .Logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .Website_Name {
+    font-size: 12px;
+  }
+
+  .Search_Bar {
+    max-width: 95%;
+  }
+
+  .Nav_Links {
+    justify-content: space-around;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .nav-icon {
+    font-size: 18px;
+    height: 18px;
+  }
+
+  .nav-text {
     font-size: 10px;
-    font-weight: bold;
-    padding: 4px 8px;
-    border-radius: 3px;
-    text-align: center;
-    color: black;
+    height: 10px;
+  }
+}
+/* Touch device support for categories */
+/* Touch device support for categories */
+@media (hover: none) {
+  .Dropdown {
     cursor: pointer;
-    display: inline-block;
+    position: relative; /* Ensure positioning context */
   }
 
-  .Label::after {
+  /* Make the Products button look clickable */
+  .DropButton {
+    position: relative;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(
+      0,
+      0,
+      0,
+      0
+    ); /* Remove tap highlight on mobile */
+  }
+
+  /* Add a more visible dropdown indicator for touch devices */
+  .DropButton .nav-icon-container::after {
     content: "";
     display: block;
-    width: 100%;
-    height: 2px;
-    background-color: black;
-    margin-top: 3px;
-    transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #333;
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
-  .Label:hover::after {
+  /* Ensure the dropdown appears on click */
+  .Category_Section.show {
+    display: block;
+    z-index: 1001;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-y: auto;
+    width: 90vw;
+    max-width: 500px;
     background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
-  mat-icon {
-    margin-bottom: -7%;
-  }
-  /* RESPONSIVE DESIGN */
-  @media (max-width: 768px) {
-    .Category_Grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  /* Add overlay for better visibility */
+  .Category_Section.show::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
   }
 
-  @media (max-width: 480px) {
-    .Category_Grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  /* Make the close button more prominent */
+  .Category_Footer {
+    display: block;
+    padding: 10px 0;
+    margin-top: 15px;
   }
+
+  .Close_Categories_Button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: #cc00ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  /* Make category items more touch-friendly */
+  .Category_Item {
+    padding: 12px;
+    margin-bottom: 5px;
+  }
+
+  .Category_Item img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .Category_Text {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+}

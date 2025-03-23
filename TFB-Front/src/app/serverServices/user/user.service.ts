@@ -1,7 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import getPayload from '../Payload/getPayload';
-const USER_URL = 'http://localhost:5000/Auth/';
+import { environment } from '../../../environments/environment'; // Import environment
+
+const apiUrlBase = environment.apiUrl; // ✅ Set API base URL from environment
+
+const USER_URL = apiUrlBase + '/Auth/';
 
 @Injectable({
   providedIn: 'root',

@@ -5,46 +5,47 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 15px;
 }
 
-/* ✅ Center the Title */
 .Section2_Title {
   text-align: center;
   font-family: "Cinzel", serif;
   font-weight: bold;
-  font-size: 2.2rem; /* Scales better on tablets & phones */
+  font-size: 2.2rem;
   margin-bottom: 3%;
   color: #9e01c5;
   text-shadow: 1px 1px 2px grey, 0 0 1em grey, 0 0 0.2em grey;
 }
 
-/* ✅ Grid Layout */
 .Section2_Grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 6 columns on large screens */
   gap: 15px;
-  max-width: 90%;
+  max-width: 1200px;
   margin: auto;
+  width: 100%;
 }
 
-/* ✅ Category Box */
+.category-item-wrapper {
+  padding: 10px;
+}
+
 .Section2_Content {
   text-align: center;
+  width: 100%;
 }
 
-/* ✅ Category Story */
 .Category_Story {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  margin: 5px;
+  cursor: pointer;
 }
 
-/* ✅ Category Image */
-.Category_Image {
-  width: 110px;
-  height: 110px;
+.image-container {
+  overflow: hidden;
   border-radius: 50%;
   border: 4px solid #9e01c5;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -52,23 +53,57 @@
   transition: transform 0.3s ease-in-out;
 }
 
-.Category_Image:hover {
+.image-container:hover {
   transform: scale(1.1);
-  cursor: pointer;
 }
 
-/* ✅ Category Name */
+.Category_Image {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
 .Category_Name {
   font-size: 14px;
   font-weight: bold;
-  margin-top: 5px;
+  margin-top: 10px;
   text-align: center;
+  color: #333;
+  transition: color 0.3s ease;
 }
 
-/* 📱 **Responsive for iPads/Tablets (Portrait Mode)** */
-@media (max-width: 1024px) {
+.Category_Story:hover .Category_Name {
+  color: #9e01c5;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
   .Section2_Grid {
-    gap: 10px;
+    grid-template-columns: repeat(
+      5,
+      1fr
+    ); /* 5 columns on medium-large screens */
+  }
+
+  .Section2_Title {
+    font-size: 2rem;
+  }
+
+  .Category_Image {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 992px) {
+  .Section2_Grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on medium screens */
+  }
+
+  .Section2_Title {
+    font-size: 1.8rem;
   }
 
   .Category_Image {
@@ -77,15 +112,17 @@
   }
 
   .Category_Name {
-    font-size: 12px;
+    font-size: 13px;
   }
 }
 
-/* 📱 **Fix for iPhones (Portrait Mode & Small Devices)** */
 @media (max-width: 768px) {
   .Section2_Grid {
-    flex-direction: row;
-    justify-content: center;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on tablets */
+  }
+
+  .Section2_Title {
+    font-size: 1.6rem;
   }
 
   .Category_Image {
@@ -94,15 +131,18 @@
   }
 
   .Category_Name {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 
-/* 📱 **Fix for Extra Small Phones (iPhone SE, etc.)** */
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .Section2_Grid {
-    flex-direction: column; /* Stack items */
-    align-items: center;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on small devices */
+    gap: 10px;
+  }
+
+  .Section2_Title {
+    font-size: 1.4rem;
   }
 
   .Category_Image {
@@ -111,6 +151,30 @@
   }
 
   .Category_Name {
-    font-size: 9px;
+    font-size: 11px;
+  }
+
+  .category-item-wrapper {
+    padding: 5px;
+  }
+}
+
+@media (max-width: 400px) {
+  .Section2_Grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on very small devices */
+    gap: 8px;
+  }
+
+  .Section2_Title {
+    font-size: 1.2rem;
+  }
+
+  .Category_Image {
+    width: 65px;
+    height: 65px;
+  }
+
+  .Category_Name {
+    font-size: 10px;
   }
 }

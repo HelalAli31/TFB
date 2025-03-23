@@ -1,5 +1,5 @@
-<div class="row Section1_Main m-5">
-  <div class="col-7 Section1_contentText">
+<div class="row Section1_Main mx-3 mx-md-5 my-5">
+  <div class="col-12 col-md-7 Section1_contentText">
     <div class="elementor-widget-wrap elementor-element-populated hshs">
       <div
         class="elementor-element elementor-element-c1d3bbe section-title elementor-widget elementor-widget-heading animated fadeIn"
@@ -22,17 +22,17 @@
         data-widget_type="text-editor.default"
       >
         <div class="elementor-widget-container HH">
-          <h1 style="font-weight: bold" The Fog Bank>Who We Are</h1>
-          <p style="font-weight: bold; color: #34b814">The Fog Bank</p>
-          <h4>
+          <h1 class="about-heading">Who We Are</h1>
+          <p class="brand-name">The Fog Bank</p>
+          <h4 class="about-description">
             we are passionate about providing high-quality vaping products to
             our customers. Our mission is to bring you the latest innovations in
             the vaping industry while ensuring safety, satisfaction, and
             excellence in every product we offer.
           </h4>
-          <h2>What We Offer</h2>
+          <h2 class="offer-heading">What We Offer</h2>
 
-          <h4>
+          <h4 class="offer-list">
             ✔️ A wide selection of high-quality vape products <br />
             ✔️ Top brands known for reliability and performance<br />
             ✔️ Competitive prices with exclusive deals<br />
@@ -43,16 +43,14 @@
       </div>
     </div>
   </div>
-  <div class="col-3">
+  <div
+    class="col-12 col-md-5 col-lg-3 mt-4 mt-md-0 d-flex justify-content-center align-items-start"
+  >
     <img
-      width="552"
-      height="432"
       [src]="apiUrl + '/assets/KYStore.jpg'"
-      class="attachment-large size-large"
-      alt=""
+      class="about-image img-fluid"
+      alt="Store Image"
       loading="lazy"
-      srcset="assets/KYStore.jpg 552w, assets/KYStore.jpg 300w"
-      sizes="(max-width: 552px) 100vw, 552px"
     />
   </div>
 </div>

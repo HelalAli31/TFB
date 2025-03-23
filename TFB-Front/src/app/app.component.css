@@ -1,315 +1,63 @@
-/* NAVBAR CONTAINER */
-.Nav_Container {
+.app-container {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 8px 12px;
-}
-.navbar {
-  height: 11%;
-}
-/* LEFT CONTAINER (LOGO & SEARCH) */
-.Left_Container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-/* LOGO & WEBSITE NAME */
-.Logo_Container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-/* Search Bar */
-/* 🔹 Search Bar */
-.Search_Bar {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  padding: 5px;
-  border-radius: 20px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-  width: 200px; /* Adjust width */
-  position: relative;
-}
-
-/* 🔹 Search Input */
-.Search_Input {
-  border: none;
-  outline: none;
-  padding: 8px 35px 8px 10px; /* Space for icon */
-  width: 100%;
-  font-size: 14px;
-  border-radius: 20px;
-}
-
-/* 🔹 Search Icon - Move to the Right */
-.Search_Icon {
-  position: absolute;
-  right: 10px;
-  color: #555;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-/* 🔹 Search Results Dropdown */
-.Search_Results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-  overflow: hidden;
-  max-height: 250px;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
-/* 🔹 Each Search Result Item */
-.Search_Item {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  transition: 0.3s;
-  cursor: pointer;
-}
-
-.Search_Item:hover {
-  background: #cc00ff;
-  color: white;
-}
-.router-container {
-  margin-top: 20px; /* Adjust this value to move it lower */
-  padding-top: 20px; /* Extra padding to prevent overlap */
-  display: block; /* Ensure it takes space */
-}
-
-/* 🔹 Search Image - Make Bigger */
-.Search_Item_Image {
-  width: 50px; /* Bigger image */
-  height: 50px;
-  border-radius: 5px;
-  border: 1px solid #cc00ff;
-  margin-right: 10px;
-  object-fit: cover;
-  cursor: pointer;
-}
-
-/* 🔹 Search Text */
-.Search_Item_Text {
-  font-size: 14px;
-  font-weight: bold;
-  color: black;
-  transition: 0.3s;
-}
-
-.Search_Item:hover .Search_Item_Text {
-  color: white;
-}
-
-/* 🔹 Responsive Adjustments */
-@media (max-width: 768px) {
-  .Search_Bar {
-    width: 100%;
-  }
-}
-
-.Logo {
-  width: 60px;
-  border-radius: 19%;
-  height: auto;
-  margin-bottom: 2%;
-  cursor: pointer;
-}
-
-.Website_Name {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-}
-
-/* SEARCH BAR */
-.Search_Bar {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  padding: 4px;
-  border-radius: 15px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.Search_Input {
-  border: none;
-  outline: none;
-  padding: 4px;
-  width: 120px;
-  font-size: 12px;
-  border-radius: 15px;
-}
-
-.Search_Icon {
-  color: #555;
-  margin-left: 6px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-/* NAVBAR LINKS (CENTERED) */
-.Nav_Links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  flex-grow: 1;
-  margin-right: 19%;
-}
-
-a {
-  font-size: 14px !important;
-  text-decoration: none;
-}
-
-/* LOGIN CONTAINER (RIGHT) */
-.Login_Container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-/* CATEGORY SECTION */
-.Category_Section {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
-  padding: 12px;
-  border-radius: 6px;
-  text-align: left;
-  z-index: 1000;
-  width: 600px;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.Category_Section.show {
-  display: block;
-}
-
-/* CATEGORY GRID */
-.Category_Grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  width: 100%;
-}
-.navbar-brand {
-  cursor: pointer;
-}
-/* CATEGORY ITEM */
-.Category_Item {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  border-radius: 6px;
-  background: #fff;
-  transition: 0.2s;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
   flex-direction: column;
-  font-size: 12px;
-}
-
-/* Hover Effect */
-.Category_Item:hover {
-  background: #34b814;
-  color: white;
-  transform: scale(1.02);
-  padding: 10px;
-}
-
-/* CATEGORY IMAGE */
-.Category_Image {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #cc00ff;
-  margin-bottom: 4px;
-  cursor: pointer;
-}
-
-/* Category Text */
-.Category_Text {
-  font-size: 12px;
-  font-weight: bold;
-  color: black;
-  transition: 0.3s;
-  display: inline-block;
-  margin-right: 8%;
-}
-
-.Category_Item:hover .Category_Text {
-  color: white;
-  cursor: pointer;
-}
-
-/* CATEGORY LABELS */
-.Category_Labels {
+  min-height: 100vh; /* Full viewport height */
   width: 100%;
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
+  position: relative;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-.Category_Item:hover .Category_Labels {
-  display: flex;
-}
-
-/* LABEL STYLES */
-.Label {
-  font-size: 10px;
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 3px;
-  text-align: center;
-  color: black;
-  cursor: pointer;
-  display: inline-block;
-}
-
-.Label::after {
-  content: "";
-  display: block;
+.main-content {
+  flex: 1; /* Takes up available space */
   width: 100%;
-  height: 2px;
-  background-color: black;
-  margin-top: 3px;
-  transition: width 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  padding-bottom: 20px; /* Space for footer */
 }
 
-.Label:hover::after {
-  background-color: white;
+.router-container,
+.main-content-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
-mat-icon {
-  margin-bottom: -7%;
-}
-/* RESPONSIVE DESIGN */
 @media (max-width: 768px) {
-  .Category_Grid {
-    grid-template-columns: repeat(3, 1fr);
+  .router-container,
+  .main-content-wrapper {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 
-@media (max-width: 480px) {
-  .Category_Grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 576px) {
+  .router-container,
+  .main-content-wrapper {
+    padding-left: 5px;
+    padding-right: 5px;
   }
+}
+/* Add to your main app component CSS */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto; /* This is crucial - it allows the content to grow but not shrink */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+app-bottom-side {
+  flex-shrink: 0; /* Prevent the footer from shrinking */
 }

@@ -29,12 +29,11 @@
 
     <div class="Sort_Container">
       <label for="categoryFilter">Category:</label>
-      <select
-        [(ngModel)]="selectedCategory"
-        id="categoryFilter"
-        (change)="filterByCategory()"
-      >
-        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      <!-- In your products.component.html -->
+      <select [(ngModel)]="selectedCategory" (change)="filterByCategory()">
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
       </select>
     </div>
 

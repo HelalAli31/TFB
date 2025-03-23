@@ -1,8 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../../environments/environment'; // Import environment
 
-const CART_URL = 'http://localhost:5000/cart';
+const apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
+
+const CART_URL = apiUrl + '/cart';
 
 @Injectable({
   providedIn: 'root',

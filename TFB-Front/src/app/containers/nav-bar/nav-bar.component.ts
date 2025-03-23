@@ -155,16 +155,43 @@ export class NavBarComponent implements OnInit {
     this.hoveredCategory = null;
   }
 
+  // In your NavBarComponent
   getCategories() {
     this.catService.getCategories().subscribe(
       (categories: any[]) => {
+        console.log('🔍 Raw categories from API:', categories);
         this.categories = categories.map((category) => ({
           name: category.name,
         }));
+        console.log('🔍 Processed categories:', this.categories);
+
+        // Log category names for easier debugging
+        console.log(
+          '🔍 Category names:',
+          this.categories.map((c) => c.name)
+        );
       },
       (error: any) => {
         console.error('Error fetching categories:', error);
       }
+    );
+  }
+  filterByCategory(category: string) {
+    // Close the dropdown
+    this.isCategoriesVisible = false;
+
+    // Log the category
+    console.log('🔍 Navigating to category:', category);
+
+    // Use window.location.href for a full page navigation
+    window.location.href = `/products?category=${encodeURIComponent(category)}`;
+  }
+
+  logCategoryClick(category: any) {
+    console.log('🔍 Clicked on category:', category);
+    console.log(
+      '🔍 Available categories in nav:',
+      this.categories.map((c) => c.name)
     );
   }
 
@@ -207,5 +234,65 @@ export class NavBarComponent implements OnInit {
   onProfileUpdated(newFirstName: string) {
     console.log('🔄 Navbar Updated First Name:', newFirstName);
     this.firstName = newFirstName;
+  }
+  // Add these methods to your NavBarComponent class
+
+  // For touch devices - toggle categories on click
+  // For touch devices - toggle categories on click
+  // For touch devices - toggle categories on click
+  toggleCategoriesOnMobile(event: Event) {
+    // Always prevent default behavior first
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Check if we're on a touch device or small screen
+    if ('ontouchstart' in window || window.innerWidth <= 768) {
+      this.isCategoriesVisible = !this.isCategoriesVisible;
+
+      // If showing categories, add a click handler to the document to close when clicking outside
+      if (this.isCategoriesVisible) {
+        setTimeout(() => {
+          document.addEventListener('click', this.handleOutsideClick);
+        }, 0);
+      }
+    } else {
+      // For non-touch devices, navigate to products page
+      // Use setTimeout to ensure the preventDefault takes effect first
+      setTimeout(() => {
+        this.router.navigate(['/products']);
+      }, 10);
+    }
+
+    // Return false to further prevent default behavior
+    return false;
+  }
+
+  // Close categories on mobile
+  hideCategoriesOnMobile(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isCategoriesVisible = false;
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
+  // Handle clicks outside the category dropdown
+  handleOutsideClick = (event: MouseEvent) => {
+    const categorySection = document.querySelector('.Category_Section');
+    const dropdown = document.querySelector('.Dropdown');
+
+    if (
+      categorySection &&
+      dropdown &&
+      !categorySection.contains(event.target as Node) &&
+      !dropdown.contains(event.target as Node)
+    ) {
+      this.isCategoriesVisible = false;
+      document.removeEventListener('click', this.handleOutsideClick);
+    }
+  };
+
+  // Clean up event listeners when component is destroyed
+  ngOnDestroy() {
+    document.removeEventListener('click', this.handleOutsideClick);
   }
 }

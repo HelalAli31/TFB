@@ -1,11 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+/* Add these to your global styles */
 
+/* Add to global styles */
 html,
 body {
   height: 100%;
-  width: 100%;
-}
-body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Fix for iOS Safari viewport height issue */
+@supports (-webkit-touch-callout: none) {
+  body,
+  .app-container {
+    min-height: -webkit-fill-available;
+  }
 }

@@ -1,13 +1,18 @@
 <nav class="navbar navbar-light bg-light">
-  <div class="container-fluid Nav_Container row">
-    <!-- Left Side - Logo & Search Bar -->
-    <div class="Left_Container col-3">
+  <div class="container-fluid Nav_Container">
+    <!-- First Row: Logo (Left) and Login (Right) -->
+    <div class="Left_Container">
       <a class="Logo_Container" href="/">
         <img class="Logo" [src]="apiUrl + '/assets/logo.jpg'" alt="Logo" />
-        <span class="Website_Name">The Fog Bank</span>
+        <div class="Website_Name">
+          <div>The Fog</div>
+          <div>Bank</div>
+        </div>
       </a>
+    </div>
 
-      <!-- Search Bar -->
+    <!-- Center - Search Bar -->
+    <div class="Center_Container">
       <div class="Search_Bar">
         <input
           type="text"
@@ -34,95 +39,18 @@
               (error)="onImageError($event, product)"
               alt="{{ product.name }}"
               class="Search_Item_Image"
-              width="100px"
-              height="100px"
             />
-
             <span class="Search_Item_Text">{{ product?.name }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Center - Navbar Links -->
-    <div class="Nav_Links col-5">
-      <a class="navbar-brand" href="/">
-        <mat-icon fontIcon="home"></mat-icon> Home
-      </a>
-
-      <!-- Products Dropdown -->
-      <div
-        class="Dropdown"
-        (mouseenter)="showCategories()"
-        (mouseleave)="delayedHideCategories()"
-      >
-        <a class="navbar-brand DropButton" href="/products">
-          <i class="fas fa-smoking Cigarette_Icon"></i> Products
-        </a>
-
-        <!-- Dropdown Menu -->
-        <div
-          class="Category_Section"
-          [ngClass]="{ show: isCategoriesVisible }"
-          (mouseenter)="showCategories()"
-          (mouseleave)="delayedHideCategories()"
-        >
-          <div class="Category_Grid">
-            <div
-              *ngFor="let category of categories"
-              class="Category_Item"
-              (mouseenter)="showLabels(category.name)"
-              (mouseleave)="hideLabels()"
-            >
-              <img
-                [src]="apiUrl + '/assets/categories/' + category.name + '.jpg'"
-                alt="{{ category.name }}"
-                class="Search_Item_Image"
-                width="100px"
-                height="100px"
-                (click)="filterProducts(category.name, '')"
-                (error)="onImageCateError($event)"
-              />
-
-              <a
-                href="/products?category={{ category.name }}"
-                class="Category_Text"
-                (click)="filterProducts(category.name, '')"
-              >
-                {{ category.name }}
-              </a>
-            </div>
-            <!-- ✅ Closing `div` added here to properly terminate the loop -->
-          </div>
-        </div>
-      </div>
-
-      <a *ngIf="token" class="navbar-brand cart-container" href="/cart">
-        <div class="cart-icon-wrapper">
-          <mat-icon class="cart-icon" fontIcon="shopping_cart"></mat-icon>
-          <span *ngIf="getTotalCartItems() > 0" class="cart-badge">
-            {{ getTotalCartItems() }}
-          </span>
-        </div>
-        <span class="cart-text">Cart</span>
-      </a>
-      <a class="navbar-brand" href="/profile">
-        <i class="fas fa-user Profile_Icon"></i> Profile
-      </a>
-
-      <a class="navbar-brand" href="/contactUs">
-        <mat-icon fontIcon="mail"></mat-icon> Contact Us
-      </a>
-
-      <a class="navbar-brand" href="/aboutUs">
-        <mat-icon fontIcon="info"></mat-icon> About Us
-      </a>
-    </div>
-
     <!-- Right Side - Login -->
-    <div class="Login_Container col-1">
+    <div class="Login_Container">
       <div *ngIf="token" class="LoginDiv">
-        <a class="navbar-brand ml-2">Welcome, {{ firstName }} | Sign Out</a>
+        <span class="welcome-text">Welcome, {{ this.firstName }}</span>
+        <span class="sign-out-text" (click)="logOut()">Sign Out</span>
         <img
           class="LoginImage"
           [src]="apiUrl + '/assets/exit.svg'"
@@ -133,7 +61,7 @@
         />
       </div>
       <div *ngIf="!token" class="LoginDiv">
-        <a class="navbar-brand">Login</a>
+        <span class="login-text" (click)="openDialog()">Login</span>
         <img
           class="LoginImage"
           [src]="apiUrl + '/assets/log-in.png'"
@@ -143,6 +71,139 @@
           style="cursor: pointer"
         />
       </div>
+    </div>
+
+    <!-- Bottom - Navbar Links -->
+    <div class="Nav_Links">
+      <a class="navbar-brand nav-item" href="/">
+        <div class="nav-icon-container">
+          <mat-icon class="nav-icon" fontIcon="home"></mat-icon>
+          <span class="nav-text">Home</span>
+        </div>
+      </a>
+
+      <!-- Products Dropdown -->
+      <!-- Products Dropdown -->
+      <div
+        class="Dropdown"
+        (mouseenter)="showCategories()"
+        (mouseleave)="delayedHideCategories()"
+        (click)="toggleCategoriesOnMobile($event)"
+      >
+        <!-- Changed to div with no href and added preventDefault in the click handler -->
+        <div
+          class="navbar-brand nav-item DropButton"
+          (click)="$event.preventDefault()"
+        >
+          <div class="nav-icon-container">
+            <i class="fas fa-smoking nav-icon Cigarette_Icon"></i>
+            <span class="nav-text">Products</span>
+          </div>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div
+          class="Category_Section"
+          [ngClass]="{ show: isCategoriesVisible }"
+          (mouseenter)="showCategories()"
+          (mouseleave)="delayedHideCategories()"
+        >
+          <div class="Category_Header">
+            <h4>Categories</h4>
+            <a
+              href="/products"
+              class="View_All_Link"
+              (click)="filterProducts('', '')"
+              >View All Products</a
+            >
+          </div>
+          <div class="Category_Grid">
+            <div
+              *ngFor="let category of categories"
+              class="Category_Item"
+              (mouseenter)="showLabels(category.name)"
+              (mouseleave)="hideLabels()"
+            >
+              <!-- Image -->
+              <img
+                [src]="apiUrl + '/assets/categories/' + category.name + '.jpg'"
+                alt="{{ category.name }}"
+                class="Search_Item_Image"
+                (click)="
+                  filterByCategory(category.name);
+                  isCategoriesVisible = false;
+                  $event.preventDefault()
+                "
+                (error)="onImageCateError($event)"
+                style="cursor: pointer"
+              />
+
+              <!-- Text -->
+              <!-- In your nav-bar.component.html -->
+              <!-- Replace this in your nav-bar.component.html -->
+              <a
+                (click)="
+                  filterByCategory(category.name);
+                  isCategoriesVisible = false;
+                  $event.preventDefault()
+                "
+                class="Category_Text"
+                style="cursor: pointer"
+              >
+                {{ category.name }}
+              </a>
+            </div>
+          </div>
+          <div class="Category_Footer">
+            <button
+              class="Close_Categories_Button"
+              (click)="hideCategoriesOnMobile($event)"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <a
+        *ngIf="token"
+        class="navbar-brand nav-item cart-container"
+        href="/cart"
+      >
+        <div class="nav-icon-container">
+          <div class="cart-icon-wrapper">
+            <mat-icon
+              class="nav-icon cart-icon"
+              fontIcon="shopping_cart"
+            ></mat-icon>
+            <span *ngIf="getTotalCartItems() > 0" class="cart-badge">
+              {{ getTotalCartItems() }}
+            </span>
+          </div>
+          <span class="nav-text">Cart</span>
+        </div>
+      </a>
+
+      <a class="navbar-brand nav-item" href="/profile">
+        <div class="nav-icon-container">
+          <i class="fas fa-user nav-icon Profile_Icon"></i>
+          <span class="nav-text">Profile</span>
+        </div>
+      </a>
+
+      <a class="navbar-brand nav-item" href="/contactUs">
+        <div class="nav-icon-container">
+          <mat-icon class="nav-icon" fontIcon="mail"></mat-icon>
+          <span class="nav-text">Contact</span>
+        </div>
+      </a>
+
+      <a class="navbar-brand nav-item" href="/aboutUs">
+        <div class="nav-icon-container">
+          <mat-icon class="nav-icon" fontIcon="info"></mat-icon>
+          <span class="nav-text">About</span>
+        </div>
+      </a>
     </div>
   </div>
 </nav>

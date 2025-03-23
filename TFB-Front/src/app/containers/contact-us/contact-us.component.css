@@ -1,12 +1,15 @@
 /* Contact Us Page Background */
 .contactUs {
   background: url("../../../assets/contact.jpg") no-repeat center center/cover;
-  height: 100vh; /* Full height */
+  min-height: 100vh; /* Changed from height to min-height */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 50px 0;
+  padding: 50px 20px; /* Added horizontal padding */
   position: relative;
+  box-sizing: border-box; /* Ensure padding is included in width */
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Adding a Dark Overlay for better readability */
@@ -18,26 +21,122 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  z-index: 0; /* Ensure it's behind the content */
 }
+
 .content {
+  position: relative; /* Ensure proper stacking context */
   z-index: 1;
-  width: 90%;
+  width: 100%;
+  max-width: 1200px; /* Limit width on large screens */
+  margin: 0 auto;
 }
 
 .Contact_Title {
   text-align: center;
   font-family: "Cinzel", serif;
   font-weight: bold;
-  font-size: 236%;
-  margin-bottom: 3%;
-  font-size: 330%;
+  font-size: 3.3rem;
+  margin-bottom: 30px;
   color: #cc00ff;
-  margin-right: 5%;
   text-shadow: 1px 1px 2px grey, 0 0 1em grey, 0 0 0.2em grey;
+  padding: 0 15px;
 }
+
 .Contact_Contain {
   border: solid black 7px !important;
-  border-radius: 4%;
-  width: 70%;
-  margin-left: 15%;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.95
+  ); /* Add slight background for better readability */
+  overflow: hidden; /* Ensure content doesn't overflow */
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .Contact_Title {
+    font-size: 3rem;
+  }
+
+  .Contact_Contain {
+    width: 95%;
+  }
+}
+
+@media (max-width: 992px) {
+  .contactUs {
+    padding: 40px 15px;
+  }
+
+  .Contact_Title {
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+  }
+
+  .Contact_Contain {
+    border-width: 6px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .contactUs {
+    padding: 30px 10px;
+  }
+
+  .Contact_Title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .Contact_Contain {
+    width: 100%;
+    border-width: 5px !important;
+    border-radius: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .contactUs {
+    padding: 20px 10px;
+    min-height: calc(100vh - 60px); /* Account for potential navbar height */
+  }
+
+  .Contact_Title {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+
+  .Contact_Contain {
+    border-width: 4px !important;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .contactUs {
+    padding: 15px 5px;
+  }
+
+  .Contact_Title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .Contact_Contain {
+    border-width: 3px !important;
+    border-radius: 10px;
+  }
+}
+
+/* Fix for iOS Safari viewport height issue */
+@supports (-webkit-touch-callout: none) {
+  .contactUs {
+    min-height: -webkit-fill-available;
+  }
 }

@@ -1,18 +1,17 @@
 <div class="Section2_Main">
   <h1 class="mt-5 Section2_Title">Categories</h1>
-  <div class="Section2_Grid row justify-content-center align-items-center">
-    <div
-      *ngFor="let c of cate; let i = index"
-      class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center"
-    >
+  <div class="Section2_Grid">
+    <div *ngFor="let c of cate; let i = index" class="category-item-wrapper">
       <div class="Section2_Content">
         <div class="Category_Story" (click)="filterByCategory(c.name)">
-          <img
-            [src]="apiUrl + '/assets/categories/' + c.name + '.jpg'"
-            class="Category_Image"
-            alt="{{ c.name }} Image"
-            (error)="onImageError($event)"
-          />
+          <div class="image-container">
+            <img
+              [src]="apiUrl + '/assets/categories/' + c.name + '.jpg'"
+              class="Category_Image"
+              alt="{{ c.name }} Image"
+              (error)="onImageError($event)"
+            />
+          </div>
           <h4 class="Category_Name">{{ c.name }}</h4>
         </div>
       </div>

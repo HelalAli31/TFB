@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/serverServices/productService/product.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CartService } from 'src/app/serverServices/cart/cart.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
@@ -34,25 +34,131 @@ export class ProductsComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private cartService: CartService,
+    private router: Router,
     public dialog: MatDialog
   ) {}
 
+  private routeSubscription: any;
+
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      this.selectedCategory = params['category'] || 'All';
-      this.fetchAllProducts();
-      this.isAdmin = getIsAdmin();
-      this.getTopProducts();
+    // Initialize products and categories first
+    this.fetchAllProducts().then(() => {
+      // Clean up any existing subscription
+      if (this.routeSubscription) {
+        this.routeSubscription.unsubscribe();
+      }
+
+      // After products are loaded, subscribe to route parameter changes
+      this.routeSubscription = this.route.queryParams.subscribe((params) => {
+        console.log('🟡 ROUTE PARAMS:', params);
+
+        // Process the category parameter
+        const categoryParam = params['category']
+          ? params['category'].trim()
+          : 'All';
+        console.log('🔵 Processing category parameter:', categoryParam);
+
+        if (categoryParam !== 'All') {
+          // Try to find an exact match first
+          const exactMatch = this.categories.find(
+            (cat) => cat === categoryParam
+          );
+          if (exactMatch) {
+            this.selectedCategory = exactMatch;
+            console.log(
+              '🔵 Found exact category match:',
+              this.selectedCategory
+            );
+          } else {
+            // Try to find a partial match
+            const partialMatch = this.findMatchingCategory(categoryParam);
+            if (partialMatch) {
+              this.selectedCategory = partialMatch;
+              console.log(
+                '🔵 Found partial category match:',
+                this.selectedCategory
+              );
+            } else {
+              this.selectedCategory = 'All';
+              console.log('🔵 No matching category found, using All');
+            }
+          }
+        } else {
+          this.selectedCategory = 'All';
+        }
+
+        console.log('🔵 Final selected category:', this.selectedCategory);
+
+        // Now apply the filtering with the correct category
+        this.loadProducts();
+      });
+    });
+
+    this.isAdmin = getIsAdmin();
+    this.getTopProducts();
+  }
+
+  // Clean up subscription when component is destroyed
+  ngOnDestroy() {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
+
+  // Helper method to find a matching category
+  findMatchingCategory(searchCategory: string): string | null {
+    if (!searchCategory || !this.categories || this.categories.length === 0) {
+      return null;
+    }
+
+    const searchLower = searchCategory.toLowerCase();
+    console.log('🔍 Finding match for:', searchLower);
+    console.log('🔍 Available categories:', this.categories);
+
+    // First try exact match
+    const exactMatch = this.categories.find(
+      (category) => category.toLowerCase() === searchLower
+    );
+    if (exactMatch) {
+      console.log('🔍 Found exact match:', exactMatch);
+      return exactMatch;
+    }
+
+    // Then try partial match
+    const partialMatch = this.categories.find(
+      (category) =>
+        category.toLowerCase().includes(searchLower) ||
+        searchLower.includes(category.toLowerCase())
+    );
+
+    if (partialMatch) {
+      console.log('🔍 Found partial match:', partialMatch);
+    } else {
+      console.log('🔍 No match found');
+    }
+
+    return partialMatch || null;
+  }
+
+  fetchAllProducts(): Promise<void> {
+    return new Promise((resolve) => {
+      this.productService.getProducts().subscribe(
+        (data: any) => {
+          console.log('📦 All Products fetched:', data.products);
+          this.allProducts = data.products;
+
+          this.extractFilters();
+
+          resolve();
+        },
+        (error) => {
+          console.error('Error fetching products:', error);
+          resolve(); // Resolve even on error to continue the flow
+        }
+      );
     });
   }
 
-  fetchAllProducts() {
-    this.productService.getProducts().subscribe((data: any) => {
-      this.allProducts = data.products;
-      this.extractFilters();
-      this.loadProducts();
-    });
-  }
   async openQuantityDialog(product: any) {
     console.log(`📌 Opening Quantity Dialog for: ${product.name}`);
 
@@ -167,10 +273,20 @@ export class ProductsComponent implements OnInit {
   }
 
   extractFilters() {
-    this.categories = [
-      'All',
-      ...new Set(this.allProducts.map((p) => p.category?.name || 'Unknown')),
+    // Extract unique categories - handle categories as objects
+    const uniqueCategories = [
+      ...new Set(
+        this.allProducts
+          .filter((p) => p.category && p.category.name) // Filter out null or invalid categories
+          .map((p) => p.category.name)
+      ),
     ];
+
+    console.log('🔍 Unique category names found:', uniqueCategories);
+
+    this.categories = ['All', ...uniqueCategories];
+    console.log('🔍 Updated categories dropdown with:', this.categories);
+
     this.brands = [
       'All',
       ...new Set(
@@ -178,6 +294,7 @@ export class ProductsComponent implements OnInit {
       ),
     ];
   }
+
   async loadProducts() {
     try {
       const cartItems = await this.cartService.getCartItems();
@@ -186,14 +303,35 @@ export class ProductsComponent implements OnInit {
       let filteredProducts =
         this.searchResults.length > 0
           ? [...this.searchResults]
-          : [...this.allProducts]; // Use searchResults if they exist
+          : [...this.allProducts];
+
+      console.log('🔍 Selected Category for filtering:', this.selectedCategory);
+
+      // Log all available categories from products
+      const availableCategories = filteredProducts.map(
+        (p) => p.category?.name || 'Unknown'
+      );
+      console.log('🔍 Available categories in products:', [
+        ...new Set(availableCategories),
+      ]);
 
       // Apply filters only when not searching
       if (this.searchValue.trim() === '') {
         if (this.selectedCategory !== 'All') {
-          filteredProducts = filteredProducts.filter(
-            (product) => product.category?.name === this.selectedCategory
-          );
+          console.log('🔍 Filtering by category:', this.selectedCategory);
+
+          // Filter by category name - comparing with category.name
+          filteredProducts = filteredProducts.filter((product) => {
+            // Get the category name from the category object
+            const categoryName = product.category?.name || '';
+            const matches = categoryName === this.selectedCategory;
+
+            console.log(
+              `Product: ${product.name}, Category: "${categoryName}", Selected: "${this.selectedCategory}", Matches: ${matches}`
+            );
+
+            return matches;
+          });
         }
 
         if (this.selectedBrand !== 'All') {
@@ -204,22 +342,43 @@ export class ProductsComponent implements OnInit {
         }
       }
 
+      console.log(
+        '🔍 After filtering, product count:',
+        filteredProducts.length
+      );
+
       // Apply sorting
+      console.log(`🔄 Sorting by: ${this.sortBy} (${this.order})`);
       filteredProducts.sort((a, b) => {
         if (this.sortBy === 'name') {
           return this.order === 'asc'
-            ? a.name.localeCompare(b.name)
-            : b.name.localeCompare(a.name);
+            ? (a.name || '').localeCompare(b.name || '')
+            : (b.name || '').localeCompare(a.name || '');
         } else if (this.sortBy === 'price') {
-          return this.order === 'asc' ? a.price - b.price : b.price - a.price;
+          const aPrice = a.sale?.isOnSale
+            ? a.sale.salePrice || a.price
+            : a.price;
+          const bPrice = b.sale?.isOnSale
+            ? b.sale.salePrice || b.price
+            : b.price;
+          return this.order === 'asc' ? aPrice - bPrice : bPrice - aPrice;
         } else if (this.sortBy === 'stock') {
           return this.order === 'asc'
-            ? a.quantity - b.quantity
-            : b.quantity - a.quantity;
+            ? (a.quantity || 0) - (b.quantity || 0)
+            : (b.quantity || 0) - (a.quantity || 0);
         }
         return 0;
       });
 
+      console.log(
+        '🔍 After sorting, first few products:',
+        filteredProducts.slice(0, 3).map((p) => p.name)
+      );
+
+      // Rest of your code...
+      // Apply pagination, etc.
+
+      // Update the UI with the filtered and sorted products
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       this.products = filteredProducts
         .slice(startIndex, startIndex + this.itemsPerPage)
@@ -230,27 +389,22 @@ export class ProductsComponent implements OnInit {
               String(product._id)
           );
 
-          console.log(
-            `📦 Product: ${product.name} (ID: ${product._id}), In Cart: ${
-              cartItem ? '✅ YES' : '❌ NO'
-            }, Cart Quantity: ${cartItem ? cartItem.amount : 0}`
-          );
-
           return {
             ...product,
-            isInCart: !!cartItem, // ✅ True if product exists in cart
-            cartQuantity: cartItem ? cartItem.amount : 0, // ✅ Store existing cart quantity
+            isInCart: !!cartItem,
+            cartQuantity: cartItem ? cartItem.amount : 0,
           };
         });
 
-      console.log(
-        '✅ Products loaded with updated cart status:',
-        this.products
-      );
+      console.log('✅ Final products to display:', this.products.length);
+
+      // Calculate total pages
+      this.totalPages = Math.ceil(filteredProducts.length / this.itemsPerPage);
     } catch (error) {
       console.error('❌ Error loading products:', error);
     }
   }
+
   addToTopProducts(productId: string) {
     console.log('ADDDD TO TO1P');
 
@@ -357,13 +511,45 @@ export class ProductsComponent implements OnInit {
       this.fetchAllProducts(); // ✅ Reload full product list
     }
   }
-
   changeSorting() {
+    console.log(`🔄 Changing sorting to: ${this.sortBy}`);
+
+    // Parse the sortBy value to determine the field and order
+    if (this.sortBy === 'price_desc') {
+      this.sortBy = 'price';
+      this.order = 'desc';
+    } else if (this.sortBy === 'stock_desc') {
+      this.sortBy = 'stock';
+      this.order = 'desc';
+    } else if (this.sortBy === 'price' || this.sortBy === 'stock') {
+      this.order = 'asc';
+    } else {
+      // Default for 'name' and any other values
+      this.sortBy = 'name';
+      this.order = 'asc';
+    }
+
+    console.log(`🔄 Parsed sorting: ${this.sortBy} (${this.order})`);
+
+    this.currentPage = 1; // Reset to first page when sorting changes
     this.loadProducts();
   }
 
   filterByCategory() {
     this.currentPage = 1;
+
+    // Update the URL to reflect the selected category
+    const queryParams =
+      this.selectedCategory === 'All'
+        ? {}
+        : { category: this.selectedCategory };
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: 'merge', // Keep other query params
+    });
+
+    // Also apply the filtering directly
     this.loadProducts();
   }
 

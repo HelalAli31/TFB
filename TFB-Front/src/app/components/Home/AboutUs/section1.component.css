@@ -1,15 +1,14 @@
 .Section1_Main {
-  margin-top: 7%;
+  margin-top: 5%;
   font-size: 20px;
 }
 
 .Section1_contentText {
   font-size: 19px;
-  word-break: break-word; /* Ensures words wrap properly */
-  direction: ltr; /* Left-to-right text flow */
-  text-align: left; /* Aligns text to the left */
-  max-width: 50%; /* Limits width to make text wrap into multiple rows */
-  line-height: 1.6; /* Improves readability by increasing spacing */
+  word-break: break-word;
+  direction: ltr;
+  text-align: left;
+  line-height: 1.6;
 }
 
 .BB {
@@ -17,13 +16,16 @@
   text-indent: 20px;
   font-size: 40px;
 }
+
 .HH {
   margin-left: 5%;
   text-align: left !important;
 }
+
 .elementor-widget-container {
   text-align: center;
 }
+
 .Title {
   text-align: center;
   font-family: "Cinzel", serif;
@@ -34,4 +36,126 @@
   margin-right: 5%;
   text-shadow: 1px 1px 2px rgb(166, 165, 165), 0 0 1em grey,
     0 0 0.2em rgb(164, 164, 164);
+}
+
+.about-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.about-heading {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.brand-name {
+  font-weight: bold;
+  color: #34b814;
+  font-size: 1.5rem;
+}
+
+.about-description,
+.offer-list {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.offer-heading {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .Section1_Main {
+    margin-top: 4%;
+  }
+
+  .BB {
+    font-size: 35px;
+  }
+
+  .about-heading {
+    font-size: 1.8rem;
+  }
+
+  .brand-name {
+    font-size: 1.3rem;
+  }
+
+  .offer-heading {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .Section1_Main {
+    margin-top: 3%;
+  }
+
+  .Section1_contentText {
+    font-size: 17px;
+    max-width: 100%;
+  }
+
+  .BB {
+    font-size: 30px;
+  }
+
+  .HH {
+    margin-left: 0;
+  }
+
+  .about-heading {
+    font-size: 1.6rem;
+  }
+
+  .brand-name {
+    font-size: 1.2rem;
+  }
+
+  .about-description,
+  .offer-list {
+    font-size: 0.95rem;
+  }
+
+  .offer-heading {
+    font-size: 1.2rem;
+    margin-top: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .Section1_Main {
+    margin-top: 2%;
+  }
+
+  .Section1_contentText {
+    font-size: 16px;
+  }
+
+  .BB {
+    font-size: 25px;
+    text-indent: 10px;
+  }
+
+  .about-heading {
+    font-size: 1.4rem;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .about-description,
+  .offer-list {
+    font-size: 0.9rem;
+  }
+
+  .offer-heading {
+    font-size: 1.1rem;
+    margin-top: 1rem;
+  }
 }

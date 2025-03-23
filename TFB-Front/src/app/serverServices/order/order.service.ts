@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment'; // Import environment
+
+const apiUrlBase = environment.apiUrl; // ✅ Set API base URL from environment
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
-  private apiUrl = 'http://localhost:5000/orders';
+  private apiUrl = apiUrlBase + '/orders';
 
   constructor(private http: HttpClient) {}
 
