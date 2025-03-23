@@ -10,6 +10,22 @@ const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes//orders");
 //Routes
 const app = express();
+const allowedOrigins = ["http://localhost:4200", "https://thefogbank.online"];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // only if you’re using cookies
+  })
+);
+
 const path = require("path");
 
 app.use(cors());
