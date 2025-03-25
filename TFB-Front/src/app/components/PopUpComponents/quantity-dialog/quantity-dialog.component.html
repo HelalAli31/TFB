@@ -37,7 +37,9 @@
   </div>
 
   <!-- 🔹 Show NIC and ICE only if category is normal -->
-  <ng-container *ngIf="data.product.category?.name === 'Normal'">
+  <ng-container
+    *ngIf="data.product.category?._id == '67759289eca0466ca85bfaba'"
+  >
     <h3>Nic</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('nic', -1)">➖</button>
@@ -70,7 +72,9 @@
   </ng-container>
 
   <!-- 🔹 Show Only Ice if Category is Salt -->
-  <ng-container *ngIf="data.product.category?.name === 'Salt'">
+  <ng-container
+    *ngIf="data.product.category?._id === '67759289eca0466ca85bfac3'"
+  >
     <h3>Ice</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>

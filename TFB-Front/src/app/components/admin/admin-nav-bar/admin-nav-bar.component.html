@@ -76,7 +76,7 @@
 
     <!-- Right Side - Login -->
     <div class="Login_Container">
-      <div *ngIf="token" class="LoginDiv">
+      <div *ngIf="token" class="LoginDiv" (click)="logOut()">
         <a class="navbar-brand ml-2">Sign Out</a>
         <img
           class="LoginImage"
@@ -87,7 +87,7 @@
           style="cursor: pointer"
         />
       </div>
-      <div *ngIf="!token" class="LoginDiv">
+      <div *ngIf="!token" class="LoginDiv" (click)="openDialog()">
         <a class="navbar-brand">Login</a>
         <img
           class="LoginImage"

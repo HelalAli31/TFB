@@ -1,6 +1,7 @@
 /* Cart Container */
 .cart-container {
   max-width: 900px;
+  width: 95%;
   margin: 30px auto;
   padding: 20px;
   background: #fff;
@@ -11,7 +12,7 @@
 /* Cart Title */
 .cart-title {
   text-align: center;
-  font-size: 26px;
+  font-size: clamp(22px, 5vw, 26px);
   font-weight: bold;
   margin-bottom: 20px;
   color: #6a0dad;
@@ -28,8 +29,8 @@
 /* Cart Item */
 .cart-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
   padding: 15px;
   margin: 10px 0;
   background: white;
@@ -39,7 +40,7 @@
 }
 
 .cart-item:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 /* Product Image */
@@ -52,6 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .cart-image {
@@ -63,7 +65,9 @@
 /* Product Details */
 .cart-details {
   flex: 1;
+  min-width: 200px;
   margin-left: 15px;
+  margin-bottom: 15px;
 }
 
 .cart-name {
@@ -92,10 +96,13 @@
   padding: 8px 12px;
   border-radius: 10px;
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  justify-content: space-between;
 }
 
 .quantity-btn {
-  background: #6a0dad; /* Purple color */
+  background: #6a0dad;
   color: white;
   border: none;
   font-size: 20px;
@@ -113,7 +120,7 @@
 
 /* Quantity Box */
 .quantity-box {
-  width: 50px;
+  width: 40px;
   height: 36px;
   background: white;
   text-align: center;
@@ -124,6 +131,7 @@
   margin: 0 10px;
   line-height: 36px;
   transition: transform 0.2s;
+  flex-shrink: 0;
 }
 
 .quantity-box:hover {
@@ -140,11 +148,14 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
+  margin-top: 15px;
+  width: 100%;
+  max-width: 300px;
 }
 
 .remove-button:hover {
   background: #c82333;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 /* Cart Summary */
@@ -154,7 +165,7 @@
 }
 
 .total-price {
-  font-size: 22px;
+  font-size: clamp(18px, 5vw, 22px);
   font-weight: bold;
   color: #28a745;
   text-shadow: 2px 2px 4px rgba(40, 167, 69, 0.4);
@@ -170,20 +181,27 @@
 
 .editQuantity {
   color: white;
-  border: 1px solid blacl;
+  border: 1px solid black;
   padding: 10px;
   font-size: 13px;
   cursor: pointer;
   border-radius: 20%;
+  flex-shrink: 0;
 }
 
 .editQuantity:hover {
   background: #540b99;
 }
 
+.editQuantity:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 /* Quantity Slider Styling */
 .quantity-slider {
-  width: 150px; /* Adjust the width as necessary */
+  width: 100%;
+  max-width: 150px;
   -webkit-appearance: none;
   height: 8px;
   background: #ddd;
@@ -232,7 +250,7 @@
 
 /* Buy Now Button */
 .buy-now-button {
-  background: #6a0dad; /* Purple */
+  background: #6a0dad;
   color: white;
   border: none;
   font-size: 18px;
@@ -244,10 +262,12 @@
   display: inline-block;
   transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
   box-shadow: 0 4px 8px rgba(106, 13, 173, 0.3);
+  width: 100%;
+  max-width: 300px;
 }
 
 .buy-now-button:hover {
-  background: #540b99; /* Darker purple */
+  background: #540b99;
   transform: scale(1.05);
   box-shadow: 0 6px 12px rgba(106, 13, 173, 0.4);
 }
@@ -255,14 +275,17 @@
 .buy-now-button:active {
   transform: scale(0.95);
 }
+
 .sale-price {
   color: red;
   font-weight: bold;
   font-size: 18px;
 }
+
 /* Container for Nic/Ice levels */
 .nic-ice-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
@@ -270,6 +293,8 @@
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 300px;
 }
 
 /* Individual Nic/Ice item */
@@ -280,6 +305,7 @@
   text-align: center;
   padding: 5px 10px;
   flex: 1;
+  width: 100%;
 }
 
 /* Nicotine & Ice Sliders */
@@ -327,4 +353,87 @@
   flex-direction: column;
   align-items: center;
   margin-top: 10px;
+  width: 100%;
+}
+
+/* Media queries for different screen sizes */
+@media (min-width: 768px) {
+  .cart-item {
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cart-details {
+    margin-bottom: 0;
+  }
+
+  .controls-container {
+    width: auto;
+    margin-left: 15px;
+    margin-top: 0;
+  }
+
+  .remove-button {
+    width: auto;
+    margin-top: 0;
+    margin-left: 15px;
+  }
+
+  .nic-ice-container {
+    flex-direction: row;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cart-item {
+    justify-content: center;
+  }
+
+  .cart-image-container {
+    margin-bottom: 15px;
+  }
+
+  .controls-container {
+    order: 3;
+    width: 100%;
+  }
+
+  .remove-button {
+    order: 4;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-container {
+    padding: 15px 10px;
+  }
+
+  .cart-title {
+    font-size: 22px;
+  }
+
+  .cart-name {
+    font-size: 16px;
+  }
+
+  .cart-price {
+    font-size: 14px;
+  }
+
+  .editQuantity {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .quantity-box {
+    font-size: 16px;
+    width: 30px;
+  }
+
+  .buy-now-button {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
 }

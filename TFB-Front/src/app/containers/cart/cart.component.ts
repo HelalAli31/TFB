@@ -32,6 +32,7 @@ export class CartComponent implements OnInit {
           ...item,
           amount: item.amount || 1,
         }));
+        console.log(this.cartItems[0].product_id.category);
       } else {
         console.warn('⚠️ No items found in cart.');
         this.cartItems = [];

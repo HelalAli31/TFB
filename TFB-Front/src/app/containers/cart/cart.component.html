@@ -78,11 +78,12 @@
       </div>
 
       <!-- Nicotine & Ice Levels -->
+      <!-- Nicotine & Ice Levels -->
       <div
         class="nic-ice-container"
         *ngIf="item.nic !== null || item.ice !== null"
       >
-        <div class="nic-ice-item">
+        <div class="nic-ice-item" *ngIf="item.nic !== null">
           <label>🧪 Nicotine:</label>
           <input
             type="range"
@@ -96,7 +97,7 @@
           <span class="nic-ice-value">{{ item.nic }} mg</span>
         </div>
 
-        <div class="nic-ice-item">
+        <div class="nic-ice-item" *ngIf="item.ice !== null">
           <label>❄ Ice Level:</label>
           <input
             type="range"
