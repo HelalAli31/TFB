@@ -10,7 +10,12 @@ const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes//orders");
 //Routes
 const app = express();
-const allowedOrigins = ["http://localhost:4200", "https://thefogbank.online"];
+const allowedOrigins = [
+  "http://localhost:4200",
+  "https://thefogbank.online",
+  "https://www.thefogbank.online",
+  "https://tfb-bice.vercel.app",
+];
 app.get("/", (req, res) => {
   res.send("✅ TFB backend is alive and running on Render!");
 });
