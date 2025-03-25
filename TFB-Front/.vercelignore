@@ -1,0 +1,12 @@
+node_modules
+.git
+.angular
+dist
+*.zip
+*.mp4
+*.mov
+*.psd
+*.ai
+*.ttf
+*.otf
+.DS_Store
