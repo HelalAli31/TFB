@@ -103,6 +103,7 @@ export class ProductsComponent implements OnInit {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+    this.selectedCategory = 'All';
   }
 
   // Helper method to find a matching category

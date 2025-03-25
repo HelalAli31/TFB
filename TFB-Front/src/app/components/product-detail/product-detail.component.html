@@ -13,36 +13,14 @@
     <!-- Right Side: Product Info -->
     <div class="product-details-container">
       <h2 class="product-title">{{ product.name }}</h2>
+
       <p class="product-brand">
         Brand: <span>{{ product.brand }}</span>
       </p>
 
-      <!-- Price Section -->
-      <div class="price-section">
-        <p *ngIf="isCurrentlyOnSale(product.sale)" class="original-price">
-          <span *ngIf="product.price !== product.sale.salePrice">
-            {{ product.price }} ₪
-          </span>
-        </p>
-        <p *ngIf="isCurrentlyOnSale(product.sale)" class="sale-price">
-          {{ product.sale.salePrice }} ₪
-        </p>
-        <p *ngIf="!isCurrentlyOnSale(product.sale)" class="regular-price">
-          {{ product.price }} ₪
-        </p>
-        <h5
-          *ngIf="
-            isCurrentlyOnSale(product.sale) &&
-            product.price !== product.sale.salePrice
-          "
-        >
-          * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
-        </h5>
-      </div>
-
       <!-- Product Details -->
       <div class="product-details-card" *ngIf="product.details">
-        <h3 class="section-title">Product Details</h3>
+        <h3 class="section-title">Product Details:</h3>
         <div class="decorative-line"></div>
 
         <ng-container *ngFor="let key of getDetailKeys()">
@@ -75,7 +53,7 @@
         <!-- Display "Options" only once -->
         <div *ngIf="product.details?.options?.length">
           <strong>Options:</strong>
-          <ul class="option-list">
+          <ul class="option-list mt-3">
             <li
               *ngFor="let option of product.details.options"
               [class.selected-option]="selectedOption === option.option"
@@ -86,7 +64,31 @@
           </ul>
         </div>
       </div>
-
+      <!-- Price Section -->
+      <div class="price-section">
+        <p *ngIf="isCurrentlyOnSale(product.sale)" class="original-price">
+          <span *ngIf="product.price !== product.sale.salePrice">
+            <span style="color: black; font-size: 90%">Price:</span
+            >{{ product.price }} ₪
+          </span>
+        </p>
+        <p *ngIf="isCurrentlyOnSale(product.sale)" class="sale-price">
+          <span style="color: black; font-size: 90%">Price:</span>
+          {{ product.sale.salePrice }} ₪
+        </p>
+        <p *ngIf="!isCurrentlyOnSale(product.sale)" class="regular-price">
+          <span style="color: black; font-size: 90%">Price:</span>
+          {{ product.price }} ₪
+        </p>
+        <h5
+          *ngIf="
+            isCurrentlyOnSale(product.sale) &&
+            product.price !== product.sale.salePrice
+          "
+        >
+          * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
+        </h5>
+      </div>
       <!-- Add/Edit to Cart Button -->
       <button
         class="view-button"

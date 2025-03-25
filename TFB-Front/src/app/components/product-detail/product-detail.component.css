@@ -7,18 +7,24 @@
   max-width: 1200px;
   margin: 0 auto;
   gap: 50px; /* Slightly larger gap for better spacing */
+  border: double 5px grey;
 }
 
 /* Product Image - Ensure uniform size */
 .product-detail-image {
   width: 100%;
-  max-width: 500px; /* Set a standard max width */
-  height: 500px; /* Set a fixed height for consistency */
-  object-fit: cover; /* Ensure image covers area without stretching */
+  max-width: 300px;
+  height: 400px;
+  object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   transition: transform 0.25s ease-in-out;
+
+  /* High-DPI rendering trick */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
+
 /* Style for Selected Option */
 .selected-option {
   background: #6a0dad !important;
@@ -56,6 +62,7 @@
   font-weight: bold;
   color: #222;
   margin-bottom: 12px;
+  text-decoration: underline;
 }
 
 /* Brand */
