@@ -119,20 +119,30 @@ export class NavBarComponent implements OnInit {
   onImageError(event: any, product: any) {
     console.log(`⚠️ Image failed to load: ${event.target.src}`);
 
-    // Check for color variation
-    if (product?.details?.options?.length > 0) {
-      const option = product.details.options[0]?.option;
-      if (option) {
-        const fallbackImage = `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
-        console.log(`🔄 Trying fallback image: ${fallbackImage}`);
-
-        event.target.src = fallbackImage; // Try alternative image
-        return;
-      }
+    // Check if we're already using the default image to prevent infinite loop
+    if (event.target.src.includes('default.jpg')) {
+      console.log('🛑 Already using default image, stopping error handling');
+      return;
     }
 
-    // ✅ Final fallback to default image
-    console.log('❌ Both images missing, using default.');
+    // Check if we're using a color variation and need to try the base image
+    if (
+      event.target.src.includes('_') &&
+      !event.target.src.includes('default.jpg')
+    ) {
+      // Try the base product image without color variation
+      const baseImage = `${this.apiUrl}/assets/products/${product.name}.jpg`;
+      console.log(`🔄 Trying base image: ${baseImage}`);
+
+      // Set a flag to track that we've already tried the fallback
+      event.target.setAttribute('data-tried-fallback', 'true');
+      event.target.src = baseImage;
+      return;
+    }
+
+    // If we get here, both the color variation and base image failed
+    // or we're not using a color variation - use default image
+    console.log('❌ Using default image as final fallback');
     event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
 

@@ -158,17 +158,23 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    // ✅ Ensure isUserRegistered always returns an array
-    const existingUser = await isUserRegistered(email);
-
-    if (existingUser.length > 0) {
-      // ✅ This will not crash anymore
+    // Check if username already exists - don't check password for registration
+    const existingUsername = await usersModel.findOne({ username });
+    if (existingUsername) {
       return res
         .status(400)
-        .json({ message: `❌ User ${email} already exists.` });
+        .json({ message: `❌ Username ${username} is already taken.` });
     }
 
-    // ✅ Create new user with hashed password
+    // Check if email already exists
+    const existingEmail = await usersModel.findOne({ email });
+    if (existingEmail) {
+      return res
+        .status(400)
+        .json({ message: `❌ Email ${email} is already registered.` });
+    }
+
+    // Create new user
     const newUser = await createUser({
       first_name,
       last_name,

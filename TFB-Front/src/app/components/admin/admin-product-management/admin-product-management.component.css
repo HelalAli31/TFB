@@ -1,20 +1,22 @@
 /* General Styles */
 .admin-products-container {
-  padding: 20px;
+  padding: 15px;
   max-width: 1200px;
   margin: 0 auto;
   background: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 95%;
 }
 
 /* 🔍 Search Bar Styling */
-/* 🔍 Styled Search Bar with Dropdown */
 .search-container {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
 }
 
 .search-dropdown {
@@ -24,10 +26,12 @@
   font-size: 14px;
   cursor: pointer;
   background: #f9f9f9;
+  min-width: 120px;
 }
 
 .search-input {
   flex: 1;
+  min-width: 200px;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -40,17 +44,19 @@
 }
 
 .table-wrapper {
-  max-height: 500px; /* ✅ Set max height for scroll */
-  overflow-y: auto; /* ✅ Enable vertical scrolling */
-  border: 1px solid #ddd; /* ✅ Add border */
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto; /* Enable horizontal scrolling for small screens */
+  border: 1px solid #ddd;
   border-radius: 5px;
+  margin-bottom: 20px;
 }
 
-/* ✅ Fix Table Headers */
+/* Table Styling */
 .product-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  min-width: 650px; /* Ensure table doesn't get too narrow */
 }
 
 .product-table thead {
@@ -65,27 +71,49 @@
   color: white;
   padding: 10px;
   text-align: left;
+  white-space: nowrap; /* Prevent header text from wrapping */
+}
+
+/* Set specific widths for columns */
+.product-table th:first-child,
+.product-table td:first-child {
+  width: 70px;
+}
+
+.product-table th:last-child,
+.product-table td:last-child {
+  width: 140px; /* Make actions column wider */
+  min-width: 140px;
 }
 
 .product-table td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle; /* Center content vertically */
 }
 
 .product-table img {
   width: 50px;
-  height: auto;
+  height: 50px;
+  object-fit: cover;
   border-radius: 5px;
 }
-/* Buttons */
+
+/* Buttons - Make them more visible and touchable */
 .edit-btn,
 .delete-btn {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: none;
   cursor: pointer;
   border-radius: 4px;
   transition: 0.3s;
   font-size: 14px;
+  font-weight: bold;
+  display: block; /* Make buttons block level */
+  width: 100%;
+  margin: 5px 0;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow for better visibility */
 }
 
 .edit-btn {
@@ -117,14 +145,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
-  padding: 25px;
+  padding: 20px;
   border-radius: 10px;
   text-align: center;
-  width: 350px;
+  width: 90%;
+  max-width: 350px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -145,6 +175,8 @@
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .save-btn {
@@ -169,4 +201,47 @@
 
 .cancel-btn:hover {
   background-color: #bbb;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-dropdown {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .product-table th,
+  .product-table td {
+    padding: 8px 5px;
+    font-size: 14px;
+  }
+}
+
+/* For very small screens, optimize the table display */
+@media (max-width: 480px) {
+  .admin-products-container h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .table-wrapper {
+    margin: 0 -10px; /* Extend slightly beyond container to maximize space */
+  }
+
+  .product-table {
+    font-size: 12px;
+  }
+
+  .product-table img {
+    width: 40px;
+    height: 40px;
+  }
 }
