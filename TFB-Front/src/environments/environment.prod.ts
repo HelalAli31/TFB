@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://thefogbank.online/server',
+  apiUrl: 'https://tfb-ydjk.onrender.com',
 };
