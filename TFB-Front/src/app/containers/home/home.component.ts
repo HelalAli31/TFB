@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { interval, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { CategoryService } from 'src/app/serverServices/categoryService/category.service';
+import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
   previewImage: string | null = null;
   selectedImage: File | null = null;
   selectedSlideName: string = 'slide1.jpg';
+  public isAdmin: any;
 
   constructor(
     private http: HttpClient,
@@ -32,6 +34,7 @@ export class HomeComponent implements OnInit {
       `${environment.apiUrl}/assets/sliders/slide4.jpg`,
     ];
     this.startAutoSlide();
+    this.isAdmin = getIsAdmin();
   }
 
   startAutoSlide(): void {
