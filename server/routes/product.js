@@ -469,7 +469,28 @@ router.put(
           console.log(`✅ Saved option image: ${optionImagePath}`);
         }
       }
+      newName = updatedData.name;
 
+      if (product.details?.options) {
+        var oldImagePath = path.join(
+          productImagesDir,
+          `${product.name}_${product.details.options[0].option}.jpg`
+        );
+      } else
+        var oldImagePath = path.join(productImagesDir, `${product.name}.jpg`);
+      var newImagePath = path.join(productImagesDir, `${newName}.jpg`);
+
+      // If name is changed, rename the image file
+      if (product.name !== newName) {
+        console.log(`🔄 Renaming product from ${product.name} to ${newName}`);
+
+        category.name = newName;
+
+        if (fs.existsSync(oldImagePath)) {
+          await fs.rename(oldImagePath, newImagePath);
+          console.log(`✅ Renamed image: ${oldImagePath} → ${newImagePath}`);
+        }
+      }
       // ✅ Update product in MongoDB
       const updatedProduct = await productModel.findByIdAndUpdate(
         id,

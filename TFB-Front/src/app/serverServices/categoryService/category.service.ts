@@ -51,6 +51,16 @@ export class CategoryService {
     });
   }
 
+  updateSliders(sliderName: string, image?: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('sliderName', sliderName);
+    if (image) formData.append('image', image);
+
+    return this.http.post(`${this.apiUrl}/updateSlider`, formData, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
   deleteCategory(categoryId: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/deleteCategory`,

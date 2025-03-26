@@ -1,10 +1,74 @@
 <div class="Main_Content">
-  <div class="Home_Image">
+  <div
+    class="Home_Image"
+    [style.background-image]="'url(' + getCurrentSlideUrl() + ')'"
+  >
+    <!-- Slider Navigation Arrows -->
+    <div class="slider-controls">
+      <button
+        class="slider-arrow slider-arrow-left"
+        (click)="prevSlide()"
+        aria-label="Previous slide"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button
+        class="slider-arrow slider-arrow-right"
+        (click)="nextSlide()"
+        aria-label="Next slide"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Slider Indicators -->
+    <div class="slider-indicators">
+      <button
+        *ngFor="let slide of slides; let i = index"
+        [class.active]="i === currentSlideIndex"
+        (click)="goToSlide(i)"
+        [attr.aria-label]="'Go to slide ' + (i + 1)"
+      ></button>
+    </div>
+
+    <!-- Title -->
     <div class="Home_Title">
-      <h1 class="mb-5 Title">THE FOG BANK</h1>
+      <h1 class="Title">THE FOG BANK</h1>
       <h1 class="subtitle">Vape Are Us</h1>
     </div>
   </div>
+
+  <!-- UPDATE SLIDERS -->
+  <div class="slider-update-container">
+    <h3>Update Slider Image</h3>
+
+    <label for="slider-select">Select Slide:</label>
+    <select [(ngModel)]="selectedSlideName" id="slider-select">
+      <option
+        *ngFor="let slide of slides; let i = index"
+        [value]="'slide' + (i + 1) + '.jpg'"
+      >
+        Slide {{ i + 1 }}
+      </option>
+    </select>
+
+    <!-- 👇 Custom Upload Button -->
+    <label for="slider-file" class="custom-file-upload">Choose Image</label>
+    <input type="file" id="slider-file" (change)="onFileSelected($event)" />
+
+    <div *ngIf="previewImage" class="preview-box">
+      <p><strong>Preview:</strong></p>
+      <img [src]="previewImage" class="preview-img" />
+      <button
+        (click)="uploadSliderImage()"
+        class="XXXX"
+        [disabled]="!selectedImage"
+      >
+        Upload
+      </button>
+    </div>
+  </div>
+
   <app-section2></app-section2>
   <app-section4></app-section4>
   <app-section1></app-section1>

@@ -4,6 +4,7 @@ const Category = require("../../models/categorySchema"); // Ensure this model ex
 
 // ✅ Define the correct path for category images in the backend server
 const categoriesDir = path.join(__dirname, "../../assets/categories");
+const slidersDir = path.join(__dirname, "../../assets/sliders");
 
 // ✅ Get All Categories
 const getAllCategories = async () => {
@@ -42,6 +43,20 @@ const addCategory = async (categoryName, imageFile) => {
   }
 };
 
+const updateSlider = async (newName, imageFile) => {
+  try {
+    const newImagePath = path.join(slidersDir, `${newName}`);
+
+    // If a new image is uploaded, replace the old one
+    if (imageFile) {
+      await fs.writeFile(newImagePath, imageFile.buffer);
+      console.log(`✅ Updated image for : ${newName}`);
+    }
+  } catch (error) {
+    console.error("❌ Error updating slider:", error);
+    return null;
+  }
+};
 // ✅ Update a Category (Name & Image)
 const updateCategory = async (categoryId, newName, imageFile) => {
   try {
@@ -105,4 +120,5 @@ module.exports = {
   updateCategory,
   deleteCategory,
   checkIfCategoryAlreadyExists,
+  updateSlider,
 };

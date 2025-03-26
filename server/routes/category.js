@@ -7,6 +7,7 @@ const {
   getCategoryById,
   deleteCategory,
   checkIfCategoryAlreadyExists,
+  updateSlider,
 } = require("../controller/category/categoryController"); // ✅ Correct path
 
 const { verifyJWT } = require("../controller/JWT/jwt");
@@ -123,6 +124,26 @@ router.post(
         return res.status(404).json({ message: "Category not found" });
 
       return res.status(200).json({ message: "Category updated!", category });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "GENERAL ERROR", error: error.message });
+    }
+  }
+);
+router.post(
+  "/updateSlider",
+  allowOnlyAdmin,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const { sliderName } = req.body;
+      if (!sliderName)
+        return res.status(400).json({ message: "Missing parameters" });
+
+      const slider = await updateSlider(sliderName, req.file);
+
+      return res.status(200).json({ message: "Slider updated!", slider });
     } catch (error) {
       return res
         .status(500)

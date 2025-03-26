@@ -276,7 +276,6 @@ export class EditProductDialogComponent {
 
     const updatedProduct = this.editProductForm.value;
     const formData = new FormData();
-
     formData.append('name', updatedProduct.name);
     formData.append('brand', updatedProduct.brand);
     formData.append('category', updatedProduct.category);
