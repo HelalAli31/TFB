@@ -469,28 +469,52 @@ router.put(
           console.log(`✅ Saved option image: ${optionImagePath}`);
         }
       }
-      newName = updatedData.name;
+      const newName = updatedData.name;
+      console.log("PRODUCT:", product.details);
 
-      if (product.details?.options) {
-        var oldImagePath = path.join(
-          productImagesDir,
-          `${product.name}_${product.details.options[0].option}.jpg`
-        );
-      } else
-        var oldImagePath = path.join(productImagesDir, `${product.name}.jpg`);
-      var newImagePath = path.join(productImagesDir, `${newName}.jpg`);
+      const options = product.details.get("options");
 
-      // If name is changed, rename the image file
-      if (product.name !== newName) {
-        console.log(`🔄 Renaming product from ${product.name} to ${newName}`);
+      if (Array.isArray(options) && options.length > 0) {
+        console.log("🟢 Product has options");
 
-        category.name = newName;
+        for (const opt of options) {
+          const oldImagePath = path.join(
+            productImagesDir,
+            `${product.name}_${opt.option}.jpg`
+          );
+          const newImagePath = path.join(
+            productImagesDir,
+            `${newName}_${opt.option}.jpg`
+          );
 
-        if (fs.existsSync(oldImagePath)) {
-          await fs.rename(oldImagePath, newImagePath);
-          console.log(`✅ Renamed image: ${oldImagePath} → ${newImagePath}`);
+          if (product.name !== newName) {
+            if (fs.existsSync(oldImagePath)) {
+              await fs.promises.rename(oldImagePath, newImagePath);
+              console.log(`✅ Renamed: ${oldImagePath} → ${newImagePath}`);
+            } else {
+              console.warn(`⚠️ Image not found: ${oldImagePath}`);
+            }
+          }
+        }
+      } else {
+        console.log("🟡 Product has NO options");
+
+        const oldImagePath = path.join(productImagesDir, `${product.name}.jpg`);
+        const newImagePath = path.join(productImagesDir, `${newName}.jpg`);
+
+        if (product.name !== newName) {
+          console.log(`🔄 Renaming product from ${product.name} to ${newName}`);
+          updatedData.name = newName;
+
+          if (fs.existsSync(oldImagePath)) {
+            await fs.promises.rename(oldImagePath, newImagePath);
+            console.log(`✅ Renamed image: ${oldImagePath} → ${newImagePath}`);
+          } else {
+            console.warn(`⚠️ Image not found: ${oldImagePath}`);
+          }
         }
       }
+
       // ✅ Update product in MongoDB
       const updatedProduct = await productModel.findByIdAndUpdate(
         id,
