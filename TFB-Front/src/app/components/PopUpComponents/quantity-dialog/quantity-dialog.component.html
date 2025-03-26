@@ -10,7 +10,14 @@
         *ngFor="let option of data.product.details.options"
         class="option-item"
         [class.selected]="selectedOption === option.option"
-        (click)="selectOption(option.option)"
+        [class.unavailable]="option.quantity <= 0"
+        [disabled]="option.quantity <= 0"
+        (click)="option.quantity > 0 && selectOption(option.option)"
+        [title]="
+          option.quantity > 0
+            ? option.option
+            : option.option + ' (Out of Stock)'
+        "
       >
         {{ option.option }}
       </button>

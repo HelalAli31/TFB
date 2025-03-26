@@ -49,15 +49,20 @@
           </p>
         </ng-container>
 
-        <!-- Display "Options" only once -->
-        <!-- Display "Options" only once -->
+        <!-- Display "Options" with availability indication -->
         <div *ngIf="product.details?.options?.length">
           <strong>Options:</strong>
           <ul class="option-list mt-3">
             <li
               *ngFor="let option of product.details.options"
               [class.selected-option]="selectedOption === option.option"
-              (click)="selectOption(option.option)"
+              [class.unavailable-option]="option.quantity <= 0"
+              (click)="option.quantity > 0 && selectOption(option.option)"
+              [title]="
+                option.quantity > 0
+                  ? option.option
+                  : option.option + ' (Out of Stock)'
+              "
             >
               <span class="option-name">{{ option.option }}</span>
             </li>
@@ -103,6 +108,6 @@
   <!-- Description Section at the Bottom -->
   <div class="product-description-container" *ngIf="product.description">
     <h3>Description</h3>
-    <p>{{ product.description }}</p>
+    <div [innerHTML]="product.description"></div>
   </div>
 </div>

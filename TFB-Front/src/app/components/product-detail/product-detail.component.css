@@ -97,6 +97,7 @@
   background-color: #cc00ff;
   transform: scale(1.05);
 }
+
 /* ❌ Unavailable Product Button */
 .Unavailable_Button {
   background: red !important;
@@ -172,6 +173,7 @@
   color: #444;
   line-height: 1.6;
 }
+
 /* ✅ Style Option List */
 .option-list {
   list-style: none;
@@ -191,10 +193,11 @@
   cursor: pointer;
   transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
   border: 2px solid transparent;
+  position: relative; /* For positioning the availability badge */
 }
 
-/* ✅ Hover effect */
-.option-list li:hover {
+/* ✅ Hover effect for available options */
+.option-list li:not(.unavailable-option):hover {
   background: #cc00ff;
   color: white;
   transform: scale(1.05);
@@ -208,6 +211,48 @@
   font-weight: bold;
   box-shadow: 0 0 8px rgba(204, 0, 255, 0.4);
   transform: scale(1.1);
+}
+
+/* ✅ Unavailable option styling */
+.option-list .unavailable-option {
+  background: #f0f0f0;
+  color: #aaa;
+  border: 2px dashed #ddd;
+  cursor: not-allowed;
+  opacity: 0.7;
+  position: relative;
+}
+
+/* ✅ Unavailable option hover - no effect */
+.option-list .unavailable-option:hover {
+  transform: none;
+  background: #f0f0f0;
+  color: #aaa;
+}
+
+/* ✅ Out of stock badge */
+.option-availability {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 4px;
+  font-weight: normal;
+  text-align: center;
+}
+
+/* ✅ Out of stock text */
+.option-list .unavailable-option .option-availability {
+  color: #ff4d4f;
+}
+
+/* ✅ In stock text */
+.option-list li:not(.unavailable-option) .option-availability.in-stock {
+  color: #52c41a;
+}
+
+/* ✅ Option name and stock info layout */
+.option-name {
+  display: block;
+  text-align: center;
 }
 
 /* Color Section */
@@ -234,18 +279,39 @@
   cursor: pointer;
   transition: transform 0.2s ease-in-out, border-color 0.2s;
 }
-.color-circle.option-clickable {
+
+/* ✅ Available color option */
+.color-circle.option-available {
   cursor: pointer;
   border: 3px solid transparent;
   transition: transform 0.2s ease-in-out, border-color 0.2s;
 }
 
-.color-circle.option-clickable:hover {
+/* ✅ Unavailable color option */
+.color-circle.option-unavailable {
+  cursor: not-allowed;
+  opacity: 0.5;
+  position: relative;
+}
+
+/* ✅ Unavailable color option indicator */
+.color-circle.option-unavailable::after {
+  content: "×";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: red;
+  font-weight: bold;
+}
+
+.color-circle.option-available:hover {
   transform: scale(1.2);
   border-color: black;
 }
 
-.color-circle:hover {
+.color-circle:not(.option-unavailable):hover {
   transform: scale(1.15);
   border: 2px solid #666;
 }
@@ -267,7 +333,12 @@
     max-width: 90%;
   }
 
-  .View_Button {
+  .view-button {
     width: 100%;
+  }
+
+  /* Adjust option list for mobile */
+  .option-list {
+    justify-content: center;
   }
 }
