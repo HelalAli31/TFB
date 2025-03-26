@@ -19,7 +19,7 @@ const allowedOrigins = [
 app.get("/", (req, res) => {
   res.send("✅ TFB backend is alive and running on Render!");
 });
-
+//he
 app.use(
   cors({
     origin: function (origin, callback) {

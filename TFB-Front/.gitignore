@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+# images
+server/assets/
+
 # Node
 /node_modules
 npm-debug.log
