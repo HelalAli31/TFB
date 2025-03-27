@@ -78,7 +78,6 @@
       </div>
 
       <!-- Nicotine & Ice Levels -->
-      <!-- Nicotine & Ice Levels -->
       <div
         class="nic-ice-container"
         *ngIf="item.nic !== null || item.ice !== null"
@@ -119,6 +118,14 @@
 
   <!-- Cart Summary -->
   <div class="cart-summary">
+    <div class="bundle-discount2" *ngIf="bundleDiscounts.length">
+      saves :
+      <div *ngFor="let discount of bundleDiscounts" class="bundle-discount">
+        <span class="discount-text"
+          >-{{ discount.discount }} ₪ ({{ discount.name }})</span
+        >
+      </div>
+    </div>
     <h3>
       <span class="total-price">Total: {{ getTotalPrice() }} ₪</span>
     </h3>

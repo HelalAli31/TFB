@@ -17,52 +17,56 @@
         </div>
 
         <div class="Product_Details">
-          <div [routerLink]="['/product', product._id]" class="product-info">
+          <div
+            [routerLink]="['/product', product._id]"
+            class="Product_Info_Area"
+          >
             <h3 class="Product_Name">{{ product.name }}</h3>
-            <p class="Product_Brand">{{ product.brand }}</p>
-
-            <div class="price-container">
-              <span
-                *ngIf="
-                  product.sale?.isOnSale &&
-                  product.price !== product.originalPrice
-                "
-                class="old-price"
-              >
-                {{ product.originalPrice }}
-              </span>
-              <span class="sale-price" *ngIf="product.sale?.isOnSale">
-                {{ product.price }}₪
-              </span>
-              <span class="regular-price" *ngIf="!product.sale?.isOnSale">
-                {{ product.price }} ₪
-              </span>
+            <div class="brand-price-wrapper">
+              <p class="Product_Brand">{{ product.brand }}</p>
+              <div class="price-container">
+                <span
+                  *ngIf="
+                    product.sale?.isOnSale &&
+                    product.price !== product.originalPrice
+                  "
+                  class="old-price"
+                >
+                  {{ product.originalPrice }}
+                </span>
+                <span class="sale-price" *ngIf="product.sale?.isOnSale">
+                  {{ product.price }}₪
+                </span>
+                <span class="regular-price" *ngIf="!product.sale?.isOnSale">
+                  {{ product.price }} ₪
+                </span>
+              </div>
             </div>
+            <button
+              *ngIf="isAdmin"
+              class="delete mt-3"
+              [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+              [disabled]="product.quantity === 0"
+              (click)="openDeleteDialog(product._id, product.name)"
+            >
+              delete
+            </button>
+            <button
+              *ngIf="!isAdmin"
+              class="View_Button"
+              [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+              [disabled]="product.quantity === 0"
+              (click)="openQuantityDialog(product)"
+            >
+              {{
+                product.quantity === 0
+                  ? "Unavailable"
+                  : product.isInCart
+                  ? "Edit"
+                  : "Add to Cart"
+              }}
+            </button>
           </div>
-          <button
-            *ngIf="isAdmin"
-            class="delete mt-3"
-            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
-            [disabled]="product.quantity === 0"
-            (click)="openDeleteDialog(product._id, product.name)"
-          >
-            delete
-          </button>
-          <button
-            *ngIf="!isAdmin"
-            class="View_Button"
-            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
-            [disabled]="product.quantity === 0"
-            (click)="openQuantityDialog(product)"
-          >
-            {{
-              product.quantity === 0
-                ? "Unavailable"
-                : product.isInCart
-                ? "Edit"
-                : "Add to Cart"
-            }}
-          </button>
         </div>
       </div>
     </div>

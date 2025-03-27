@@ -99,7 +99,7 @@ export class AdminAddProductComponent {
   // ✅ Add New option with Quantity
   addOption(optionInput: any, quantityInput: any) {
     const option = optionInput.value.trim().toLowerCase();
-    const quantity = parseInt(quantityInput.value, 10);
+    const quantity = parseInt(quantityInput.value, 50);
 
     if (
       option &&

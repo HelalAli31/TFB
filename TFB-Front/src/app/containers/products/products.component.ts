@@ -221,11 +221,33 @@ export class ProductsComponent implements OnInit {
       }
 
       const cartItems = await this.cartService.getCartItems();
-      const existingCartItem = cartItems.find(
-        (item) =>
+      const existingCartItem = cartItems.find((item) => {
+        const isSameProduct =
           String(item.product_id?._id || item.product_id) ===
-            String(product._id) && (item.option || '') === (option || '')
-      );
+          String(product._id);
+        const isSameOption = (item.option || '') === (option || '');
+
+        // ✅ Category ID matching
+        const categoryId = product.category?._id || product.category;
+        const SALT_ID = '67759289eca0466ca85bfac3';
+        const TFB120_ID = '67759289eca0466ca85bfaba';
+
+        if (categoryId === SALT_ID) {
+          return isSameProduct && isSameOption && item.ice === ice;
+        }
+
+        if (categoryId === TFB120_ID) {
+          return (
+            isSameProduct &&
+            isSameOption &&
+            item.nic === nic &&
+            item.ice === ice
+          );
+        }
+
+        // Default match for other categories
+        return isSameProduct && isSameOption;
+      });
 
       let finalPrice = product.sale?.isOnSale
         ? product.sale.salePrice

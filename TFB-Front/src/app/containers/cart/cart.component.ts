@@ -11,6 +11,23 @@ export class CartComponent implements OnInit {
   public cartItems: any[] = [];
   public totalPrice: number = 0;
   apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
+  public bundleDiscounts: {
+    categoryId: string;
+    name: string;
+    discount: number;
+  }[] = [];
+
+  specialCategoryPricing: any = {
+    '67759289eca0466ca85bfac3': [
+      { quantity: 3, price: 130 },
+      { quantity: 5, price: 200 },
+    ],
+    '67759289eca0466ca85bfaba': [
+      { quantity: 2, price: 160 },
+      { quantity: 3, price: 230 },
+      { quantity: 4, price: 300 },
+    ],
+  };
 
   constructor(private cartService: CartService) {}
 
@@ -161,13 +178,77 @@ export class CartComponent implements OnInit {
     event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
   updateTotalPrice() {
-    this.totalPrice = this.cartItems.reduce((total, item) => {
-      const product = item.product_id;
-      const unitPrice = this.isSaleActive(product)
-        ? product.sale.salePrice
-        : product.price;
-      return total + unitPrice * item.amount;
-    }, 0);
+    console.log('🧮 Recalculating total price...');
+    const categoryGroups: { [categoryId: string]: any[] } = {};
+    this.bundleDiscounts = [];
+
+    // Group cart items by category
+    this.cartItems.forEach((item) => {
+      const catId = item.product_id?.category;
+      if (!categoryGroups[catId]) categoryGroups[catId] = [];
+      categoryGroups[catId].push(item);
+    });
+
+    let total = 0;
+
+    for (const [categoryId, items] of Object.entries(categoryGroups)) {
+      const pricingRules = this.specialCategoryPricing[categoryId];
+      const totalAmount = items.reduce((sum, item) => sum + item.amount, 0);
+
+      if (pricingRules) {
+        const sortedRules = [...pricingRules].sort(
+          (a, b) => b.quantity - a.quantity
+        );
+        let remaining = totalAmount;
+        let categoryTotal = 0;
+        let basePrice = Math.min(
+          ...items.map((item) =>
+            this.isSaleActive(item.product_id)
+              ? item.product_id.sale.salePrice
+              : item.product_id.price
+          )
+        );
+
+        const fullPrice = totalAmount * basePrice;
+
+        for (const rule of sortedRules) {
+          while (remaining >= rule.quantity) {
+            remaining -= rule.quantity;
+            categoryTotal += rule.price;
+          }
+        }
+
+        if (remaining > 0) {
+          categoryTotal += remaining * basePrice;
+        }
+
+        const saved = fullPrice - categoryTotal;
+        if (saved > 0) {
+          console.log('ITEEMMMM', items[0]);
+          const categoryName =
+            items[0].product_id.category == '67759289eca0466ca85bfaba'
+              ? 'TFB 120ml'
+              : 'Salt';
+          ('Category');
+          this.bundleDiscounts.push({
+            categoryId,
+            name: categoryName,
+            discount: saved,
+          });
+        }
+
+        total += categoryTotal;
+      } else {
+        for (const item of items) {
+          const unitPrice = this.isSaleActive(item.product_id)
+            ? item.product_id.sale.salePrice
+            : item.product_id.price;
+          total += unitPrice * item.amount;
+        }
+      }
+    }
+
+    this.totalPrice = total;
   }
 
   isSaleActive(product: any): boolean {
