@@ -98,17 +98,27 @@ export class AdminAddProductComponent {
 
   // ✅ Add New option with Quantity
   addOption(optionInput: any, quantityInput: any) {
+    console.log('ADDD');
     const option = optionInput.value.trim().toLowerCase();
-    const quantity = parseInt(quantityInput.value, 50);
+    const quantity = parseInt(quantityInput.value, 10);
+    console.log(
+      'ADDD1',
+      option,
+      quantity,
+      !this.optionsWithDetails.find((c) => c.option === option)
+    );
 
     if (
       option &&
       quantity >= 0 &&
       !this.optionsWithDetails.find((c) => c.option === option)
     ) {
+      console.log('in if ADDD');
+
       this.optionsWithDetails.push({ option, quantity, image: null });
       this.optionImages[option] = null; // Placeholder
     }
+    console.log('ADDD2');
 
     optionInput.value = '';
     quantityInput.value = '';
