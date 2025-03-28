@@ -14,8 +14,9 @@ export class OrderService {
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
     return new HttpHeaders({
-      Authorization: localStorage.getItem('token') || '',
+      Authorization: `Bearer ${token}`, // ✅ Fix: Add 'Bearer' prefix
     });
   }
 

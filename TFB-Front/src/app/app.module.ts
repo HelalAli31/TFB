@@ -47,6 +47,9 @@ import { EditProductDialogComponent } from './components/PopUpComponents/admin/e
 import { AboutUsComponent } from './containers/about-us/about-us.component';
 import { BulkSaleComponent } from './containers/bulk-sale/bulk-sale.component';
 import { ProfileComponent } from './containers/profile/profile.component';
+import { PopUpOrderDetailsComponent } from './components/PopUpComponents/pop-up-order-details/pop-up-order-details.component';
+import { DecimalPipe } from '@angular/common';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -77,6 +80,7 @@ import { ProfileComponent } from './containers/profile/profile.component';
     AboutUsComponent,
     BulkSaleComponent,
     ProfileComponent,
+    PopUpOrderDetailsComponent, // Add the new component here
   ],
   imports: [
     BrowserModule,
@@ -87,22 +91,21 @@ import { ProfileComponent } from './containers/profile/profile.component';
     ReactiveFormsModule,
     MatIconModule,
     NgxMaterialTimepickerModule,
-    MatIconModule,
+    MatCardModule,
     MatSliderModule,
     MatButtonModule,
     MatDialogModule,
     CommonModule,
-    FormsModule, // ✅ Fixes ngModel errors
-    MatIconModule, // ✅ Fixes <mat-icon> errors
-    MatSliderModule, // ✅ Fixes <mat-slider> errors
-    MatFormFieldModule, // ✅ Fixes <mat-form-field> errors
-    MatInputModule, // ✅ Fixes <mat-input> errors
-    MatDatepickerModule, // ✅ Fixes <mat-datepicker> errors
-    MatNativeDateModule, // ✅ Required for DatePicker
-    MatDialogModule, // ✅ Fixes Material Dialog issues
-    MatTableModule, // ✅ Fixes Material Tables
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTableModule,
   ],
-  providers: [MatDatepickerModule],
+  providers: [
+    MatDatepickerModule,
+    DecimalPipe, // Add DecimalPipe for number formatting
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
 })

@@ -129,6 +129,8 @@
     <h3>
       <span class="total-price">Total: {{ getTotalPrice() }} ₪</span>
     </h3>
-    <button class="buy-now-button">🛒 Buy Now</button>
+    <button class="buy-now-button" (click)="openOrderDialog()">
+      🛒 Buy Now
+    </button>
   </div>
 </div>

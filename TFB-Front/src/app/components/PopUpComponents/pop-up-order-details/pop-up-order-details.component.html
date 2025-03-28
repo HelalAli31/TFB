@@ -1,28 +1,14 @@
+<!-- pop-up-order-details.component.html -->
 <div class="MainDiv row">
   <div class="col-6 DetailsDiv">
     <h1 style="color: #c02a3e">Order Details</h1>
-
-    <!-- 📅 Date Picker -->
-    <mat-form-field appearance="outline" style="width: 300px !important">
-      <mat-label>Delivery Date</mat-label>
-      <input
-        matInput
-        [min]="minDate"
-        [(ngModel)]="deliveryDate"
-        [matDatepicker]="picker"
-        [matDatepickerFilter]="InvalidDatesFilter"
-        placeholder="Select Delivery Date"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
 
     <!-- 💳 Visa Number -->
     <mat-form-field appearance="outline" style="width: 300px">
       <mat-label>Visa Number</mat-label>
       <input
         matInput
-        type="number"
+        type="text"
         placeholder="Enter last 4 digits"
         [(ngModel)]="visaNumber"
       />
@@ -40,11 +26,19 @@
     </mat-form-field>
 
     <div>
-      <button mat-raised-button color="primary" (click)="updatePrice('true')">
+      <button
+        mat-raised-button
+        [color]="isDelivery ? 'primary' : ''"
+        (click)="updatePrice('true')"
+      >
         Delivery
       </button>
       <img [src]="images.delivery" width="30px" height="30px" /> /
-      <button mat-raised-button color="accent" (click)="updatePrice('false')">
+      <button
+        mat-raised-button
+        [color]="!isDelivery ? 'primary' : ''"
+        (click)="updatePrice('false')"
+      >
         Pick Up
       </button>
       <img [src]="images.pickUp" width="30px" height="30px" />
@@ -57,21 +51,43 @@
 
   <!-- 🛍 Order Summary -->
   <div class="col-5 Items ml-2">
-    <mat-icon>search</mat-icon>
-    <input
-      matInput
-      placeholder="Search"
-      [(ngModel)]="filterModel"
-      (keyup)="filterOperation()"
-    />
+    <div class="search-container">
+      <mat-icon>search</mat-icon>
+      <input
+        matInput
+        placeholder="Search"
+        [(ngModel)]="filterModel"
+        (keyup)="filterOperation()"
+      />
+    </div>
 
     <div class="row mt-4">
       <div class="col-8">
-        <h3>Price: {{ fullPrice | number : "1.2-2" }}₪</h3>
-        <h3>Delivery: {{ deliveryPrice | number : "1.2-2" }}₪</h3>
+        <h3>Price: {{ fullPrice | currency : "ILS" : "symbol" : "1.2-2" }}</h3>
+        <h3>
+          Delivery: {{ deliveryPrice | currency : "ILS" : "symbol" : "1.2-2" }}
+        </h3>
+
+        <!-- Bundle Discounts Section -->
+        <div
+          *ngIf="data.bundleDiscounts && data.bundleDiscounts.length > 0"
+          class="bundle-discounts"
+        >
+          <h3 style="color: green">Bundle Savings:</h3>
+          <div
+            *ngFor="let discount of data.bundleDiscounts"
+            class="discount-item"
+          >
+            <span
+              >{{ discount.name }}: -{{
+                discount.discount | currency : "ILS" : "symbol" : "1.2-2"
+              }}</span
+            >
+          </div>
+        </div>
       </div>
       <h1 style="font-weight: bolder; color: #c02a3e">
-        Total: {{ totalPrice | number : "1.2-2" }}₪
+        Total: {{ totalPrice | currency : "ILS" : "symbol" : "1.2-2" }}
       </h1>
     </div>
 
@@ -84,13 +100,16 @@
     </div>
     <hr />
 
-    <div *ngFor="let item of filteredItems; index as pIndex">
-      <div class="row">
-        <div class="col-6">{{ pIndex + 1 }}. {{ item.product_id.title }}</div>
-        <div class="col-2">{{ item.amount }}</div>
-        <div class="col-4">{{ item.full_price | number : "1.2-2" }}₪</div>
+    <div class="items-container">
+      <div *ngFor="let item of filteredItems; index as pIndex" class="item-row">
+        <div class="row">
+          <div class="col-6">{{ pIndex + 1 }}. {{ item.product_id.title }}</div>
+          <div class="col-2">{{ item.amount }}</div>
+          <div class="col-4">
+            {{ item.full_price | currency : "ILS" : "symbol" : "1.2-2" }}
+          </div>
+        </div>
       </div>
-      <br />
     </div>
   </div>
 </div>

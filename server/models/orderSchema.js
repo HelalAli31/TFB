@@ -14,10 +14,6 @@ const orderSchema = new mongoose.Schema({
     require: true,
     default: Date.now(),
   },
-  order_delivery_date: {
-    type: Date,
-    require: true,
-  },
   total_price: {
     type: Number,
     require: true,
@@ -27,6 +23,14 @@ const orderSchema = new mongoose.Schema({
     require: true,
   },
   street: {
+    type: String,
+    require: true,
+  },
+  payment: {
+    type: String,
+    require: true,
+  },
+  delivery_way: {
     type: String,
     require: true,
   },

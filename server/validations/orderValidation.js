@@ -6,11 +6,11 @@ const OrderSchema = Joi.object().keys({
 const AddOrderSchema = Joi.object().keys({
   user_id: Joi.string().required(),
   cart_id: Joi.string().required(),
-  order_date: Joi.date().required(),
-  order_delivery_date: Joi.date().required(),
-  total_price: Joi.number().required(),
+  order_date: Joi.date().optional(),
   city: Joi.string().required(),
   street: Joi.string().required(),
+  payment: Joi.string().required(),
+  delivery_way: Joi.string().required(),
   total_price: Joi.number().required(),
   last_visa_number: Joi.number().required(),
 });
@@ -25,10 +25,11 @@ const UpdateOrderSchema = Joi.object().keys({
       user_id: Joi.string().optional(),
       cart_id: Joi.string().optional(),
       order_date: Joi.date().optional(),
-      order_delivery_date: Joi.date().optional(),
       total_price: Joi.number().optional(),
       city: Joi.string().optional(),
+      payment: Joi.string().required(),
       street: Joi.string().optional(),
+      delivery_way: Joi.string().required(),
       last_visa_number: Joi.number().optional(),
     })
     .min(1), // Ensure at least one field is being updated

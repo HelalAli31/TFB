@@ -6,56 +6,54 @@ const mongoose = require("mongoose");
 
 async function getCart(userId) {
   try {
-    console.log(`🔍 Checking for open cart for user: ${userId}`);
+    const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    // ✅ List all carts for debugging
-    const allCarts = await cartModel.find({
-      user_id: new mongoose.Types.ObjectId(userId),
-    });
-    console.log("🛒 All Carts for User:", allCarts);
-
+    // Try to find open cart
     let cart = await cartModel
-      .findOne({
-        user_id: new mongoose.Types.ObjectId(userId),
-        cartIsOpen: true, // ✅ Ensure correct field name
-      })
+      .findOneAndUpdate(
+        { user_id: userObjectId, cartIsOpen: true },
+        {
+          $setOnInsert: {
+            user_id: userObjectId,
+            cartIsOpen: true,
+            created_at: new Date(),
+          },
+        },
+        {
+          new: true,
+          upsert: true,
+        }
+      )
       .populate("user_id", "first_name");
 
-    console.log("CAAAAART:", cart, " ID:", userId);
-    if (cart) {
-      console.log(`✅ Found open cart for user: ${userId}`);
-      return cart;
-    }
-
-    // 🚀 **If no open cart exists, create one**
-    console.warn(`⚠️ No open cart found for user: ${userId}, creating one...`);
-
-    cart = new cartModel({
-      user_id: new mongoose.Types.ObjectId(userId), // ✅ Ensure userId is ObjectId
-      cartIsOpen: true,
-      created_at: new Date(),
-      items: [],
-    });
-
-    await cart.save();
-    console.log(`✅ New cart created for user: ${userId}`);
+    console.log(`✅ Cart returned for user: ${userId}`);
     return cart;
   } catch (error) {
-    console.error("❌ Error fetching/creating cart:", error);
+    console.error("❌ Error adding cart:", error);
     throw error;
   }
 }
 
 async function updateCartStatus(cartId) {
   try {
-    const result = await cartModel
-      .updateOne({ _id: cartId }, { cartIsOpen: false }, { __v: false })
-      .populate("user_id", "first_name", userModel);
+    const result = await cartModel.updateOne(
+      { _id: new mongoose.Types.ObjectId(cartId), cartIsOpen: true },
+      { $set: { cartIsOpen: false } }
+    );
+
+    if (result.modifiedCount === 0) {
+      console.warn("⚠️ Cart already closed or not found.");
+    } else {
+      console.log("✅ Cart status updated to closed.");
+    }
+
     return result;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Error updating cart:", error);
+    throw error;
   }
 }
+
 async function getCartItems(cartId) {
   try {
     console.log(`📤 Fetching cart items for cart ID: ${cartId}`);
@@ -83,20 +81,21 @@ async function getCartItems(cartId) {
 
 async function addItemToCart(item) {
   try {
-    console.log("📤 Adding item to cart:", item);
-
     const { cart_id, product_id, amount, full_price, option, nic, ice } = item;
 
     if (!cart_id || !product_id || !amount || !full_price) {
-      console.error("🚨 Invalid item data:", item);
+      console.error("🚨 Missing required item fields.");
       return null;
     }
 
+    // ✅ Get cart and user_id using cart_id
     const cart = await cartModel.findById(cart_id);
-    if (!cart) {
-      console.error(`❌ Cart not found: ${cart_id}`);
+    if (!cart || !cart.user_id) {
+      console.error(`❌ Cart not found or missing user: ${cart_id}`);
       return null;
     }
+
+    const user_id = cart.user_id;
 
     const product = await productModel.findById(product_id);
     if (!product) {
@@ -104,26 +103,27 @@ async function addItemToCart(item) {
       return null;
     }
 
+    // Check if item already exists
     let cartItem = await cartItemsModel.findOne({
-      cart_id,
+      cart_id: cart._id,
       product_id,
-      option: option || null, // Match option if it exists
-      nic: nic || null, // Match nicotine if it exists
-      ice: ice || null, // Match ice if it exists
+      option: option || null,
+      nic: nic || null,
+      ice: ice || null,
     });
 
     if (cartItem) {
-      console.log("🔄 Item already in cart, updating quantity.");
+      console.log("🔄 Updating existing cart item.");
       cartItem.amount += amount;
       cartItem.full_price += full_price;
+      cartItem.option = option !== undefined ? option : cartItem.option;
       cartItem.nic = nic !== undefined ? nic : cartItem.nic;
       cartItem.ice = ice !== undefined ? ice : cartItem.ice;
-      cartItem.option = option !== undefined ? option : cartItem.option;
       await cartItem.save();
     } else {
-      console.log("🆕 Adding new item to cart.");
+      console.log("🆕 Adding new cart item.");
       cartItem = new cartItemsModel({
-        cart_id,
+        cart_id: cart._id,
         product_id,
         amount,
         full_price,
@@ -144,15 +144,7 @@ async function addItemToCart(item) {
 module.exports = addItemToCart;
 
 async function addCart(userId) {
-  try {
-    const cart = {};
-    cart.user_id = userId;
-    const result = await cartModel.insertMany(cart);
-
-    return result;
-  } catch (error) {
-    console.log(error);
-  }
+  return getCart(userId); // Safe way to enforce singleton behavior
 }
 
 async function deleteItemFromCart(itemId) {

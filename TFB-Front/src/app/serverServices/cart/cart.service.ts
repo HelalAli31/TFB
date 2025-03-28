@@ -115,7 +115,7 @@ export class CartService {
       console.log('📤 Sending request to add item:', cartItem);
 
       const response: any = await this.httpService
-        .put(
+        .post(
           `${CART_URL}/AddItems`,
           {
             item: {

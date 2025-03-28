@@ -411,7 +411,7 @@ router.put(
       await ensureImageDirectoryExists();
       const { id } = req.params;
       let updatedData = req.body;
-
+      console.log("IN UPDATE ", updatedData);
       if (typeof updatedData.details === "string") {
         updatedData.details = JSON.parse(updatedData.details);
       }

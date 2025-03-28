@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from 'src/app/serverServices/cart/cart.service';
 import { environment } from '../../../environments/environment'; // Import environment
+import { PopUpOrderDetailsComponent } from 'src/app/components/PopUpComponents/pop-up-order-details/pop-up-order-details.component';
+import { OrderService } from 'src/app/serverServices/order/order.service';
+import { MatDialog } from '@angular/material/dialog';
+import getPayload from 'src/app/serverServices/Payload/getPayload';
 
 @Component({
   selector: 'app-cart',
@@ -29,10 +33,14 @@ export class CartComponent implements OnInit {
     ],
   };
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private orderService: OrderService,
+    public dialog: MatDialog
+  ) {}
 
   async ngOnInit() {
-    console.log('🛒 Initializing CartComponent...');
+    console.log('🛒 Initializing CartComponent...', getPayload());
     try {
       await this.loadCartItems();
       this.updateTotalPrice(); // Call the updateTotalPrice method after loading the cart items
@@ -263,5 +271,69 @@ export class CartComponent implements OnInit {
 
   getTotalPrice(): number {
     return this.totalPrice;
+  }
+
+  // Open order dialog
+  openOrderDialog() {
+    if (this.cartItems.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    const dialogRef = this.dialog.open(PopUpOrderDetailsComponent, {
+      width: '900px',
+      data: {
+        items: this.cartItems,
+        fullPrice: this.totalPrice,
+        bundleDiscounts: this.bundleDiscounts,
+      },
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.processOrder(result);
+      }
+    });
+  }
+
+  // Process the order
+  async processOrder(orderDetails: any) {
+    try {
+      const cartId = await this.cartService.getCartId(); // should return ObjectId string
+      console.log('CARRRRRT ID :', cartId);
+      const userId = getPayload().data._id;
+
+      if (!userId || !cartId || !orderDetails.visaNumber) {
+        alert('Missing user, cart, or visa information.');
+        return;
+      }
+
+      const orderData = {
+        user_id: userId,
+        cart_id: cartId,
+        total_price: orderDetails.total_price,
+        city: orderDetails.city,
+        street: orderDetails.street,
+        payment: 'visa',
+        delivery_way: orderDetails.isDelivery ? 'delivery' : 'pickup',
+        last_visa_number: Number(orderDetails.visaNumber),
+      };
+
+      const response = await this.orderService.addOrder(orderData).toPromise();
+      console.log(response);
+      if (response.order) {
+        alert('✅' + response.message);
+        this.cartItems = [];
+        this.totalPrice = 0;
+        this.bundleDiscounts = [];
+        window.location.reload();
+      } else {
+        alert('❌Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error processing order:', error);
+      alert('An error occurred while processing your order.');
+    }
   }
 }

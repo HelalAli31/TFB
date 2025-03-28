@@ -51,6 +51,14 @@ cron.schedule("0 0 * * *", async () => {
   console.log("✅ Daily sale check complete.");
 });
 
+app._router.stack.forEach((r) => {
+  if (r.route && r.route.path) {
+    console.log(
+      `[ROUTE] ${r.route.stack[0].method.toUpperCase()} ${r.route.path}`
+    );
+  }
+});
+
 // imageas to render
 const persistentAssetsDir = "/mnt/data/assets";
 const fs = require("fs-extra");

@@ -6,7 +6,6 @@ const {
   addItemToCart,
   addCart,
   deleteItemFromCart,
-  editAmount,
   clearCart,
 } = require("../controller/cart/cartController");
 const router = express.Router();
@@ -14,7 +13,7 @@ const { verifyJWT } = require("../controller/JWT/jwt");
 const logger = require("../logger/index");
 const getValidationFunction = require("../validations/cartValidation");
 const cartItemsModel = require("../models/cartItemsSchema");
-
+console.log("INNNNNNNNNNNNNNNNNNNN CARTTTTTT");
 const allowUserOrAdmin = async (req, res, next) => {
   try {
     if (!req || !req.headers) {
@@ -127,26 +126,21 @@ router.get("/getItems", allowUserOrAdmin, async (req, res, next) => {
 });
 
 // ✅ Add item to cart
-router.put("/AddItems", allowUserOrAdmin, async (req, res, next) => {
-  try {
-    const { item } = req.body;
+router.post("/AddItems", async (req, res) => {
+  console.log("INNNNNNNNNNNNNNNNNNNN ADDDDDD CARTTTTTT");
 
-    const cartItem = await addItemToCart(item);
-    if (!cartItem) {
-      console.error("🚨 Failed to add item:", item);
-      return res.status(400).json({ message: "Failed to add item to cart." });
-    }
+  const item = req.body.item; // ✅ FIXED HERE
+  console.log("item: ", item);
 
-    return res
-      .status(200)
-      .json({ message: "Item added successfully!", cartItem });
-  } catch (error) {
-    console.error("❌ Error in AddItems route:", error);
-    return res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
-  }
+  console.log("before adding");
+  const result = await addItemToCart(item);
+  console.log("after adding", result);
+
+  if (!result) return res.status(400).json({ message: "general error" });
+
+  return res.status(200).json({ message: "Item added!", item: result });
 });
+
 router.post("/editItemAmount", allowUserOrAdmin, async (req, res) => {
   try {
     const { itemId, amount, fullPrice, nic, ice, option } = req.body.data;

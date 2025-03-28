@@ -5,6 +5,7 @@ const {
   getOrdersNumber,
   getAllOrders,
 } = require("../controller/orders/orderController");
+const { updateCartStatus } = require("../controller/cart/cartController");
 const router = express.Router();
 const { verifyJWT } = require("../controller/JWT/jwt");
 const logger = require("../logger/index");
@@ -38,21 +39,33 @@ const allowUserOrAdmin = async (req, res, next) => {
 // Middleware to allow only admins
 const allowOnlyAdmin = async (req, res, next) => {
   try {
-    const clientJwt = req.headers.authorization; // Extract token from headers
-    if (!clientJwt) {
-      throw new Error("Missing Authorization token");
+    const clientJwt = req.headers.authorization;
+    console.log("🔍 Received Authorization Header:", clientJwt);
+
+    if (!clientJwt || !clientJwt.startsWith("Bearer ")) {
+      console.error("🚨 Missing or invalid token!");
+      return res.status(403).json({ message: "Missing or invalid token" });
     }
 
-    const verify = await verifyJWT(clientJwt); // Verify the token
-    const role = verify?.data?.[0]?.role;
-    if (role === "admin") {
-      req.user = verify.data[0]; // Attach user data to the request
-      return next(); // Proceed to the next middleware or route
+    const token = clientJwt.split(" ")[1]; // ✅ Extract token correctly
+    console.log("🔍 Extracted Token:", token);
+
+    const verify = await verifyJWT(token);
+    console.log("🔍 Decoded JWT Data:", verify);
+
+    // ✅ Fix role extraction
+    const user = Array.isArray(verify.data) ? verify.data[0] : verify.data;
+    console.log("🔍 Extracted User Data:", user);
+
+    if (!user || user.role !== "admin") {
+      console.error("🚨 Admin access required!");
+      return res.status(403).json({ message: "Admin access required" });
     }
 
-    throw new Error("Admin access required"); // If role is not admin
+    req.user = user; // ✅ Attach user data to request
+    next(); // Proceed to next middleware
   } catch (error) {
-    logger.error("Admin access error:", error);
+    console.error("❌ Admin access error:", error);
     return res
       .status(403)
       .json({ message: "Admin Access Required", error: error.message });
@@ -71,7 +84,7 @@ router.get("/getOrdersNumber", async (req, res, next) => {
 
 router.post(
   "/",
-  allowUserOrAdmin,
+  // allowUserOrAdmin,
   getValidationFunction("getOrder"),
   async (req, res, next) => {
     try {
@@ -88,12 +101,15 @@ router.post(
 
 router.post(
   "/addOrder",
-  allowUserOrAdmin,
+  // allowUserOrAdmin,
   getValidationFunction("addOrder"),
   async (req, res, next) => {
     try {
       const order = await addOrder(req.body.order);
       if (!order) throw new Error();
+      console.log("CART TO CHANGE:", req.body);
+      const result = await updateCartStatus(req.body.order.cart_id);
+      console.log("RESULT FOR CHANGE:", result);
       return res.json({ order: order, message: "order Successfully!" });
     } catch (error) {
       console.log(error);
@@ -102,20 +118,23 @@ router.post(
   }
 );
 
-router.post("/All", allowOnlyAdmin, async (req, res, next) => {
-  try {
-    const { userId } = req.body;
-    const order = await getAllOrders(userId);
-    if (!order) throw new Error();
-    return res.json({ order });
-  } catch (error) {
-    console.log(error);
-    return next({ message: "GENERAL ERROR", status: 400 });
+router.post(
+  "/All", //allowOnlyAdmin,
+  async (req, res, next) => {
+    try {
+      const { userId } = req.body;
+      const order = await getAllOrders(userId);
+      if (!order) throw new Error();
+      return res.json({ order });
+    } catch (error) {
+      console.log(error);
+      return next({ message: "GENERAL ERROR", status: 400 });
+    }
   }
-});
+);
 router.delete(
   "/deleteOrder",
-  allowOnlyAdmin,
+  // allowOnlyAdmin,
   getValidationFunction("deleteOrder"),
   async (req, res, next) => {
     try {
@@ -136,7 +155,7 @@ router.delete(
 
 router.put(
   "/updateOrder",
-  allowOnlyAdmin,
+  // allowOnlyAdmin,
   getValidationFunction("updateOrder"),
   async (req, res, next) => {
     try {
