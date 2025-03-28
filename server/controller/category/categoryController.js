@@ -3,8 +3,8 @@ const path = require("path");
 const Category = require("../../models/categorySchema"); // Ensure this model exists
 
 // ✅ Define the correct path for category images in the backend server
-const categoriesDir = path.join(__dirname, "../../assets/categories");
-const slidersDir = path.join(__dirname, "../../assets/sliders");
+const categoriesDir = path.join("/mnt/data/assets/categories");
+const slidersDir = path.join("/mnt/data/assets/sliders");
 
 // ✅ Get All Categories
 const getAllCategories = async () => {

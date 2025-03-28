@@ -1,65 +1,209 @@
 <div class="about-container">
   <!-- Hero Section -->
   <div class="hero">
-    <h1>About The Fog Bank</h1>
-    <p>Your Trusted Source for Premium Vape Products</p>
+    <div class="hero-overlay"></div>
+    <div class="hero-content" @fadeIn>
+      <h1>About The Fog Bank</h1>
+      <p>Your Premium Destination for Quality Vaping Products</p>
+    </div>
   </div>
 
-  <!-- Mission Section -->
-  <section class="mission">
-    <div class="mission-content">
-      <h2>Our Mission</h2>
-      <p>
-        At The Fog Bank, we are committed to providing high-quality vaping
-        products that meet the highest safety and innovation standards. Our goal
-        is to create an exceptional experience for our customers, ensuring
-        satisfaction and reliability.
-      </p>
-    </div>
-    <img src="assets/about/mission.jpg" alt="Our Mission" />
-  </section>
-
-  <!-- Why Choose Us -->
-  <section class="why-choose-us">
-    <h2>Why Choose Us?</h2>
-    <div class="reasons">
-      <div class="reason">
-        <img src="assets/about/quality.png" alt="Quality" />
-        <h3>Premium Quality</h3>
-        <p>We offer only the best, carefully selected products.</p>
-      </div>
-      <div class="reason">
-        <img src="assets/about/safety.png" alt="Safety" />
-        <h3>Safety First</h3>
-        <p>All our products are tested and comply with safety regulations.</p>
-      </div>
-      <div class="reason">
-        <img src="assets/about/customer-service.png" alt="Customer Support" />
-        <h3>Excellent Support</h3>
-        <p>Our team is always here to help and provide guidance.</p>
+  <!-- Our Story Section -->
+  <section class="our-story">
+    <div class="section-header" @fadeIn>
+      <h2>Our Story</h2>
+      <div class="divider">
+        <span class="purpleBG"></span><span class="green"></span>
       </div>
     </div>
+    <div class="story-content">
+      <div class="story-text" @slideIn>
+        <p>
+          Founded with a passion for quality and innovation, The Fog Bank has
+          grown from a small local shop to a trusted name in the vaping
+          community. Our journey began with a simple mission: to provide
+          exceptional vaping products that meet the highest standards of safety
+          and performance.
+        </p>
+        <p>
+          Today, we continue to uphold these values as we expand our selection
+          and reach more customers who share our enthusiasm for premium vaping
+          experiences.
+        </p>
+        <p>
+          We currently operate two physical stores located in
+          <strong>Ibillin</strong> and <strong>Kfar Yassif</strong>, where our
+          knowledgeable staff is ready to help you find the perfect product.
+        </p>
+      </div>
+
+      <div class="story-image" @slideInRight>
+        <img src="assets/KYStore.jpg" alt="The Fog Bank Store" />
+      </div>
+    </div>
+  </section>
+  <hr style="border: none; height: 2px; background-color: black" />
+
+  <!-- Mission & Values Section -->
+  <section class="mission-values">
+    <div class="section-header" @fadeIn>
+      <h2>Our Mission & Values</h2>
+      <div class="divider">
+        <span class="purpleBG"></span><span class="green"></span>
+      </div>
+    </div>
+    <div class="mission-cards">
+      <div
+        class="mission-card"
+        *ngFor="let item of missionValues; let i = index"
+        @fadeIn
+        [ngStyle]="{ 'animation-delay': i * 0.2 + 's' }"
+      >
+        <div
+          class="icon-container"
+          [ngClass]="{
+            'purple-bg': i === 0,
+            'green-bg': i === 1,
+            'mixed-bg': i === 2
+          }"
+        >
+          <i class="fas fa-{{ item.icon }}"></i>
+        </div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+    </div>
   </section>
 
-  <!-- Meet the Team -->
-  <section class="team">
-    <h2>Meet Our Team</h2>
-    <div class="team-members">
-      <div class="member">
-        <img src="assets/about/team1.jpg" alt="John Doe" />
-        <h3>John Doe</h3>
-        <p>Founder & CEO</p>
+  <!-- What We Offer Section -->
+  <section class="what-we-offer">
+    <div class="section-header" @fadeIn>
+      <h2>What We Offer</h2>
+      <div class="divider">
+        <span class="purpleBG"></span><span class="green"></span>
       </div>
-      <div class="member">
-        <img src="assets/about/team2.jpg" alt="Jane Smith" />
-        <h3>Jane Smith</h3>
-        <p>Head of Customer Support</p>
+    </div>
+    <div class="offers-grid">
+      <div
+        class="offer-item"
+        *ngFor="let offer of offerItems; let i = index"
+        @fadeIn
+        [ngStyle]="{ 'animation-delay': i * 0.1 + 's' }"
+      >
+        <div
+          class="offer-icon"
+          [ngClass]="{
+            'purple-accent': i % 2 === 0,
+            'green-accent': i % 2 !== 0
+          }"
+        >
+          <i class="fas fa-{{ offer.icon }}"></i>
+        </div>
+        <h3>{{ offer.title }}</h3>
+        <p>{{ offer.description }}</p>
       </div>
-      <div class="member">
-        <img src="assets/about/team3.jpg" alt="Mike Johnson" />
-        <h3>Mike Johnson</h3>
-        <p>Lead Product Designer</p>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section">
+    <div class="section-header" @fadeIn>
+      <h2>Meet Our Team</h2>
+      <div class="divider">
+        <span class="purpleBG"></span><span class="green"></span>
       </div>
+    </div>
+    <div class="team-grid">
+      <div
+        class="team-member"
+        *ngFor="let member of teamMembers; let i = index"
+        @fadeIn
+        [ngStyle]="{ 'animation-delay': i * 0.2 + 's' }"
+      >
+        <div class="member-image">
+          <img [src]="member.image" [alt]="member.name" />
+          <div
+            class="member-overlay"
+            [ngClass]="{
+              'purple-overlay': i === 0,
+              'green-overlay': i === 1,
+              'mixed-overlay': i === 2
+            }"
+          ></div>
+        </div>
+        <h3>{{ member.name }}</h3>
+        <p
+          class="position"
+          [ngClass]="{
+            'purple-text': i === 0,
+            'green-text': i === 1,
+            'mixed-text': i === 2
+          }"
+        >
+          {{ member.position }}
+        </p>
+        <p class="bio">{{ member.bio }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <!-- <section class="testimonials">
+    <div class="section-header" @fadeIn>
+      <h2>What Our Customers Say</h2>
+      <div class="divider">
+        <span class="purple"></span><span class="green"></span>
+      </div>
+    </div>
+    <div class="testimonial-slider">
+      <div class="testimonial-navigation">
+        <button class="nav-button prev" (click)="prevTestimonial()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-button next" (click)="nextTestimonial()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="testimonial" @testimonialSlide>
+        <div class="quote-icon">
+          <i class="fas fa-quote-left"></i>
+        </div>
+        <p class="quote-text">
+          "{{ testimonials[currentTestimonialIndex].quote }}"
+        </p>
+        <div class="customer">
+          <p class="name">- {{ testimonials[currentTestimonialIndex].name }}</p>
+          <div class="stars">
+            <i
+              class="fas fa-star"
+              *ngFor="
+                let star of getStarsArray(
+                  testimonials[currentTestimonialIndex].rating
+                )
+              "
+            ></i>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-indicators">
+        <span
+          *ngFor="let testimonial of testimonials; let i = index"
+          class="indicator"
+          [ngClass]="{ active: i === currentTestimonialIndex }"
+          (click)="currentTestimonialIndex = i"
+        >
+        </span>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Contact CTA -->
+  <section class="contact-cta" @fadeIn>
+    <h2>Ready to Experience The Fog Bank Difference?</h2>
+    <p>Visit our store or shop online today!</p>
+    <div class="cta-buttons">
+      <a routerLink="/contactUs" class="cta-button primary">Contact Us</a>
+      <a routerLink="/products" class="cta-button secondary">Shop Now</a>
     </div>
   </section>
 </div>

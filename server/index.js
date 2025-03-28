@@ -51,7 +51,17 @@ cron.schedule("0 0 * * *", async () => {
   console.log("✅ Daily sale check complete.");
 });
 
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+// imageas to render
+const persistentAssetsDir = "/mnt/data/assets";
+const fs = require("fs-extra");
+fs.ensureDirSync(persistentAssetsDir);
+app.use("/assets", express.static(persistentAssetsDir));
+const localAssetsDir = path.join(__dirname, "persistent-assets");
+
+if (fs.existsSync(localAssetsDir)) {
+  fs.copySync(localAssetsDir, persistentAssetsDir, { overwrite: false });
+  console.log("✅ Copied initial assets to persistent storage.");
+}
 
 app.use("/auth", userRoute);
 app.use("/products", productsRoute);

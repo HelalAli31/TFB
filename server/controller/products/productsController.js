@@ -145,7 +145,7 @@ const addProduct = async (productData, mainImage, optionImages) => {
     console.log("📝 Processed product name:", productName);
 
     // ✅ Define product images directory
-    const productImagesDir = path.join(__dirname, "../../assets/products");
+    const productImagesDir = path.join("/mnt/data/assets/products");
     await fse.ensureDir(productImagesDir);
     console.log("📂 Ensured product image directory exists:", productImagesDir);
 

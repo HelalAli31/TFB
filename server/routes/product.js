@@ -24,7 +24,7 @@ const path = require("path");
 // ✅ Step 1: Initialize Multer with Memory Storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }); // ✅ Corrected Initialization
-const productImagesDir = path.join(__dirname, "../assets/products");
+const productImagesDir = path.join("/mnt/data/assets/products");
 
 // ✅ Ensure the directory exists
 fs.ensureDirSync(productImagesDir);
@@ -299,7 +299,7 @@ router.delete("/deleteProduct/:id", async (req, res) => {
     console.log(`🛒 Found product: ${product.name}`);
 
     // ✅ Determine images directory
-    const imagesDir = path.join(__dirname, "../assets/products");
+    const imagesDir = path.join("/mnt/data/assets/products");
 
     if (!fs.existsSync(imagesDir)) {
       console.error(
@@ -381,8 +381,7 @@ router.delete("/deleteOptionImage/:id/:option", async (req, res) => {
     }
 
     const imagePath = path.join(
-      __dirname,
-      "../assets/products",
+      "/mnt/data/assets/products",
       `${product.name}_${option}.jpg`
     );
 
