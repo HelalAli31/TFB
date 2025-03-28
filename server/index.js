@@ -62,7 +62,7 @@ if (fs.existsSync(localAssetsDir)) {
   fs.copySync(localAssetsDir, persistentAssetsDir, { overwrite: false });
   console.log("✅ Copied initial assets to persistent storage.");
 }
-
+//test
 app.use("/auth", userRoute);
 app.use("/products", productsRoute);
 app.use("/cart", cartRoute);
