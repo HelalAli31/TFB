@@ -566,9 +566,108 @@ section:nth-child(odd) {
   background: rgba(158, 1, 197, 0.05);
   transform: translateY(-5px);
 }
+/* RTL Support for About Page */
+body.rtl .about-container {
+  direction: rtl;
+  text-align: right;
+}
+
+body.rtl .hero-content {
+  text-align: center;
+}
+
+body.rtl .section-header {
+  text-align: center;
+}
+
+body.rtl .story-content {
+  flex-direction: row-reverse;
+}
+
+body.rtl .story-text {
+  text-align: right;
+}
+
+body.rtl .mission-card {
+  text-align: right;
+}
+
+body.rtl .offer-item {
+  text-align: right;
+}
+
+body.rtl .team-member {
+  text-align: right;
+}
+
+body.rtl .contact-cta {
+  text-align: center;
+}
+
+/* Fix animations for RTL */
+body.rtl .story-text {
+  animation-name: slideInRtl !important;
+}
+
+body.rtl .story-image {
+  animation-name: slideInRightRtl !important;
+}
+
+@keyframes slideInRtl {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRightRtl {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Adjust icon positions in RTL */
+body.rtl .mission-card .icon-container {
+  margin-right: 0;
+  margin-left: 15px;
+}
+
+body.rtl .offer-item .offer-icon {
+  margin-right: 0;
+  margin-left: 15px;
+}
+
+/* Testimonials RTL adjustments */
+body.rtl .testimonial {
+  text-align: right;
+}
+
+body.rtl .testimonial-navigation .prev {
+  transform: rotate(180deg);
+}
+
+body.rtl .testimonial-navigation .next {
+  transform: rotate(180deg);
+}
+/* Make space between inside/outside images */
+.team-member .store-inside {
+  margin-top: 1rem;
+}
 
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
+  body.rtl .story-content {
+    flex-direction: column;
+  }
   .hero .hero-content h1 {
     font-size: 2.5rem;
   }

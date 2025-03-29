@@ -1,0 +1,279 @@
+{
+  "common": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "search": "Search",
+    "cart": "Cart",
+    "account": "My Account",
+    "language": "Language",
+    "profile": "Profile",
+    "viewAll": "View All Products",
+    "close": "Close",
+    "welcome": "Welcome",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "welcome": "Welcome to our store",
+    "featured": "Featured Products",
+    "newArrivals": "New Arrivals",
+    "bestSellers": "Best Sellers",
+    "viewAll": "View All",
+    "aboutUs": "ABOUT US",
+    "whoWeAre": "Who We Are",
+    "aboutUsContent": "we are passionate about providing high-quality vaping products to our customers. Our mission is to bring you the latest innovations in the vaping industry while ensuring safety, satisfaction, and excellence in every product we offer.",
+    "aboutUsStoreName": "The Fog Bank",
+    "aboutUsOferTitle": "What We Offer",
+    "contactTitle": "Contact Us",
+    "addressIb": "Ibillin, main road",
+    "addressKy": "Kfar Yassif, main road ",
+    "addressSh": "Shefa`mer, main road ",
+    "phoneIb": "+972 50-972-7006",
+    "phoneKy": "+972 50-972-7004",
+    "phoneSh": "+972 54-867-2392",
+    "aboutUsOferContent": " ✔️ A wide selection of high-quality vape products <br /> ✔️ Top brands known for reliability and performance<br /> ✔️ Competitive prices with exclusive deals<br /> ✔️ Fast & secure shipping for a seamless shopping experience<br /> ✔️ Customer-focused support to assist you every step of the way",
+    "contactUs": "Contact Us"
+  },
+  "products": {
+    "filter": "Filter",
+    "sort": "Sort",
+    "price": "Price",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "details": "Details",
+    "description": "Description",
+    "reviews": "Reviews",
+    "relatedProducts": "Related Products",
+    "top": "TOP",
+    "edit": "Edit",
+    "delete": "Delete",
+    "allProducts": "All Products",
+    "all": "All",
+
+    "sortBy": "Sort By",
+    "name": "Name",
+    "priceLowToHigh": "Price (Low to High)",
+    "priceHighToLow": "Price (High to Low)",
+    "stockLowToHigh": "Stock (Low to High)",
+    "stockHighToLow": "Stock (High to Low)",
+    "category": "Category",
+    "brand": "Brand",
+    "lowStock": "Low Stock",
+    "saleEnds": "Sale ends",
+    "addToTopProducts": "Add To Top Products",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
+  },
+
+  "orderDetails": {
+    "title": "Order Details",
+    "visaNumber": "Visa Number",
+    "visaPlaceholder": "Enter last 4 digits",
+    "city": "City",
+    "cityPlaceholder": "Enter city",
+    "street": "Street",
+    "streetPlaceholder": "Enter street",
+    "delivery": "Delivery",
+    "pickup": "Pick Up",
+    "buyNow": "Buy Now!",
+    "back": "Back",
+    "price": "Price",
+    "deliveryCost": "Delivery",
+    "bundleSavings": "Bundle Savings",
+    "total": "Total",
+    "product": "Product",
+    "quantity": "Qty"
+  },
+  "quantityDialog": {
+    "title": "Select Quantity",
+    "options": "Options",
+    "outOfStock": "Out of Stock",
+    "nicotine": "Nicotine",
+    "ice": "Ice Level",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "cart": {
+    "yourCart": "My Cart",
+    "empty": "Your cart is empty.",
+    "unnamedProduct": "Unnamed Product",
+    "brand": "Brand",
+    "unknown": "Unknown",
+    "option": "Option",
+    "unitPrice": "Unit Price",
+    "totalPrice": "Total Price",
+    "quantity": "Quantity",
+    "nicotine": "Nicotine",
+    "iceLevel": "Ice Level",
+    "mg": "mg",
+    "remove": "Remove",
+    "saves": "Saves",
+    "total": "Total",
+    "buyNow": "Buy Now",
+    "continueShopping": "Continue Shopping",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax"
+  },
+  "checkout": {
+    "shippingAddress": "Shipping Address",
+    "billingAddress": "Billing Address",
+    "paymentMethod": "Payment Method",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order"
+  },
+  "account": {
+    "profile": "Profile",
+    "orders": "Orders",
+    "wishlist": "Wishlist",
+    "settings": "Settings",
+    "register": "Sign Up",
+    "username": "Username",
+    "password": "Password",
+    "passwordMinLength": "Password must be at least 6 characters long.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "confirm": "Confirm",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "changePassword": "Change Password",
+    "oldPassword": "Old Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password"
+  },
+  "contact": {
+    "getInTouch": "Get in Touch",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "address": "Address",
+    "phone": "Phone",
+    "nameRequired": "Name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "messageRequired": "Message is required",
+    "contactInfo": "Contact Information",
+    "haveQuestions": "Have any questions? We'd love to hear from you!"
+  },
+  "about": {
+    "title": "About The Fog Bank",
+    "subtitle": "Your Premium Destination for Quality Vaping Products",
+    "storeImageAlt": "The Fog Bank Store",
+    "ib": "Ibillin",
+    "ky": "Kfar Yassif",
+    "sh": "Shefa`mer",
+    "ourStory": {
+      "title": "Our Story",
+      "paragraph1": "Founded with a passion for quality and innovation, The Fog Bank has grown from a small local shop to a trusted name in the vaping community. Our journey began with a simple mission: to provide exceptional vaping products that meet the highest standards of safety and performance.",
+      "paragraph2": "Today, we continue to uphold these values as we expand our selection and reach more customers who share our enthusiasm for premium vaping experiences.",
+      "paragraph3": "We currently operate three physical stores located in <strong>Ibillin</strong> , <strong>Kfar Yassif</strong> and <strong>Shefa'mer</strong>, where our knowledgeable staff is ready to help you find the perfect product."
+    },
+    "missionValues": {
+      "title": "Our Mission & Values",
+      "mission": {
+        "title": "Our Mission",
+        "description": "To provide high-quality vaping products that meet the highest safety and innovation standards while creating an exceptional experience for our customers."
+      },
+      "values": {
+        "title": "Our Values",
+        "description": "Quality, integrity, customer satisfaction, and continuous improvement guide everything we do at The Fog Bank."
+      },
+      "promise": {
+        "title": "Our Promise",
+        "description": "We promise to deliver only the best products, exceptional service, and a shopping experience that exceeds your expectations."
+      }
+    },
+    "whatWeOffer": {
+      "title": "What We Offer",
+      "products": {
+        "title": "Premium Selection",
+        "description": "A wide range of high-quality vape products carefully selected for our customers"
+      },
+      "brands": {
+        "title": "Top Brands",
+        "description": "Partnerships with leading brands known for reliability and performance"
+      },
+      "prices": {
+        "title": "Competitive Pricing",
+        "description": "Great value with exclusive deals and promotions for our loyal customers"
+      },
+      "shipping": {
+        "title": "Fast Shipping",
+        "description": "Secure and efficient delivery to ensure your products arrive safely"
+      },
+      "support": {
+        "title": "Expert Support",
+        "description": "Dedicated customer service team ready to assist with any questions"
+      },
+      "safety": {
+        "title": "Safety First",
+        "description": "All products tested and compliant with safety regulations"
+      }
+    },
+    "team": {
+      "title": "Meet Our Team",
+      "founder": "Founder & CEO",
+      "founderBio": "With over 10 years in the industry, John brings expertise and vision to The Fog Bank.",
+      "specialist": "Product Specialist",
+      "specialistBio": "Sarah ensures we stock only the highest quality products that meet our strict standards.",
+      "experience": "Customer Experience",
+      "experienceBio": "Michael is dedicated to making your shopping experience exceptional from start to finish."
+    },
+    "testimonials": {
+      "quote1": "The Fog Bank has the best selection of products I've found anywhere. Their staff is knowledgeable and always helpful!",
+      "quote2": "I've been shopping here for years and have never been disappointed. Quality products and excellent service every time."
+    },
+    "contactCta": {
+      "title": "Ready to Experience The Fog Bank Difference?",
+      "subtitle": "Visit our store or shop online today!",
+      "contactButton": "Contact Us",
+      "shopButton": "Shop Now"
+    }
+  },
+  "footer": {
+    "aboutUs": "About Us",
+    "customerService": "Customer Service",
+    "information": "Information",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "subscribe": "Subscribe",
+    "copyright": "© 2025 All Rights Reserved"
+  },
+  "productDetails": {
+    "brand": "Brand",
+    "details": "Product Details",
+    "description": "Description",
+    "options": "Options",
+    "price": "Price",
+    "saleEnds": "Sale ends",
+    "addToCart": "Add to Cart",
+    "edit": "Edit",
+    "outOfStock": "Out of Stock",
+    "fields": {
+      "nicotineLevel": "Nicotine Level",
+      "iceLevel": "Ice Level",
+      "color": "Color",
+      "flavor": "Flavor",
+      "type": "Type",
+      "capacity": "Capacity",
+      "strength": "Strength",
+      "wattage": "Wattage"
+    }
+  },
+  "search": {
+    "placeholder": "Search..."
+  }
+}

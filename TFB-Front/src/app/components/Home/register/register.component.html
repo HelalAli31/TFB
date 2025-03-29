@@ -1,57 +1,64 @@
 <div class="Register_Main">
-  <div><h1>Sign Up</h1></div>
+  <div>
+    <h1>{{ "account.register" | translate }}</h1>
+  </div>
   <form [formGroup]="userForm">
     <mat-form-field>
-      <mat-label>Username</mat-label>
+      <mat-label>{{ "account.username" | translate }}</mat-label>
       <input matInput formControlName="username" required />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Password</mat-label>
+      <mat-label>{{ "account.password" | translate }}</mat-label>
       <input
         matInput
-        placeholder="Password"
+        [placeholder]="'account.password' | translate"
         formControlName="password"
         type="password"
         required
       />
       <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
-        ❌ Password must be at least 6 characters long.
+        ❌ {{ "account.passwordMinLength" | translate }}
       </mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>First Name</mat-label>
+      <mat-label>{{ "account.firstName" | translate }}</mat-label>
       <input matInput formControlName="first_name" required />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Last Name</mat-label>
+      <mat-label>{{ "account.lastName" | translate }}</mat-label>
       <input matInput formControlName="last_name" required />
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Email</mat-label>
-      <input matInput placeholder="Email" formControlName="email" required />
+      <mat-label>{{ "contact.email" | translate }}</mat-label>
+      <input
+        matInput
+        [placeholder]="'contact.email' | translate"
+        formControlName="email"
+        required
+      />
       <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-        ❌ Invalid email format. Please enter a valid email.
+        ❌ {{ "contact.emailInvalid" | translate }}
       </mat-error>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Phone</mat-label>
+      <mat-label>{{ "contact.phone" | translate }}</mat-label>
       <input matInput formControlName="phone" required />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Address</mat-label>
+      <mat-label>{{ "contact.address" | translate }}</mat-label>
       <input matInput formControlName="address" required />
     </mat-form-field>
 
     <div class="Button_Group">
       <button mat-raised-button color="primary" (click)="signUp()">
-        Confirm
+        {{ "account.confirm" | translate }}
       </button>
       <button mat-raised-button color="warn" (click)="closeDialog()">
-        Close
+        {{ "common.close" | translate }}
       </button>
     </div>
   </form>

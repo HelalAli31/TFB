@@ -1,0 +1,277 @@
+{
+  "common": {
+    "home": "בית",
+    "products": "מוצרים",
+    "categories": "קטגוריות",
+    "about": "אודות",
+    "contact": "צור קשר",
+    "login": "התחברות",
+    "register": "הרשמה",
+    "logout": "התנתקות",
+    "search": "חיפוש",
+    "cart": "עגלה",
+    "account": "החשבון שלי",
+    "language": "שפה",
+    "profile": "פרופיל",
+    "viewAll": "צפה בכל המוצרים",
+    "close": "סגור",
+    "welcome": "ברוך הבא",
+    "signOut": "התנתק"
+  },
+  "home": {
+    "welcome": "ברוכים הבאים לחנות שלנו",
+    "featured": "מוצרים מומלצים",
+    "newArrivals": "מוצרים חדשים",
+    "bestSellers": "רבי מכר",
+    "viewAll": "צפה בהכל",
+    "aboutUs": "עלינו",
+    "whoWeAre": "מי אנחנו",
+    "aboutUsContent": "אנו מתמקדים באספקת מוצרי אידוי איכותיים ללקוחותינו. המשימה שלנו היא להביא לכם את החידושים האחרונים בתעשיית האידוי תוך הבטחת בטיחות, שביעות רצון ומצוינות בכל מוצר שאנו מציעים",
+    "aboutUsStoreName": "The Fog Bank",
+    "aboutUsOferTitle": "מה אנחנו מציעים",
+    "contactTitle": "צור קשר",
+    "addressIb": "אעבלין , כביש ראשי",
+    "addressKy": "כפר יאסיף , כביש ראשי ",
+    "addressSh": "שפרעם , כביש ראשי ",
+    "phoneIb": "050-972-7006",
+    "phoneKy": "050-972-7004",
+    "phoneSh": "054-867-2392",
+    "aboutUsOferContent": "✔️ מבחר רחב של מוצרי אידוי איכותיים <br /> ✔️ מותגים מובילים הידועים באמינות וביצועים<br /> ✔️ מחירים תחרותיים עם עסקאות בלעדיות<br /> ✔️ משלוח מהיר ומאובטח לחוויית קנייה חלקה<br /> ✔️ תמיכת לקוחות ממוקדת לסייע לך בכל שלב",
+    "contactUs": "צור קשר"
+  },
+  "products": {
+    "filter": "סינון",
+    "sort": "מיון",
+    "price": "מחיר",
+    "addToCart": "הוסף לעגלה",
+    "outOfStock": "אזל מהמלאי",
+    "details": "פרטים",
+    "description": "תיאור",
+    "reviews": "ביקורות",
+    "relatedProducts": "מוצרים קשורים",
+    "top": "מובילים",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "allProducts": "כל המוצרים",
+    "all": "הכל ",
+    "sortBy": "מיין לפי",
+    "name": " שם",
+    "priceLowToHigh": "מחיר (מהנמוך לגבוה)",
+    "priceHighToLow": "מחיר (מהגבוה לנמוך)",
+    "stockLowToHigh": "מלאי (מהנמוך לגבוה)",
+    "stockHighToLow": "מלאי (מהגבוה לנמוך)",
+    "category": "קטגוריה",
+    "brand": "מותג",
+    "lowStock": "מלאי נמוך",
+    "saleEnds": "המבצע מסתיים",
+    "addToTopProducts": "הוסף למוצרים מובילים",
+    "prev": "הקודם",
+    "next": "הבא",
+    "page": "עמוד",
+    "of": "מתוך"
+  },
+  "orderDetails": {
+    "title": "פרטי הזמנה",
+    "visaNumber": "מספר ויזה",
+    "visaPlaceholder": "הכנס 4 ספרות אחרונות",
+    "city": "עיר",
+    "cityPlaceholder": "הכנס עיר",
+    "street": "רחוב",
+    "streetPlaceholder": "הכנס רחוב",
+    "delivery": "משלוח",
+    "pickup": "איסוף עצמי",
+    "buyNow": "קנה עכשיו!",
+    "back": "חזרה",
+    "price": "מחיר",
+    "deliveryCost": "משלוח",
+    "bundleSavings": "חסכון בחבילה",
+    "total": "סה\"כ",
+    "product": "מוצר",
+    "quantity": "כמות"
+  },
+  "quantityDialog": {
+    "title": "בחר כמות",
+    "options": "אפשרויות",
+    "outOfStock": "אזל מהמלאי",
+    "nicotine": "ניקוטין",
+    "ice": "רמת קירור",
+    "cancel": "ביטול",
+    "confirm": "אישור"
+  },
+  "cart": {
+    "yourCart": "העגלה שלי",
+    "empty": "העגלה שלך ריקה.",
+    "unnamedProduct": "מוצר ללא שם",
+    "brand": "מותג",
+    "unknown": "לא ידוע",
+    "option": "אפשרות",
+    "unitPrice": "מחיר ליחידה",
+    "totalPrice": "מחיר כולל",
+    "quantity": "כמות",
+    "nicotine": "ניקוטין",
+    "iceLevel": "רמת קירור",
+    "mg": "מ\"ג",
+    "remove": "הסר",
+    "saves": "חסכון",
+    "total": "סה\"כ",
+    "buyNow": "קנה עכשיו",
+    "continueShopping": "המשך בקניות",
+    "checkout": "לקופה",
+    "subtotal": "סיכום ביניים",
+    "shipping": "משלוח",
+    "tax": "מע\"מ"
+  },
+  "checkout": {
+    "shippingAddress": "כתובת למשלוח",
+    "billingAddress": "כתובת לחיוב",
+    "paymentMethod": "אמצעי תשלום",
+    "orderSummary": "סיכום הזמנה",
+    "placeOrder": "בצע הזמנה"
+  },
+  "account": {
+    "profile": "פרופיל",
+    "orders": "הזמנות",
+    "wishlist": "מועדפים",
+    "settings": "הגדרות",
+    "register": "הרשמה",
+    "username": "שם משתמש",
+    "password": "סיסמה",
+    "passwordMinLength": "הסיסמה חייבת להיות באורך של 6 תווים לפחות.",
+    "firstName": "שם פרטי",
+    "lastName": "שם משפחה",
+    "confirm": "אישור",
+    "email": "אימייל",
+    "phone": "טלפון",
+    "address": "כתובת",
+    "edit": "עריכה",
+    "save": "שמור",
+    "cancel": "ביטול",
+    "changePassword": "שינוי סיסמה",
+    "oldPassword": "סיסמה ישנה",
+    "newPassword": "סיסמה חדשה",
+    "confirmPassword": "אימות סיסמה"
+  },
+  "about": {
+    "title": "אודות The Fog Bank",
+    "subtitle": "היעד המועדף שלך למוצרי אידוי איכותיים",
+    "storeImageAlt": "חנות The Fog Bank",
+    "ib": "אעבלין",
+    "ky": "כפר יאסיף",
+    "sh": "שפרעם",
+    "ourStory": {
+      "title": "הסיפור שלנו",
+      "paragraph1": "שנוסדה עם תשוקה לאיכות וחדשנות, The Fog Bank צמחה מחנות מקומית קטנה לשם מוכר בקהילת האידוי. המסע שלנו החל עם משימה פשוטה: לספק מוצרי אידוי יוצאי דופן העומדים בסטנדרטים הגבוהים ביותר של בטיחות וביצועים.",
+      "paragraph2": "כיום, אנו ממשיכים לשמור על ערכים אלה תוך הרחבת המבחר שלנו והגעה ליותר לקוחות החולקים את ההתלהבות שלנו לחוויות אידוי פרימיום.",
+      "paragraph3": "אנו מפעילים כיום שתי חנויות פיזיות הממוקמות ב<strong>אעבלין</strong> <strong>כפר יאסיף</strong> וב <strong>שפרעם</strong>, שם הצוות המקצועי שלנו מוכן לעזור לך למצוא את המוצר המושלם."
+    },
+    "missionValues": {
+      "title": "המשימה והערכים שלנו",
+      "mission": {
+        "title": "המשימה שלנו",
+        "description": "לספק מוצרי אידוי איכותיים העומדים בסטנדרטים הגבוהים ביותר של בטיחות וחדשנות תוך יצירת חוויה יוצאת דופן ללקוחותינו."
+      },
+      "values": {
+        "title": "הערכים שלנו",
+        "description": "איכות, יושרה, שביעות רצון לקוחות ושיפור מתמיד מנחים את כל מה שאנו עושים ב-The Fog Bank."
+      },
+      "promise": {
+        "title": "ההבטחה שלנו",
+        "description": "אנו מבטיחים לספק רק את המוצרים הטובים ביותר, שירות יוצא דופן וחוויית קנייה שעולה על ציפיותיך."
+      }
+    },
+    "whatWeOffer": {
+      "title": "מה אנחנו מציעים",
+      "products": {
+        "title": "מבחר פרימיום",
+        "description": "מגוון רחב של מוצרי אידוי איכותיים שנבחרו בקפידה עבור לקוחותינו"
+      },
+      "brands": {
+        "title": "מותגים מובילים",
+        "description": "שיתופי פעולה עם מותגים מובילים הידועים באמינותם וביצועיהם"
+      },
+      "prices": {
+        "title": "מחירים תחרותיים",
+        "description": "ערך מעולה עם עסקאות בלעדיות ומבצעים ללקוחותינו הנאמנים"
+      },
+      "shipping": {
+        "title": "משלוח מהיר",
+        "description": "משלוח מאובטח ויעיל כדי להבטיח שהמוצרים שלך יגיעו בבטחה"
+      },
+      "support": {
+        "title": "תמיכה מקצועית",
+        "description": "צוות שירות לקוחות מסור מוכן לסייע בכל שאלה"
+      },
+      "safety": {
+        "title": "בטיחות תחילה",
+        "description": "כל המוצרים נבדקים ועומדים בתקנות הבטיחות"
+      }
+    },
+    "team": {
+      "title": "הכירו את הצוות שלנו",
+      "founder": "מייסד ומנכ\"ל",
+      "founderBio": "עם ניסיון של למעלה מ-10 שנים בתעשייה, ג'ון מביא מומחיות וחזון ל-The Fog Bank.",
+      "specialist": "מומחית מוצרים",
+      "specialistBio": "שרה מוודאת שאנו מחזיקים רק במוצרים באיכות הגבוהה ביותר העומדים בסטנדרטים המחמירים שלנו.",
+      "experience": "חוויית לקוח",
+      "experienceBio": "מייקל מחויב להפוך את חוויית הקנייה שלך ליוצאת דופן מההתחלה ועד הסוף."
+    },
+    "testimonials": {
+      "quote1": "ל-The Fog Bank יש את המבחר הטוב ביותר של מוצרים שמצאתי בכל מקום. הצוות שלהם בעל ידע ותמיד מוכן לעזור!",
+      "quote2": "אני קונה כאן כבר שנים ומעולם לא התאכזבתי. מוצרים איכותיים ושירות מצוין בכל פעם."
+    },
+    "contactCta": {
+      "title": "מוכנים לחוות את ההבדל של The Fog Bank?",
+      "subtitle": "בקרו בחנות שלנו או קנו באינטרנט עוד היום!",
+      "contactButton": "צור קשר",
+      "shopButton": "קנה עכשיו"
+    }
+  },
+  "contact": {
+    "getInTouch": "צור קשר",
+    "name": "שם",
+    "email": "אימייל",
+    "message": "הודעה",
+    "send": "שלח",
+    "address": "כתובת",
+    "phone": "טלפון",
+    "nameRequired": "נדרש למלא שם",
+    "emailRequired": "נדרש למלא אימייל",
+    "emailInvalid": "אנא הזן כתובת אימייל תקינה",
+    "messageRequired": "נדרש למלא הודעה",
+    "contactInfo": "פרטי התקשרות",
+    "haveQuestions": "יש לך שאלות? נשמח לשמוע ממך!"
+  },
+  "footer": {
+    "aboutUs": "אודותינו",
+    "customerService": "שירות לקוחות",
+    "information": "מידע",
+    "followUs": "עקבו אחרינו",
+    "newsletter": "ניוזלטר",
+    "subscribe": "הירשם",
+    "copyright": "© 2025 כל הזכויות שמורות"
+  },
+  "search": {
+    "placeholder": "חיפוש..."
+  },
+  "productDetails": {
+    "brand": "מותג",
+    "details": "פרטי המוצר",
+    "description": "תיאור",
+    "options": "אפשרויות",
+    "price": "מחיר",
+    "saleEnds": "המבצע מסתיים",
+    "addToCart": "הוסף לעגלה",
+    "edit": "ערוך",
+    "outOfStock": "אזל מהמלאי",
+    "fields": {
+      "nicotineLevel": "רמת ניקוטין",
+      "iceLevel": "רמת קירור",
+      "color": "צבע",
+      "flavor": "טעם",
+      "type": "סוג",
+      "capacity": "קיבולת",
+      "strength": "חוזק",
+      "wattage": "הספק"
+    }
+  }
+}

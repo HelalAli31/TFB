@@ -15,18 +15,21 @@
       <h2 class="product-title">{{ product.name }}</h2>
 
       <p class="product-brand">
-        Brand: <span>{{ product.brand }}</span>
+        {{ "productDetails.brand" | translate }}:
+        <span>{{ product.brand }}</span>
       </p>
 
       <!-- Product Details -->
       <div class="product-details-card" *ngIf="product.details">
-        <h3 class="section-title">Product Details:</h3>
+        <h3 class="section-title">
+          {{ "productDetails.details" | translate }}
+        </h3>
         <div class="decorative-line"></div>
 
         <ng-container *ngFor="let key of getDetailKeys()">
           <!-- Display Colors -->
           <div *ngIf="isColorField(key)" class="color-section">
-            <strong>{{ formatKeyName(key) }}:</strong>
+            <strong>{{ "productDetails.fields." + key | translate }}:</strong>
             <div class="color-circles">
               <span
                 *ngFor="let color of product.details[key]"
@@ -44,14 +47,14 @@
               key !== 'options' && !isColorField(key) && product.details[key]
             "
           >
-            <strong>{{ formatKeyName(key) }}:</strong>
+            <strong>{{ "productDetails.fields." + key | translate }}:</strong>
             {{ product.details[key] }}
           </p>
         </ng-container>
 
-        <!-- Display "Options" with availability indication -->
+        <!-- Display Options -->
         <div *ngIf="product.details?.options?.length">
-          <strong>Options:</strong>
+          <strong>{{ "productDetails.options" | translate }}:</strong>
           <ul class="option-list mt-3">
             <li
               *ngFor="let option of product.details.options"
@@ -61,7 +64,10 @@
               [title]="
                 option.quantity > 0
                   ? option.option
-                  : option.option + ' (Out of Stock)'
+                  : option.option +
+                    ' (' +
+                    ('productDetails.outOfStock' | translate) +
+                    ')'
               "
             >
               <span class="option-name">{{ option.option }}</span>
@@ -69,20 +75,27 @@
           </ul>
         </div>
       </div>
+
       <!-- Price Section -->
       <div class="price-section">
         <p *ngIf="isCurrentlyOnSale(product.sale)" class="original-price">
           <span *ngIf="product.price !== product.sale.salePrice">
-            <span style="color: black; font-size: 90%">Price:</span
-            >{{ product.price }} ₪
+            <span style="color: black; font-size: 90%">
+              {{ "productDetails.price" | translate }}:
+            </span>
+            {{ product.price }} ₪
           </span>
         </p>
         <p *ngIf="isCurrentlyOnSale(product.sale)" class="sale-price">
-          <span style="color: black; font-size: 90%">Price:</span>
+          <span style="color: black; font-size: 90%">
+            {{ "productDetails.price" | translate }}:
+          </span>
           {{ product.sale.salePrice }} ₪
         </p>
         <p *ngIf="!isCurrentlyOnSale(product.sale)" class="regular-price">
-          <span style="color: black; font-size: 90%">Price:</span>
+          <span style="color: black; font-size: 90%">
+            {{ "productDetails.price" | translate }}:
+          </span>
           {{ product.price }} ₪
         </p>
         <h5
@@ -91,21 +104,27 @@
             product.price !== product.sale.salePrice
           "
         >
-          * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
+          * {{ "productDetails.saleEnds" | translate }}:
+          {{ product.sale.saleEndDate | date : "mediumDate" }}
         </h5>
       </div>
+
       <!-- Add/Edit to Cart Button -->
       <button
         class="view-button"
         [disabled]="product.quantity === 0"
         (click)="openQuantityDialog(product)"
       >
-        {{ isItemInCart() ? "Edit" : "Add to Cart" }}
+        {{
+          isItemInCart()
+            ? ("productDetails.edit" | translate)
+            : ("productDetails.addToCart" | translate)
+        }}
       </button>
     </div>
   </div>
 
-  <!-- Description Section at the Bottom -->
+  <!-- Description Section -->
   <div class="product-description-container" *ngIf="product.description">
     <h3>Description</h3>
     <div [innerHTML]="product.description"></div>

@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +16,6 @@ import { Section2Component } from './components/Home/Category/section2.component
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { Section4Component } from './components/Home/Top_Products/section4.component';
-// import { ServiceComponent } from './components/services/service/service.component';
 import { LoginComponent } from './components/Home/login/login.component';
 import { RegisterComponent } from './components/Home/register/register.component';
 import { ContactUsComponent } from './containers/contact-us/contact-us.component';
@@ -49,6 +48,11 @@ import { BulkSaleComponent } from './containers/bulk-sale/bulk-sale.component';
 import { ProfileComponent } from './containers/profile/profile.component';
 import { PopUpOrderDetailsComponent } from './components/PopUpComponents/pop-up-order-details/pop-up-order-details.component';
 import { DecimalPipe } from '@angular/common';
+import { TranslatePipe } from './pipes/translate.pipe';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { LanguageService } from './serverServices/language.service';
 
 @NgModule({
   declarations: [
@@ -80,7 +84,10 @@ import { DecimalPipe } from '@angular/common';
     AboutUsComponent,
     BulkSaleComponent,
     ProfileComponent,
-    PopUpOrderDetailsComponent, // Add the new component here
+    PopUpOrderDetailsComponent,
+    TranslatePipe,
+    LanguageSelectorComponent,
+    ClickOutsideDirective,
   ],
   imports: [
     BrowserModule,
@@ -101,11 +108,9 @@ import { DecimalPipe } from '@angular/common';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
+    MatMenuModule,
   ],
-  providers: [
-    MatDatepickerModule,
-    DecimalPipe, // Add DecimalPipe for number formatting
-  ],
+  providers: [MatDatepickerModule, DecimalPipe, LanguageService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
 })

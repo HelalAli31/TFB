@@ -61,3 +61,57 @@
 app-bottom-side {
   flex-shrink: 0; /* Prevent the footer from shrinking */
 }
+/* styles/rtl.css */
+/* RTL specific overrides */
+[dir="rtl"] .mat-form-field {
+  text-align: right;
+}
+
+[dir="rtl"] .mat-icon {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+/* Flip margins and paddings */
+[dir="rtl"] .ml-2 {
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
+}
+
+[dir="rtl"] .mr-2 {
+  margin-right: 0 !important;
+  margin-left: 0.5rem !important;
+}
+
+[dir="rtl"] .pl-2 {
+  padding-left: 0 !important;
+  padding-right: 0.5rem !important;
+}
+
+[dir="rtl"] .pr-2 {
+  padding-right: 0 !important;
+  padding-left: 0.5rem !important;
+}
+
+/* Flip flexbox directions */
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse !important;
+}
+
+/* Flip text alignment */
+[dir="rtl"] .text-left {
+  text-align: right !important;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
+/* Flip float */
+[dir="rtl"] .float-left {
+  float: right !important;
+}
+
+[dir="rtl"] .float-right {
+  float: left !important;
+}

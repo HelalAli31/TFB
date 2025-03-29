@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
 import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
 import { environment } from '../../../environments/environment'; // Import environment
+import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
   selector: 'app-products',
@@ -19,7 +20,7 @@ export class ProductsComponent implements OnInit {
   brands: string[] = [];
   currentPage: number = 1;
   totalPages: number = 1;
-  itemsPerPage: number = 30;
+  itemsPerPage: number = 24;
   sortBy: string = 'name';
   order: string = 'asc';
   searchValue: string = '';
@@ -35,12 +36,14 @@ export class ProductsComponent implements OnInit {
     private route: ActivatedRoute,
     private cartService: CartService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public languageService: LanguageService
   ) {}
 
   private routeSubscription: any;
 
-  ngOnInit() {
+  async ngOnInit() {
+    console.log('LANG: ', await this.languageService.getCurrentLanguage());
     // Initialize products and categories first
     this.fetchAllProducts().then(() => {
       // Clean up any existing subscription

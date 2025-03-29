@@ -17,7 +17,7 @@
         <input
           type="text"
           [(ngModel)]="searchValue"
-          placeholder="Search..."
+          [placeholder]="'search.placeholder' | translate"
           class="Search_Input"
           (input)="searchProducts()"
           (focus)="searchProducts()"
@@ -48,9 +48,14 @@
 
     <!-- Right Side - Login -->
     <div class="Login_Container">
+      <app-language-selector></app-language-selector>
       <div *ngIf="token" class="LoginDiv">
-        <span class="welcome-text">Welcome, {{ this.firstName }}</span>
-        <span class="sign-out-text" (click)="logOut()">Sign Out</span>
+        <span class="welcome-text"
+          >{{ "common.welcome" | translate }}, {{ this.firstName }}</span
+        >
+        <span class="sign-out-text" (click)="logOut()">{{
+          "common.signOut" | translate
+        }}</span>
         <img
           class="LoginImage"
           [src]="apiUrl + '/assets/exit.svg'"
@@ -61,7 +66,9 @@
         />
       </div>
       <div *ngIf="!token" class="LoginDiv">
-        <span class="login-text" (click)="openDialog()">Login</span>
+        <span class="login-text" (click)="openDialog()">{{
+          "common.login" | translate
+        }}</span>
         <img
           class="LoginImage"
           [src]="apiUrl + '/assets/log-in.png'"
@@ -78,11 +85,10 @@
       <a class="navbar-brand nav-item" href="/">
         <div class="nav-icon-container">
           <mat-icon class="nav-icon" fontIcon="home"></mat-icon>
-          <span class="nav-text">Home</span>
+          <span class="nav-text">{{ "common.home" | translate }}</span>
         </div>
       </a>
 
-      <!-- Products Dropdown -->
       <!-- Products Dropdown -->
       <div
         class="Dropdown"
@@ -97,7 +103,7 @@
         >
           <div class="nav-icon-container">
             <i class="fas fa-smoking nav-icon Cigarette_Icon"></i>
-            <span class="nav-text">Products</span>
+            <span class="nav-text">{{ "common.products" | translate }}</span>
           </div>
         </div>
 
@@ -109,12 +115,12 @@
           (mouseleave)="delayedHideCategories()"
         >
           <div class="Category_Header">
-            <h4>Categories</h4>
+            <h4>{{ "common.categories" | translate }}</h4>
             <a
               href="/products"
               class="View_All_Link"
               (click)="filterProducts('', '')"
-              >View All Products</a
+              >{{ "common.viewAll" | translate }}</a
             >
           </div>
           <div class="Category_Grid">
@@ -139,8 +145,6 @@
               />
 
               <!-- Text -->
-              <!-- In your nav-bar.component.html -->
-              <!-- Replace this in your nav-bar.component.html -->
               <a
                 (click)="
                   filterByCategory(category.name);
@@ -159,7 +163,7 @@
               class="Close_Categories_Button"
               (click)="hideCategoriesOnMobile($event)"
             >
-              Close
+              {{ "common.close" | translate }}
             </button>
           </div>
         </div>
@@ -180,28 +184,28 @@
               {{ getTotalCartItems() }}
             </span>
           </div>
-          <span class="nav-text">Cart</span>
+          <span class="nav-text">{{ "common.cart" | translate }}</span>
         </div>
       </a>
 
       <a class="navbar-brand nav-item" href="/profile">
         <div class="nav-icon-container">
           <i class="fas fa-user nav-icon Profile_Icon"></i>
-          <span class="nav-text">Profile</span>
+          <span class="nav-text">{{ "common.profile" | translate }}</span>
         </div>
       </a>
 
       <a class="navbar-brand nav-item" href="/contactUs">
         <div class="nav-icon-container">
           <mat-icon class="nav-icon" fontIcon="mail"></mat-icon>
-          <span class="nav-text">Contact</span>
+          <span class="nav-text">{{ "common.contact" | translate }}</span>
         </div>
       </a>
 
       <a class="navbar-brand nav-item" href="/aboutUs">
         <div class="nav-icon-container">
           <mat-icon class="nav-icon" fontIcon="info"></mat-icon>
-          <span class="nav-text">About</span>
+          <span class="nav-text">{{ "common.about" | translate }}</span>
         </div>
       </a>
     </div>

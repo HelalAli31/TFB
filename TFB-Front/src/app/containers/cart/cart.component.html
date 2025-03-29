@@ -1,36 +1,42 @@
 <div class="cart-container">
-  <h2 class="cart-title">My Cart 🛒</h2>
+  <h2 class="cart-title">{{ "cart.yourCart" | translate }} 🛒</h2>
 
   <!-- Empty Cart Message -->
   <div *ngIf="cartItems.length === 0" class="empty-cart">
-    <p>Your cart is empty. 😞</p>
+    <p>{{ "cart.empty" | translate }} 😞</p>
   </div>
 
   <!-- Cart Items Loop -->
   <div *ngFor="let item of cartItems; let i = index" class="cart-item">
     <!-- Product Image -->
-    <div class="cart-image-container">
+    <div
+      class="cart-image-container"
+      [routerLink]="['/product', item?.product_id?._id]"
+    >
       <img
         [src]="getProductImage(item)"
         (error)="onImageError($event, item)"
         class="cart-image"
-        alt="{{ item.product_id?.name || 'Product' }}"
+        [alt]="item.product_id?.name || ('cart.unnamedProduct' | translate)"
       />
     </div>
 
     <!-- Product Details -->
-    <div class="cart-details">
+    <div class="cart-details" [routerLink]="['/product', item?.product?._id]">
       <h3 class="cart-name">
-        {{ item.product_id?.name || "Unnamed Product" }}
+        {{ item.product_id?.name || ("cart.unnamedProduct" | translate) }}
       </h3>
-      <p class="cart-brand">Brand: {{ item.product_id?.brand || "Unknown" }}</p>
-      <p class="product-option" *ngIf="item.option">
-        Option: <span>{{ item.option }}</span>
+      <p class="cart-brand">
+        {{ "cart.brand" | translate }}:
+        {{ item.product_id?.brand || ("cart.unknown" | translate) }}
       </p>
-      <!-- Price Section -->
+      <p class="product-option" *ngIf="item.option">
+        {{ "cart.option" | translate }}: <span>{{ item.option }}</span>
+      </p>
+
       <!-- Unit Price Section -->
       <p class="cart-price">
-        💰 <b>Unit Price:</b>
+        💰 <b>{{ "cart.unitPrice" | translate }}:</b>
         <span *ngIf="isSaleActive(item.product_id); else normalPrice">
           {{ item.product_id?.sale?.salePrice }} ₪
         </span>
@@ -41,7 +47,7 @@
 
       <!-- Total Price Section -->
       <p class="cart-price">
-        🔹 <b>Total Price:</b>
+        🔹 <b>{{ "cart.totalPrice" | translate }}:</b>
         <span *ngIf="isSaleActive(item.product_id); else totalNormalPrice">
           {{ (item.product_id?.sale?.salePrice || 0) * item.amount }} ₪
         </span>
@@ -83,7 +89,7 @@
         *ngIf="item.nic !== null || item.ice !== null"
       >
         <div class="nic-ice-item" *ngIf="item.nic !== null">
-          <label>🧪 Nicotine:</label>
+          <label>🧪 {{ "cart.nicotine" | translate }}:</label>
           <input
             type="range"
             min="0"
@@ -93,11 +99,13 @@
             (change)="updateNicIce(item, 'nic')"
             class="nic-ice-slider"
           />
-          <span class="nic-ice-value">{{ item.nic }} mg</span>
+          <span class="nic-ice-value"
+            >{{ item.nic }} {{ "cart.mg" | translate }}</span
+          >
         </div>
 
         <div class="nic-ice-item" *ngIf="item.ice !== null">
-          <label>❄ Ice Level:</label>
+          <label>❄ {{ "cart.iceLevel" | translate }}:</label>
           <input
             type="range"
             min="0"
@@ -113,13 +121,15 @@
     </div>
 
     <!-- Remove Button -->
-    <button class="remove-button" (click)="removeItem(i)">🗑 Remove</button>
+    <button class="remove-button" (click)="removeItem(i)">
+      🗑 {{ "cart.remove" | translate }}
+    </button>
   </div>
 
   <!-- Cart Summary -->
   <div class="cart-summary">
     <div class="bundle-discount2" *ngIf="bundleDiscounts.length">
-      saves :
+      {{ "cart.saves" | translate }}:
       <div *ngFor="let discount of bundleDiscounts" class="bundle-discount">
         <span class="discount-text"
           >-{{ discount.discount }} ₪ ({{ discount.name }})</span
@@ -127,10 +137,12 @@
       </div>
     </div>
     <h3>
-      <span class="total-price">Total: {{ getTotalPrice() }} ₪</span>
+      <span class="total-price"
+        >{{ "cart.total" | translate }}: {{ getTotalPrice() }} ₪</span
+      >
     </h3>
     <button class="buy-now-button" (click)="openOrderDialog()">
-      🛒 Buy Now
+      🛒 {{ "cart.buyNow" | translate }}
     </button>
   </div>
 </div>

@@ -1,7 +1,7 @@
 <div class="Products_Container">
   <app-bulk-sale></app-bulk-sale>
 
-  <h2 class="Products_Title">All Products</h2>
+  <h2 class="Products_Title">{{ "products.allProducts" | translate }}</h2>
 
   <div class="Filter_Bar">
     <div class="Search_Wrapper">
@@ -9,7 +9,7 @@
         type="text"
         [(ngModel)]="searchValue"
         (input)="searchProducts()"
-        placeholder="Search Products..."
+        [placeholder]="'search.placeholder' | translate"
         class="Search_Input"
       />
       <i class="fas fa-search Search_Icon"></i>
@@ -17,35 +17,42 @@
 
     <!-- Sort By Dropdown -->
     <div class="Sort_Container">
-      <label for="sortBy">Sort By:</label>
+      <label for="sortBy">{{ "products.sortBy" | translate }}:</label>
       <select [(ngModel)]="sortBy" id="sortBy" (change)="changeSorting()">
-        <option value="name">Name</option>
-        <option value="price">Price (Low to High)</option>
-        <option value="price_desc">Price (High to Low)</option>
-        <option *ngIf="isAdmin" value="stock">Stock (Low to High)</option>
-        <option *ngIf="isAdmin" value="stock_desc">Stock (High to Low)</option>
-      </select>
-    </div>
-
-    <div class="Sort_Container">
-      <label for="categoryFilter">Category:</label>
-      <!-- In your products.component.html -->
-      <select [(ngModel)]="selectedCategory" (change)="filterByCategory()">
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category }}
+        <option value="name">{{ "products.name" | translate }}</option>
+        <option value="price">
+          {{ "products.priceLowToHigh" | translate }}
+        </option>
+        <option value="price_desc">
+          {{ "products.priceHighToLow" | translate }}
+        </option>
+        <option *ngIf="isAdmin" value="stock">
+          {{ "products.stockLowToHigh" | translate }}
+        </option>
+        <option *ngIf="isAdmin" value="stock_desc">
+          {{ "products.stockHighToLow" | translate }}
         </option>
       </select>
     </div>
 
     <div class="Sort_Container">
-      <label for="brandFilter">Brand:</label>
+      <label for="categoryFilter">{{ "products.category" | translate }}:</label>
+      <select [(ngModel)]="selectedCategory" (change)="filterByCategory()">
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category === "All" ? ("products.all" | translate) : category }}
+        </option>
+      </select>
+    </div>
+
+    <div class="Sort_Container">
+      <label for="brandFilter">{{ "products.brand" | translate }}:</label>
       <select
         [(ngModel)]="selectedBrand"
         id="brandFilter"
         (change)="filterByBrand()"
       >
         <option *ngFor="let brand of brands" [value]="brand">
-          {{ brand }}
+          {{ brand === "All" ? ("products.all" | translate) : brand }}
         </option>
       </select>
     </div>
@@ -62,7 +69,11 @@
             Low_Stock: product.quantity > 0
           }"
         >
-          {{ product.quantity === 0 ? "Out of Stock" : "Low Stock" }}
+          {{
+            product.quantity === 0
+              ? ("products.outOfStock" | translate)
+              : ("products.lowStock" | translate)
+          }}
         </div>
 
         <div class="Product_Details">
@@ -118,7 +129,8 @@
                 product.price !== product.sale.salePrice
               "
             >
-              * Sale ends: {{ product.sale.saleEndDate | date : "mediumDate" }}
+              * {{ "products.saleEnds" | translate }}:
+              {{ product.sale.saleEndDate | date : "mediumDate" }}
             </h5>
             <h5
               *ngIf="
@@ -136,7 +148,7 @@
             (click)="addToTopProducts(product._id)"
             *ngIf="isAdmin"
           >
-            Add To Top Products
+            {{ "products.addToTopProducts" | translate }}
           </button>
           <button
             class="View_Button"
@@ -147,10 +159,10 @@
           >
             {{
               product.quantity === 0
-                ? "Unavailable"
+                ? ("products.outOfStock" | translate)
                 : product.isInCart
-                ? "Edit"
-                : "Add to Cart"
+                ? ("products.edit" | translate)
+                : ("products.addToCart" | translate)
             }}
           </button>
         </div>
@@ -161,7 +173,8 @@
   <!-- 📌 Pagination -->
   <div class="Pagination">
     <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
-      ⬅ Prev
+      {{ languageService.getDirection() === "rtl" ? "➡" : "⬅" }}
+      {{ "products.prev" | translate }}
     </button>
     <input
       type="range"
@@ -170,12 +183,16 @@
       [(ngModel)]="currentPage"
       (change)="loadProducts()"
     />
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <span
+      >{{ "products.page" | translate }} {{ currentPage }}
+      {{ "products.of" | translate }} {{ totalPages }}</span
+    >
     <button
       (click)="goToPage(currentPage + 1)"
       [disabled]="currentPage === totalPages"
     >
-      Next ➡
+      {{ "products.next" | translate }}
+      {{ languageService.getDirection() === "rtl" ? "⬅" : "➡" }}
     </button>
   </div>
 </div>

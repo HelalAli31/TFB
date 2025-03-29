@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CartService } from 'src/app/serverServices/cart/cart.service';
+import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
   selector: 'app-quantity-dialog',
@@ -18,6 +19,8 @@ export class QuantityDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<QuantityDialogComponent>,
+    public languageService: LanguageService,
+
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cartService: CartService
   ) {}

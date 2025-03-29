@@ -3,7 +3,9 @@
     class="topProductsDiv"
     *ngFor="let category of groupedProducts | keyvalue"
   >
-    <h2 class="Category_Title m-4">TOP {{ category.key }}</h2>
+    <h2 class="Category_Title m-4">
+      {{ "products.top" | translate }} {{ category.key }}
+    </h2>
     <div class="Product_Grid p-4">
       <div *ngFor="let product of category.value" class="Product_Card">
         <div class="product-image-container">
@@ -17,11 +19,10 @@
         </div>
 
         <div class="Product_Details">
-          <div
-            [routerLink]="['/product', product._id]"
-            class="Product_Info_Area"
-          >
-            <h5 class="Product_Name">{{ product.name }}</h5>
+          <div class="Product_Info_Area">
+            <h5 class="Product_Name" [routerLink]="['/product', product._id]">
+              {{ product.name }}
+            </h5>
             <div class="brand-price-wrapper">
               <p class="Product_Brand">{{ product.brand }}</p>
               <div class="price-container">
@@ -49,7 +50,7 @@
               [disabled]="product.quantity === 0"
               (click)="openDeleteDialog(product._id, product.name)"
             >
-              delete
+              {{ "products.delete" | translate }}
             </button>
             <button
               *ngIf="!isAdmin"
@@ -60,10 +61,10 @@
             >
               {{
                 product.quantity === 0
-                  ? "Unavailable"
+                  ? ("products.outOfStock" | translate)
                   : product.isInCart
-                  ? "Edit"
-                  : "Add to Cart"
+                  ? ("products.edit" | translate)
+                  : ("products.addToCart" | translate)
               }}
             </button>
           </div>

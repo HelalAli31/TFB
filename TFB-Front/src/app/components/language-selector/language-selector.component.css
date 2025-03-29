@@ -1,0 +1,94 @@
+.language-selector {
+  display: inline-block;
+  margin-right: 15px;
+  position: relative;
+}
+
+.language-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.selected-language {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+
+.selected-language:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-icon {
+  font-size: 10px;
+  margin-left: 5px;
+}
+
+.language-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  z-index: 1000;
+  display: none;
+  overflow: hidden;
+}
+
+.language-options.show {
+  display: block;
+}
+
+.language-option {
+  padding: 10px 15px;
+  transition: background-color 0.2s;
+  text-align: left;
+  font-size: 14px;
+}
+
+.language-option:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.language-option.active {
+  background-color: rgba(0, 0, 0, 0.08);
+  font-weight: 500;
+}
+
+/* RTL Support */
+:host-context(body.rtl) .dropdown-icon {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+:host-context(body.rtl) .language-options {
+  right: auto;
+  left: 0;
+}
+
+:host-context(body.rtl) .language-option {
+  text-align: right;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .language-selector {
+    margin-right: 10px;
+  }
+
+  .selected-language {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .language-option {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

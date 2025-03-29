@@ -8,6 +8,7 @@ import { ProductService } from '../../serverServices/productService/product.serv
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment'; // Import environment
 import { CartService } from 'src/app/serverServices/cart/cart.service';
+import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -34,7 +35,8 @@ export class NavBarComponent implements OnInit {
     private catService: CategoryService,
     private productService: ProductService,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private languageService: LanguageService // Add this line
   ) {}
 
   toggleMenu(): void {

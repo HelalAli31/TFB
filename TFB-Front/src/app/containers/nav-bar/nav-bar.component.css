@@ -395,8 +395,8 @@
   color: black;
   transition: 0.3s;
   display: inline-block;
-  margin-right: 8%;
   margin-top: 5px;
+  text-align: center;
 }
 
 .Category_Item:hover .Category_Text {
@@ -446,6 +446,43 @@
 /* Remove underlines from all links */
 a {
   text-decoration: none;
+}
+
+/* Dropdown positioning */
+.Dropdown {
+  position: relative;
+}
+
+/* RTL Support */
+body.rtl .LoginImage {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+body.rtl .Search_Icon {
+  right: auto;
+  left: 10px;
+}
+
+body.rtl .Search_Input {
+  padding: 8px 10px 8px 35px;
+}
+
+body.rtl .Search_Item_Image {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
+body.rtl .Left_Container {
+  justify-content: flex-start;
+}
+
+body.rtl .Login_Container {
+  justify-content: flex-end;
+}
+
+body.rtl .LoginDiv {
+  flex-direction: row-reverse;
 }
 
 /* Touch device support for categories */
@@ -689,7 +726,6 @@ a {
   }
 }
 /* Touch device support for categories */
-/* Touch device support for categories */
 @media (hover: none) {
   .Dropdown {
     cursor: pointer;
@@ -718,7 +754,7 @@ a {
     border-right: 5px solid transparent;
     border-top: 5px solid #333;
     position: absolute;
-    bottom: 5px;
+    bottom: -2px;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -784,5 +820,107 @@ a {
   .Category_Text {
     font-size: 14px;
     margin-top: 8px;
+  }
+}
+/* RTL Support - Enhanced */
+body.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Fix logo container in RTL mode */
+body.rtl .Logo_Container {
+  flex-direction: row-reverse;
+}
+
+/* Fix search bar in RTL mode */
+body.rtl .Search_Icon {
+  right: auto !important;
+  left: 10px !important;
+}
+
+body.rtl .Search_Input {
+  padding: 8px 10px 8px 35px !important;
+  text-align: right;
+}
+
+/* Fix search results in RTL mode */
+body.rtl .Search_Item {
+  flex-direction: row-reverse;
+}
+
+body.rtl .Search_Item_Image {
+  margin-right: 0 !important;
+  margin-left: 10px !important;
+}
+
+/* Fix login elements in RTL mode */
+body.rtl .LoginDiv {
+  flex-direction: row-reverse;
+  justify-content: flex-start !important;
+}
+
+body.rtl .LoginImage {
+  margin-left: 0 !important;
+  margin-right: 5px !important;
+}
+
+/* Fix category header in RTL mode */
+body.rtl .Category_Header {
+  flex-direction: row-reverse;
+}
+
+/* Fix category text in RTL mode */
+body.rtl .Category_Text {
+  margin-right: 0;
+  margin-left: 0;
+  text-align: center;
+}
+
+/* Fix container alignment in RTL mode */
+body.rtl .Left_Container {
+  justify-content: flex-end !important;
+}
+
+body.rtl .Login_Container {
+  justify-content: flex-start !important;
+}
+
+/* Fix dropdown positioning in RTL mode */
+body.rtl .DropButton .nav-icon-container::after {
+  left: auto !important;
+  right: 50% !important;
+  transform: translateX(50%) !important;
+}
+
+/* Fix the website name alignment in RTL */
+body.rtl .Website_Name {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Fix the nav links in RTL */
+body.rtl .Nav_Links {
+  flex-direction: row-reverse;
+}
+
+/* Fix the dropdown menu position in RTL */
+body.rtl .Category_Section {
+  text-align: right;
+}
+
+/* Fix the search placeholder in RTL */
+body.rtl input::placeholder {
+  text-align: right;
+}
+
+/* Fix the mobile layout in RTL */
+@media (max-width: 768px) {
+  body.rtl .Left_Container {
+    justify-content: flex-end !important;
+  }
+
+  body.rtl .Login_Container {
+    justify-content: flex-start !important;
   }
 }

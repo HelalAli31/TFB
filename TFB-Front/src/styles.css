@@ -1,5 +1,5 @@
 /* Add these to your global styles */
-
+@import "./app/styles/rtl.css";
 /* Add to global styles */
 html,
 body {

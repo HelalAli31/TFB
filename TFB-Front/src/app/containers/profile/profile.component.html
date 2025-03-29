@@ -1,35 +1,36 @@
 <div class="profile-container">
   <h2 class="title">
-    <mat-icon class="profile-icon" fontIcon="person"></mat-icon> Profile
+    <mat-icon class="profile-icon" fontIcon="person"></mat-icon>
+    {{ "account.profile" | translate }}
   </h2>
   <form [formGroup]="userForm">
     <div class="profile-field">
-      <label>First Name</label>
+      <label>{{ "account.firstName" | translate }}</label>
       <input type="text" formControlName="first_name" [readonly]="!isEditing" />
     </div>
 
     <div class="profile-field">
-      <label>Last Name</label>
+      <label>{{ "account.lastName" | translate }}</label>
       <input type="text" formControlName="last_name" [readonly]="!isEditing" />
     </div>
 
     <div class="profile-field">
-      <label>Email</label>
+      <label>{{ "account.email" | translate }}</label>
       <input type="email" formControlName="email" [readonly]="!isEditing" />
     </div>
 
     <div class="profile-field">
-      <label>Phone</label>
+      <label>{{ "account.phone" | translate }}</label>
       <input type="text" formControlName="phone" [readonly]="!isEditing" />
     </div>
 
     <div class="profile-field">
-      <label>Address</label>
+      <label>{{ "account.address" | translate }}</label>
       <input type="text" formControlName="address" [readonly]="!isEditing" />
     </div>
 
     <div class="profile-field">
-      <label>Username</label>
+      <label>{{ "account.username" | translate }}</label>
       <input type="text" formControlName="username" [readonly]="!isEditing" />
     </div>
 
@@ -43,7 +44,7 @@
       type="button"
       class="edit-btn"
     >
-      Edit
+      {{ "account.edit" | translate }}
     </button>
     <button
       *ngIf="isEditing"
@@ -51,7 +52,7 @@
       type="button"
       class="save-btn"
     >
-      Save
+      {{ "account.save" | translate }}
     </button>
     <button
       *ngIf="isEditing"
@@ -59,7 +60,7 @@
       type="button"
       class="cancel-btn"
     >
-      Cancel
+      {{ "account.cancel" | translate }}
     </button>
 
     <!-- 🔐 Change Password Button -->
@@ -68,34 +69,34 @@
       type="button"
       class="change-password-btn"
     >
-      Change Password
+      {{ "account.changePassword" | translate }}
     </button>
   </form>
 
   <!-- 🔑 Change Password Form -->
   <div *ngIf="isChangingPassword" class="password-container">
-    <h3>Change Password</h3>
+    <h3>{{ "account.changePassword" | translate }}</h3>
     <form [formGroup]="passwordForm">
       <div class="profile-field">
-        <label>Old Password</label>
+        <label>{{ "account.oldPassword" | translate }}</label>
         <input type="password" formControlName="old_password" />
       </div>
       <div class="profile-field">
-        <label>New Password</label>
+        <label>{{ "account.newPassword" | translate }}</label>
         <input type="password" formControlName="new_password" />
       </div>
       <div class="profile-field">
-        <label>Confirm Password</label>
+        <label>{{ "account.confirmPassword" | translate }}</label>
         <input type="password" formControlName="confirm_password" />
       </div>
       <p class="server-message" *ngIf="passwordMessage.length">
         * {{ passwordMessage }}
       </p>
       <button (click)="changePassword()" type="button" class="save-btn">
-        Change Password
+        {{ "account.changePassword" | translate }}
       </button>
       <button (click)="toggleChangePassword()" type="button" class="cancel-btn">
-        Cancel
+        {{ "account.cancel" | translate }}
       </button>
     </form>
   </div>

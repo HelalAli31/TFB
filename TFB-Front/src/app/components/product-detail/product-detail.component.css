@@ -140,6 +140,7 @@
   text-align: center;
   border-bottom: 3px solid #cc00ff; /* Decorative underline */
   display: inline-block;
+  direction: ltr;
 }
 
 /* Original Price (Strikethrough) */
@@ -159,6 +160,7 @@
   text-align: left;
   max-width: 1000px;
   margin: 35px auto;
+  direction: ltr;
 }
 
 .product-description-container h3 {

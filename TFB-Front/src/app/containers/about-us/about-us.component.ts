@@ -6,6 +6,7 @@ import {
   animate,
   state,
 } from '@angular/animations';
+import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
   selector: 'app-about-us',
@@ -54,14 +55,12 @@ export class AboutUsComponent implements OnInit {
   currentTestimonialIndex = 0;
   testimonials = [
     {
-      quote:
-        "The Fog Bank has the best selection of products I've found anywhere. Their staff is knowledgeable and always helpful!",
+      quote: 'about.testimonials.quote1',
       name: 'Alex M.',
       rating: 5,
     },
     {
-      quote:
-        "I've been shopping here for years and have never been disappointed. Quality products and excellent service every time.",
+      quote: 'about.testimonials.quote2',
       name: 'Jamie T.',
       rating: 5,
     },
@@ -70,58 +69,53 @@ export class AboutUsComponent implements OnInit {
   offerItems = [
     {
       icon: 'box-open',
-      title: 'Premium Selection',
-      description:
-        'A wide range of high-quality vape products carefully selected for our customers',
+      title: 'about.whatWeOffer.products.title',
+      description: 'about.whatWeOffer.products.description',
     },
     {
       icon: 'award',
-      title: 'Top Brands',
-      description:
-        'Partnerships with leading brands known for reliability and performance',
+      title: 'about.whatWeOffer.brands.title',
+      description: 'about.whatWeOffer.brands.description',
     },
     {
       icon: 'tags',
-      title: 'Competitive Pricing',
-      description:
-        'Great value with exclusive deals and promotions for our loyal customers',
+      title: 'about.whatWeOffer.prices.title',
+      description: 'about.whatWeOffer.prices.description',
     },
     {
       icon: 'shipping-fast',
-      title: 'Fast Shipping',
-      description:
-        'Secure and efficient delivery to ensure your products arrive safely',
+      title: 'about.whatWeOffer.shipping.title',
+      description: 'about.whatWeOffer.shipping.description',
     },
     {
       icon: 'headset',
-      title: 'Expert Support',
-      description:
-        'Dedicated customer service team ready to assist with any questions',
+      title: 'about.whatWeOffer.support.title',
+      description: 'about.whatWeOffer.support.description',
     },
     {
       icon: 'shield-alt',
-      title: 'Safety First',
-      description: 'All products tested and compliant with safety regulations',
+      title: 'about.whatWeOffer.safety.title',
+      description: 'about.whatWeOffer.safety.description',
     },
   ];
 
   teamMembers = [
     {
       name: 'John Davis',
-      position: 'Founder & CEO',
-      bio: 'With over 10 years in the industry, John brings expertise and vision to The Fog Bank.',
+      position: 'about.team.founder',
+      bio: 'about.team.founderBio',
       image: 'assets/homepage.jpg',
     },
     {
       name: 'Sarah Johnson',
-      position: 'Product Specialist',
-      bio: 'Sarah ensures we stock only the highest quality products that meet our strict standards.',
+      position: 'about.team.specialist',
+      bio: 'about.team.specialistBio',
       image: 'assets/homepage.jpg',
     },
     {
       name: 'Michael Chen',
-      position: 'Customer Experience',
-      bio: 'Michael is dedicated to making your shopping experience exceptional from start to finish.',
+      position: 'about.team.experience',
+      bio: 'about.team.experienceBio',
       image: 'assets/homepage.jpg',
     },
   ];
@@ -129,25 +123,22 @@ export class AboutUsComponent implements OnInit {
   missionValues = [
     {
       icon: 'bullseye',
-      title: 'Our Mission',
-      description:
-        'To provide high-quality vaping products that meet the highest safety and innovation standards while creating an exceptional experience for our customers.',
+      title: 'about.missionValues.mission.title',
+      description: 'about.missionValues.mission.description',
     },
     {
       icon: 'gem',
-      title: 'Our Values',
-      description:
-        'Quality, integrity, customer satisfaction, and continuous improvement guide everything we do at The Fog Bank.',
+      title: 'about.missionValues.values.title',
+      description: 'about.missionValues.values.description',
     },
     {
       icon: 'handshake',
-      title: 'Our Promise',
-      description:
-        'We promise to deliver only the best products, exceptional service, and a shopping experience that exceeds your expectations.',
+      title: 'about.missionValues.promise.title',
+      description: 'about.missionValues.promise.description',
     },
   ];
 
-  constructor() {}
+  constructor(public languageService: LanguageService) {}
 
   ngOnInit(): void {
     // Auto-rotate testimonials every 5 seconds

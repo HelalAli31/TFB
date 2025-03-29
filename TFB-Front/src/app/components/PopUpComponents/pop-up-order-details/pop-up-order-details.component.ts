@@ -2,6 +2,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
+import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
   selector: 'app-pop-up-order-details',
@@ -26,6 +27,7 @@ export class PopUpOrderDetailsComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PopUpOrderDetailsComponent>,
+    public languageService: LanguageService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       items: any[];

@@ -5,6 +5,7 @@ import { PopUpOrderDetailsComponent } from 'src/app/components/PopUpComponents/p
 import { OrderService } from 'src/app/serverServices/order/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import getPayload from 'src/app/serverServices/Payload/getPayload';
+import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
   selector: 'app-cart',
@@ -36,7 +37,8 @@ export class CartComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private orderService: OrderService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public languageService: LanguageService
   ) {}
 
   async ngOnInit() {

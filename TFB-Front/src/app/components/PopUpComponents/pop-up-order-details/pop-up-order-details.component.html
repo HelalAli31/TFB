@@ -1,112 +1,141 @@
-<!-- pop-up-order-details.component.html -->
-<div class="MainDiv row">
-  <div class="col-6 DetailsDiv">
-    <h1 style="color: #c02a3e">Order Details</h1>
+<div [dir]="languageService.getDirection()" class="MainWrapper">
+  <div class="MainDiv">
+    <!-- LEFT SIDE -->
+    <div class="DetailsDiv">
+      <h1 class="section-title">{{ "orderDetails.title" | translate }}</h1>
 
-    <!-- 💳 Visa Number -->
-    <mat-form-field appearance="outline" style="width: 300px">
-      <mat-label>Visa Number</mat-label>
-      <input
-        matInput
-        type="text"
-        placeholder="Enter last 4 digits"
-        [(ngModel)]="visaNumber"
-      />
-    </mat-form-field>
+      <!-- Visa Number -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ "orderDetails.visaNumber" | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          [placeholder]="'orderDetails.visaPlaceholder' | translate"
+          [(ngModel)]="visaNumber"
+        />
+      </mat-form-field>
 
-    <!-- 🏡 Address Fields -->
-    <mat-form-field appearance="outline" style="width: 300px">
-      <mat-label>City</mat-label>
-      <input matInput placeholder="Enter city" [(ngModel)]="city" />
-    </mat-form-field>
+      <!-- City -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ "orderDetails.city" | translate }}</mat-label>
+        <input
+          matInput
+          [placeholder]="'orderDetails.cityPlaceholder' | translate"
+          [(ngModel)]="city"
+        />
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width: 300px">
-      <mat-label>Street</mat-label>
-      <input matInput placeholder="Enter street" [(ngModel)]="street" />
-    </mat-form-field>
+      <!-- Street -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ "orderDetails.street" | translate }}</mat-label>
+        <input
+          matInput
+          [placeholder]="'orderDetails.streetPlaceholder' | translate"
+          [(ngModel)]="street"
+        />
+      </mat-form-field>
 
-    <div>
-      <button
-        mat-raised-button
-        [color]="isDelivery ? 'primary' : ''"
-        (click)="updatePrice('true')"
-      >
-        Delivery
-      </button>
-      <img [src]="images.delivery" width="30px" height="30px" /> /
-      <button
-        mat-raised-button
-        [color]="!isDelivery ? 'primary' : ''"
-        (click)="updatePrice('false')"
-      >
-        Pick Up
-      </button>
-      <img [src]="images.pickUp" width="30px" height="30px" />
-    </div>
-
-    <br />
-    <button mat-raised-button color="warn" (click)="buyNow()">Buy Now!</button>
-    <button mat-button mat-dialog-close>Back</button>
-  </div>
-
-  <!-- 🛍 Order Summary -->
-  <div class="col-5 Items ml-2">
-    <div class="search-container">
-      <mat-icon>search</mat-icon>
-      <input
-        matInput
-        placeholder="Search"
-        [(ngModel)]="filterModel"
-        (keyup)="filterOperation()"
-      />
-    </div>
-
-    <div class="row mt-4">
-      <div class="col-8">
-        <h3>Price: {{ fullPrice | currency : "ILS" : "symbol" : "1.2-2" }}</h3>
-        <h3>
-          Delivery: {{ deliveryPrice | currency : "ILS" : "symbol" : "1.2-2" }}
-        </h3>
-
-        <!-- Bundle Discounts Section -->
-        <div
-          *ngIf="data.bundleDiscounts && data.bundleDiscounts.length > 0"
-          class="bundle-discounts"
+      <!-- Delivery / Pickup Toggle -->
+      <div class="delivery-toggle">
+        <button
+          mat-raised-button
+          [color]="isDelivery ? 'primary' : ''"
+          (click)="updatePrice('true')"
         >
-          <h3 style="color: green">Bundle Savings:</h3>
-          <div
-            *ngFor="let discount of data.bundleDiscounts"
-            class="discount-item"
-          >
-            <span
-              >{{ discount.name }}: -{{
-                discount.discount | currency : "ILS" : "symbol" : "1.2-2"
-              }}</span
+          <mat-icon>local_shipping</mat-icon>
+          {{ "orderDetails.delivery" | translate }}
+        </button>
+
+        <button
+          mat-raised-button
+          [color]="!isDelivery ? 'primary' : ''"
+          (click)="updatePrice('false')"
+        >
+          <mat-icon>storefront</mat-icon>
+          {{ "orderDetails.pickup" | translate }}
+        </button>
+      </div>
+
+      <!-- Buy / Back -->
+      <div class="action-buttons">
+        <button mat-raised-button color="warn" (click)="buyNow()">
+          {{ "orderDetails.buyNow" | translate }}
+        </button>
+        <button mat-button mat-dialog-close>
+          {{ "orderDetails.back" | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="Items">
+      <div class="search-container">
+        <mat-icon>search</mat-icon>
+        <input
+          matInput
+          [placeholder]="'common.search' | translate"
+          [(ngModel)]="filterModel"
+          (keyup)="filterOperation()"
+        />
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-8">
+          <h3>
+            {{ "orderDetails.price" | translate }}:
+            {{ fullPrice | currency : "ILS" : "symbol" : "1.2-2" }}
+          </h3>
+          <h3>
+            {{ "orderDetails.deliveryCost" | translate }}:
+            {{ deliveryPrice | currency : "ILS" : "symbol" : "1.2-2" }}
+          </h3>
+
+          <div *ngIf="data.bundleDiscounts?.length" class="bundle-discounts">
+            <h3 style="color: green">
+              {{ "orderDetails.bundleSavings" | translate }}
+            </h3>
+            <div
+              *ngFor="let discount of data.bundleDiscounts"
+              class="discount-item"
             >
+              <span>
+                {{ discount.name }}: -{{
+                  discount.discount | currency : "ILS" : "symbol" : "1.2-2"
+                }}
+              </span>
+            </div>
           </div>
         </div>
+
+        <h1 class="total-price">
+          {{ "orderDetails.total" | translate }}:
+          {{ totalPrice | currency : "ILS" : "symbol" : "1.2-2" }}
+        </h1>
       </div>
-      <h1 style="font-weight: bolder; color: #c02a3e">
-        Total: {{ totalPrice | currency : "ILS" : "symbol" : "1.2-2" }}
-      </h1>
-    </div>
 
-    <hr />
+      <hr />
 
-    <div class="row mt-1">
-      <h3 class="col-5">Product</h3>
-      <h3 class="col-2 ml-4">Qty</h3>
-      <h3 class="col-3 ml-3">Price</h3>
-    </div>
-    <hr />
+      <div class="row mt-1 header-row">
+        <h3 class="col-5">{{ "orderDetails.product" | translate }}</h3>
+        <h3 class="col-2 ml-4">{{ "orderDetails.quantity" | translate }}</h3>
+        <h3 class="col-3 ml-3">{{ "orderDetails.price" | translate }}</h3>
+      </div>
 
-    <div class="items-container">
-      <div *ngFor="let item of filteredItems; index as pIndex" class="item-row">
-        <div class="row">
-          <div class="col-6">{{ pIndex + 1 }}. {{ item.product_id.title }}</div>
-          <div class="col-2">{{ item.amount }}</div>
-          <div class="col-4">
-            {{ item.full_price | currency : "ILS" : "symbol" : "1.2-2" }}
+      <hr />
+
+      <div class="items-container">
+        <div
+          *ngFor="let item of filteredItems; index as pIndex"
+          class="item-row"
+        >
+          <div class="row">
+            <div class="col-6">
+              {{ pIndex + 1 }}. {{ item.product_id.name }}
+            </div>
+            <div class="col-2">{{ item.amount }}</div>
+            <div class="col-4">
+              {{ item.full_price | currency : "ILS" : "symbol" : "1.2-2" }}
+            </div>
           </div>
         </div>
       </div>

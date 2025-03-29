@@ -1,25 +1,31 @@
 <div class="Login_Main">
-  <div><h1>Login</h1></div>
+  <div>
+    <h1>{{ "common.login" | translate }}</h1>
+  </div>
   <div>
     <div mat-dialog-content>
-      <p>username</p>
+      <p>{{ "account.username" | translate }}</p>
       <mat-form-field appearance="fill">
-        <mat-label>username</mat-label>
+        <mat-label>{{ "account.username" | translate }}</mat-label>
         <input matInput [(ngModel)]="username" />
       </mat-form-field>
     </div>
     <div mat-dialog-content>
-      <p>password</p>
+      <p>{{ "account.password" | translate }}</p>
       <mat-form-field appearance="fill">
-        <mat-label>password</mat-label>
+        <mat-label>{{ "account.password" | translate }}</mat-label>
         <input matInput [(ngModel)]="password" type="password" />
       </mat-form-field>
     </div>
   </div>
   <div>
-    <button mat-raised-button (click)="login()">login</button>
+    <button mat-raised-button (click)="login()">
+      {{ "common.login" | translate }}
+    </button>
 
-    <button mat-button class="mr-2" (click)="openDialog()">sign up</button>
+    <button mat-button class="mr-2" (click)="openDialog()">
+      {{ "account.register" | translate }}
+    </button>
   </div>
   <div *ngIf="loginFailed" class="mt-2" style="color: red">
     {{ loginFailed }}

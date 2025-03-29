@@ -3,42 +3,31 @@
   <div class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content" @fadeIn>
-      <h1>About The Fog Bank</h1>
-      <p>Your Premium Destination for Quality Vaping Products</p>
+      <h1>{{ "about.title" | translate }}</h1>
+      <p>{{ "about.subtitle" | translate }}</p>
     </div>
   </div>
 
   <!-- Our Story Section -->
   <section class="our-story">
     <div class="section-header" @fadeIn>
-      <h2>Our Story</h2>
+      <h2>{{ "about.ourStory.title" | translate }}</h2>
       <div class="divider">
         <span class="purpleBG"></span><span class="green"></span>
       </div>
     </div>
     <div class="story-content">
       <div class="story-text" @slideIn>
-        <p>
-          Founded with a passion for quality and innovation, The Fog Bank has
-          grown from a small local shop to a trusted name in the vaping
-          community. Our journey began with a simple mission: to provide
-          exceptional vaping products that meet the highest standards of safety
-          and performance.
-        </p>
-        <p>
-          Today, we continue to uphold these values as we expand our selection
-          and reach more customers who share our enthusiasm for premium vaping
-          experiences.
-        </p>
-        <p>
-          We currently operate two physical stores located in
-          <strong>Ibillin</strong> and <strong>Kfar Yassif</strong>, where our
-          knowledgeable staff is ready to help you find the perfect product.
-        </p>
+        <p>{{ "about.ourStory.paragraph1" | translate }}</p>
+        <p>{{ "about.ourStory.paragraph2" | translate }}</p>
+        <p [innerHTML]="'about.ourStory.paragraph3' | translate"></p>
       </div>
 
       <div class="story-image" @slideInRight>
-        <img src="assets/KYStore.jpg" alt="The Fog Bank Store" />
+        <img
+          src="assets/KYStore.jpg"
+          alt="{{ 'about.storeImageAlt' | translate }}"
+        />
       </div>
     </div>
   </section>
@@ -47,7 +36,7 @@
   <!-- Mission & Values Section -->
   <section class="mission-values">
     <div class="section-header" @fadeIn>
-      <h2>Our Mission & Values</h2>
+      <h2>{{ "about.missionValues.title" | translate }}</h2>
       <div class="divider">
         <span class="purpleBG"></span><span class="green"></span>
       </div>
@@ -69,8 +58,8 @@
         >
           <i class="fas fa-{{ item.icon }}"></i>
         </div>
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.description }}</p>
+        <h3>{{ item.title | translate }}</h3>
+        <p>{{ item.description | translate }}</p>
       </div>
     </div>
   </section>
@@ -78,7 +67,7 @@
   <!-- What We Offer Section -->
   <section class="what-we-offer">
     <div class="section-header" @fadeIn>
-      <h2>What We Offer</h2>
+      <h2>{{ "about.whatWeOffer.title" | translate }}</h2>
       <div class="divider">
         <span class="purpleBG"></span><span class="green"></span>
       </div>
@@ -99,111 +88,74 @@
         >
           <i class="fas fa-{{ offer.icon }}"></i>
         </div>
-        <h3>{{ offer.title }}</h3>
-        <p>{{ offer.description }}</p>
+        <h3>{{ offer.title | translate }}</h3>
+        <p>{{ offer.description | translate }}</p>
       </div>
     </div>
   </section>
 
-  <!-- Team Section -->
+  <!-- Our Stores Section -->
   <section class="team-section">
     <div class="section-header" @fadeIn>
-      <h2>Meet Our Team</h2>
+      <h2>{{ "home.aboutUsStoreName" | translate }}</h2>
       <div class="divider">
         <span class="purpleBG"></span><span class="green"></span>
       </div>
     </div>
+
     <div class="team-grid">
-      <div
-        class="team-member"
-        *ngFor="let member of teamMembers; let i = index"
-        @fadeIn
-        [ngStyle]="{ 'animation-delay': i * 0.2 + 's' }"
-      >
+      <!-- Store: Ibillin -->
+      <div class="team-member" @fadeIn>
         <div class="member-image">
-          <img [src]="member.image" [alt]="member.name" />
-          <div
-            class="member-overlay"
-            [ngClass]="{
-              'purple-overlay': i === 0,
-              'green-overlay': i === 1,
-              'mixed-overlay': i === 2
-            }"
-          ></div>
+          <img src="assets/IbOut.jpg" alt="Ibillin Outside" />
+          <div class="member-overlay purple-overlay"></div>
         </div>
-        <h3>{{ member.name }}</h3>
-        <p
-          class="position"
-          [ngClass]="{
-            'purple-text': i === 0,
-            'green-text': i === 1,
-            'mixed-text': i === 2
-          }"
-        >
-          {{ member.position }}
-        </p>
-        <p class="bio">{{ member.bio }}</p>
+        <div class="member-image store-inside">
+          <img src="assets/IBIn.jpg" alt="Ibillin Inside" />
+          <div class="member-overlay purple-overlay"></div>
+        </div>
+        <h3>{{ "about.ib" | translate }}</h3>
+      </div>
+
+      <!-- Store: Kfar Yassif -->
+      <div class="team-member" @fadeIn>
+        <div class="member-image">
+          <img src="assets/KyOut.jpg" alt="Kfar Yassif Outside" />
+          <div class="member-overlay green-overlay"></div>
+        </div>
+        <div class="member-image store-inside">
+          <img src="assets/KyIn.jpg" alt="Kfar Yassif Inside" />
+          <div class="member-overlay green-overlay"></div>
+        </div>
+        <h3>{{ "about.ky" | translate }}</h3>
+      </div>
+
+      <!-- Store: Shefa`mer -->
+      <div class="team-member" @fadeIn>
+        <div class="member-image">
+          <img src="assets/ShefaamOut.jpg" alt="Shefa`mer Outside" />
+          <div class="member-overlay mixed-overlay"></div>
+        </div>
+        <div class="member-image store-inside">
+          <img src="assets/ShefaamerIn.jpg" alt="Shefa`mer Inside" />
+          <div class="member-overlay mixed-overlay"></div>
+        </div>
+        <h3>{{ "about.sh" | translate }}</h3>
       </div>
     </div>
   </section>
 
-  <!-- Testimonials Section -->
-  <!-- <section class="testimonials">
-    <div class="section-header" @fadeIn>
-      <h2>What Our Customers Say</h2>
-      <div class="divider">
-        <span class="purple"></span><span class="green"></span>
-      </div>
-    </div>
-    <div class="testimonial-slider">
-      <div class="testimonial-navigation">
-        <button class="nav-button prev" (click)="prevTestimonial()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="nav-button next" (click)="nextTestimonial()">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="testimonial" @testimonialSlide>
-        <div class="quote-icon">
-          <i class="fas fa-quote-left"></i>
-        </div>
-        <p class="quote-text">
-          "{{ testimonials[currentTestimonialIndex].quote }}"
-        </p>
-        <div class="customer">
-          <p class="name">- {{ testimonials[currentTestimonialIndex].name }}</p>
-          <div class="stars">
-            <i
-              class="fas fa-star"
-              *ngFor="
-                let star of getStarsArray(
-                  testimonials[currentTestimonialIndex].rating
-                )
-              "
-            ></i>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-indicators">
-        <span
-          *ngFor="let testimonial of testimonials; let i = index"
-          class="indicator"
-          [ngClass]="{ active: i === currentTestimonialIndex }"
-          (click)="currentTestimonialIndex = i"
-        >
-        </span>
-      </div>
-    </div>
-  </section> -->
-
   <!-- Contact CTA -->
   <section class="contact-cta" @fadeIn>
-    <h2>Ready to Experience The Fog Bank Difference?</h2>
-    <p>Visit our store or shop online today!</p>
+    <h2>{{ "about.contactCta.title" | translate }}</h2>
+    <p>{{ "about.contactCta.subtitle" | translate }}</p>
     <div class="cta-buttons">
-      <a routerLink="/contactUs" class="cta-button primary">Contact Us</a>
-      <a routerLink="/products" class="cta-button secondary">Shop Now</a>
+      <a routerLink="/contactUs" class="cta-button primary">{{
+        "about.contactCta.contactButton" | translate
+      }}</a>
+      <a routerLink="/products" class="cta-button secondary">{{
+        "about.contactCta.shopButton" | translate
+      }}</a>
     </div>
   </section>
 </div>

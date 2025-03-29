@@ -1,10 +1,10 @@
 <div class="dialog-container">
-  <h2>Select Quantity</h2>
+  <h2>{{ "quantityDialog.title" | translate }}</h2>
   <h3>{{ data.product.name }}</h3>
-  <!-- 🔹 Option Selection -->
+
   <!-- 🔹 Option Selection -->
   <ng-container *ngIf="data.product.details?.options?.length > 0">
-    <h3>Options</h3>
+    <h3>{{ "quantityDialog.options" | translate }}</h3>
     <div class="options-list">
       <button
         *ngFor="let option of data.product.details.options"
@@ -16,7 +16,10 @@
         [title]="
           option.quantity > 0
             ? option.option
-            : option.option + ' (Out of Stock)'
+            : option.option +
+              ' (' +
+              ('quantityDialog.outOfStock' | translate) +
+              ')'
         "
       >
         {{ option.option }}
@@ -43,11 +46,11 @@
     </button>
   </div>
 
-  <!-- 🔹 Show NIC and ICE only if category is normal -->
+  <!-- 🔹 NIC + ICE -->
   <ng-container
     *ngIf="data.product.category?._id == '67759289eca0466ca85bfaba'"
   >
-    <h3>Nic</h3>
+    <h3>{{ "quantityDialog.nicotine" | translate }}</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('nic', -1)">➖</button>
       <input
@@ -62,7 +65,7 @@
       <button class="editQuantity" (click)="adjustValue('nic', 1)">➕</button>
     </div>
 
-    <h3>Ice</h3>
+    <h3>{{ "quantityDialog.ice" | translate }}</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>
       <input
@@ -78,11 +81,11 @@
     </div>
   </ng-container>
 
-  <!-- 🔹 Show Only Ice if Category is Salt -->
+  <!-- 🔹 Only ICE -->
   <ng-container
     *ngIf="data.product.category?._id === '67759289eca0466ca85bfac3'"
   >
-    <h3>Ice</h3>
+    <h3>{{ "quantityDialog.ice" | translate }}</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>
       <input
@@ -99,7 +102,11 @@
   </ng-container>
 
   <div class="dialog-buttons">
-    <button (click)="dialogRef.close()">Cancel</button>
-    <button class="confirm" (click)="confirmSelection()">Confirm</button>
+    <button (click)="dialogRef.close()">
+      {{ "quantityDialog.cancel" | translate }}
+    </button>
+    <button class="confirm" (click)="confirmSelection()">
+      {{ "quantityDialog.confirm" | translate }}
+    </button>
   </div>
 </div>

@@ -89,6 +89,7 @@
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
+  cursor: pointer;
 }
 .Product_Info_Area {
   flex-grow: 1; /* Fills available space */
