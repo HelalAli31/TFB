@@ -1,3 +1,91 @@
+<div class="order-history" *ngIf="userOrders.length">
+  <h2 class="orders-title text-center">
+    <mat-icon>shopping_cart</mat-icon>
+    {{ "account.orders" | translate }}
+  </h2>
+
+  <div class="table-responsive">
+    <table class="order-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>{{ "orderDetails.title" | translate }}</th>
+          <th>{{ "orderDetails.city" | translate }}</th>
+          <th>{{ "orderDetails.street" | translate }}</th>
+          <th>{{ "orderDetails.total" | translate }}</th>
+          <th>{{ "orderDetails.delivery" | translate }}</th>
+          <th>{{ "orderDetails.status" | translate }}</th>
+          <th>{{ "orderDetails.visaNumber" | translate }}</th>
+          <th>{{ "orderDetails.date" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let order of userOrders; let i = index">
+          <!-- Order Row -->
+          <tr
+            (click)="toggleOrderDetails(order._id, order.cart_id)"
+            [class.active-row]="expandedOrderId === order._id"
+          >
+            <td>{{ i + 1 }}</td>
+            <td>{{ order._id }}</td>
+            <td>{{ order.city }}</td>
+            <td>{{ order.street }}</td>
+            <td>{{ order.total_price }} ₪</td>
+            <td>{{ order.delivery_way }}</td>
+            <td>{{ order.status || ("orderDetails.pending" | translate) }}</td>
+            <td>**** {{ order.last_visa_number }}</td>
+            <td>{{ order.order_date | date : "mediumDate" }}</td>
+            <mat-icon
+              class="click-icon"
+              [class.rotated]="expandedOrderId === order._id"
+              >expand_more</mat-icon
+            >
+          </tr>
+
+          <!-- Items Row -->
+          <!-- Items Row -->
+          <tr *ngIf="expandedOrderId === order._id">
+            <td colspan="9" class="expanded-row">
+              <div class="order-items-box">
+                <strong class="items-title">
+                  🛍️ {{ "orderDetails.orderItems" | translate }}:
+                </strong>
+                <ul
+                  *ngIf="orderItemsMap[order._id]?.length; else noItems"
+                  class="items-list"
+                >
+                  <li
+                    *ngFor="let item of orderItemsMap[order._id]"
+                    class="item-row"
+                  >
+                    <span class="product-name">
+                      {{ item.product_id?.name || "Unnamed Product" }}
+                    </span>
+                    <span class="badge">Qty: {{ item.amount }}</span>
+                    <span class="badge">₪{{ item.full_price }}</span>
+                    <span class="badge" *ngIf="item.option"
+                      >Option: {{ item.option }}</span
+                    >
+                    <span class="badge" *ngIf="item.nic"
+                      >Nic: {{ item.nic }}mg</span
+                    >
+                    <span class="badge" *ngIf="item.ice"
+                      >Ice: {{ item.ice }}</span
+                    >
+                  </li>
+                </ul>
+                <ng-template #noItems>
+                  <p class="no-items">{{ "account.noItems" | translate }}</p>
+                </ng-template>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <div class="profile-container">
   <h2 class="title">
     <mat-icon class="profile-icon" fontIcon="person"></mat-icon>

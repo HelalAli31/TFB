@@ -11,9 +11,11 @@ import { AdminAddProductComponent } from './components/admin/admin-add-product/a
 import { AdminProductManagementComponent } from './components/admin/admin-product-management/admin-product-management.component';
 import { AboutUsComponent } from './containers/about-us/about-us.component';
 import { ProfileComponent } from './containers/profile/profile.component';
+import { ReportComponent } from './containers/report/report.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'report', component: ReportComponent },
   { path: 'contactUs', component: ContactUsComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'cart', component: CartComponent },

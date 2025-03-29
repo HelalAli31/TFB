@@ -72,25 +72,6 @@
     "of": "of"
   },
 
-  "orderDetails": {
-    "title": "Order Details",
-    "visaNumber": "Visa Number",
-    "visaPlaceholder": "Enter last 4 digits",
-    "city": "City",
-    "cityPlaceholder": "Enter city",
-    "street": "Street",
-    "streetPlaceholder": "Enter street",
-    "delivery": "Delivery",
-    "pickup": "Pick Up",
-    "buyNow": "Buy Now!",
-    "back": "Back",
-    "price": "Price",
-    "deliveryCost": "Delivery",
-    "bundleSavings": "Bundle Savings",
-    "total": "Total",
-    "product": "Product",
-    "quantity": "Qty"
-  },
   "quantityDialog": {
     "title": "Select Quantity",
     "options": "Options",
@@ -152,6 +133,25 @@
     "oldPassword": "Old Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm Password"
+  },
+  "orderDetails": {
+    "title": "Order ID",
+    "city": "City",
+    "street": "Street",
+    "total": "Total",
+    "delivery": "Delivery",
+    "status": "Status",
+    "visaNumber": "Visa Number",
+    "date": "Date",
+    "items": "Items",
+    "quantity": "Quantity",
+    "option": "Option",
+    "nic": "Nicotine",
+    "ice": "Ice",
+    "noItems": "No items found for this order.",
+    "unnamed": "Unnamed Product",
+    "pending": "Pending",
+    "orderItems": "Items"
   },
   "contact": {
     "getInTouch": "Get in Touch",

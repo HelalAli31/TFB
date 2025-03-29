@@ -53,6 +53,7 @@ import { LanguageSelectorComponent } from './components/language-selector/langua
 import { MatMenuModule } from '@angular/material/menu';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { LanguageService } from './serverServices/language.service';
+import { ReportComponent } from './containers/report/report.component';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { LanguageService } from './serverServices/language.service';
     TranslatePipe,
     LanguageSelectorComponent,
     ClickOutsideDirective,
+    ReportComponent,
   ],
   imports: [
     BrowserModule,

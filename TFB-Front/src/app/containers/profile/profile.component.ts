@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/serverServices/user/user.service';
 import { Router } from '@angular/router';
+import { OrderService } from 'src/app/serverServices/order/order.service';
+import { CartService } from 'src/app/serverServices/cart/cart.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,11 +18,15 @@ export class ProfileComponent implements OnInit {
   isChangingPassword: boolean = false;
   messageServer: string = '';
   passwordMessage: string = '';
-
+  userOrders: any[] = [];
+  expandedOrderId: string | null = null;
+  orderItemsMap: { [orderId: string]: any[] } = {};
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private orderService: OrderService,
+    private cartService: CartService
   ) {
     // ✅ User Form
     this.userForm = this.fb.group({
@@ -43,12 +49,32 @@ export class ProfileComponent implements OnInit {
   async ngOnInit() {
     this.loadUserProfile();
   }
+  async toggleOrderDetails(orderId: string, cartId: string) {
+    if (this.expandedOrderId === orderId) {
+      this.expandedOrderId = null;
+      return;
+    }
+
+    this.expandedOrderId = orderId;
+
+    if (!this.orderItemsMap[orderId]) {
+      const items = await this.cartService.getCartItems(cartId);
+      this.orderItemsMap[orderId] = items;
+    }
+  }
 
   async loadUserProfile() {
     try {
       this.userData = await this.userService.getUserProfile();
+      console.log(this.userData, 'RESULT ');
       if (this.userData) {
         this.userForm.patchValue(this.userData);
+        const ordersResponse = await this.orderService
+          .getAllOrders(this.userData._id)
+          .toPromise();
+
+        this.userOrders = ordersResponse.orders || [];
+        console.log(this.userOrders, 'userOrders ');
       }
     } catch (error) {
       console.error('❌ Error fetching user profile:', error);

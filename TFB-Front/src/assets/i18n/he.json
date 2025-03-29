@@ -70,25 +70,7 @@
     "page": "עמוד",
     "of": "מתוך"
   },
-  "orderDetails": {
-    "title": "פרטי הזמנה",
-    "visaNumber": "מספר ויזה",
-    "visaPlaceholder": "הכנס 4 ספרות אחרונות",
-    "city": "עיר",
-    "cityPlaceholder": "הכנס עיר",
-    "street": "רחוב",
-    "streetPlaceholder": "הכנס רחוב",
-    "delivery": "משלוח",
-    "pickup": "איסוף עצמי",
-    "buyNow": "קנה עכשיו!",
-    "back": "חזרה",
-    "price": "מחיר",
-    "deliveryCost": "משלוח",
-    "bundleSavings": "חסכון בחבילה",
-    "total": "סה\"כ",
-    "product": "מוצר",
-    "quantity": "כמות"
-  },
+
   "quantityDialog": {
     "title": "בחר כמות",
     "options": "אפשרויות",
@@ -127,6 +109,25 @@
     "paymentMethod": "אמצעי תשלום",
     "orderSummary": "סיכום הזמנה",
     "placeOrder": "בצע הזמנה"
+  },
+  "orderDetails": {
+    "title": "מספר הזמנה",
+    "city": "עיר",
+    "street": "רחוב",
+    "total": "סה\"כ",
+    "delivery": "שיטת משלוח",
+    "status": "סטטוס",
+    "visaNumber": "מספר ויזה",
+    "date": "תאריך",
+    "items": "פרטי הזמנה",
+    "quantity": "כמות",
+    "option": "אופציה",
+    "nic": "ניקוטין",
+    "ice": "קרח",
+    "unnamed": "מוצר ללא שם",
+    "pending": "בהמתנה",
+    "orderItems": "פרטי הזמנה",
+    "noItems": "לא נמצאו פריטים להזמנה זו"
   },
   "account": {
     "profile": "פרופיל",

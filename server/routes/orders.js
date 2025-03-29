@@ -125,7 +125,7 @@ router.post(
       const { userId } = req.body;
       const order = await getAllOrders(userId);
       if (!order) throw new Error();
-      return res.json({ order });
+      return res.json({ orders: order });
     } catch (error) {
       console.log(error);
       return next({ message: "GENERAL ERROR", status: 400 });

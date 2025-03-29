@@ -63,11 +63,12 @@ export class CartService {
       .toPromise();
   }
 
-  async getCartItems(): Promise<any[]> {
+  async getCartItems(cartid?: any): Promise<any[]> {
     const token = this.getToken();
     if (!token) return [];
-
-    const cartId = await this.getCartId();
+    let cartId = null;
+    if (cartid) cartId = cartid;
+    else cartId = await this.getCartId();
     if (!cartId) {
       console.error('❌ No cart ID found, cannot fetch cart items.');
       return [];

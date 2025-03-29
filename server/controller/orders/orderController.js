@@ -12,7 +12,9 @@ async function getOrder(cartId) {
 async function getAllOrders(userId) {
   try {
     if (!userId) {
-      var result = await orderModel.find({});
+      var result = await orderModel
+        .find({})
+        .populate("user_id", "first_name last_name");
     } else {
       var data = await orderModel.find({ user_id: userId });
       if (!Array.isArray(data)) return;

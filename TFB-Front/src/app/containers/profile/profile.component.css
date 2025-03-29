@@ -1,3 +1,4 @@
+/* Profile Container */
 .profile-container {
   max-width: 500px;
   margin: auto;
@@ -8,12 +9,187 @@
   margin-top: 2%;
   margin-bottom: 2%;
 }
-
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
+.expanded-row {
+  background-color: #fafafa;
+  padding: 1.5rem;
 }
 
+.order-items-box {
+  background: #fff;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+}
+
+.items-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  display: block;
+  color: #444;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-row {
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #e0e0e0;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.badge {
+  background-color: #eaeaea;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.no-items {
+  margin-top: 0.5rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* Orders Section (User) - Styled like Admin */
+.order-history {
+  margin-top: 3rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.orders-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: #680a7f;
+}
+
+.orders-title mat-icon {
+  font-size: 1.8rem;
+  color: #34b814;
+}
+
+/* Table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.order-table th,
+.order-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+  font-family: "Poppins", sans-serif;
+}
+
+.order-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
+
+/* Row Highlight */
+.active-row {
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.order-table tr:hover {
+  background-color: #fafafa;
+}
+
+/* Expanded Items Section */
+.expanded-row {
+  background-color: #fafafa;
+  padding: 1.5rem;
+}
+
+.order-items-box {
+  background: #fff;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+}
+
+.items-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  display: block;
+  color: #444;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-row {
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #e0e0e0;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.badge {
+  background-color: #eaeaea;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.no-items {
+  margin: 0.5rem 0 0;
+  color: #999;
+  font-style: italic;
+}
+
+/* Profile Fields */
 .profile-field {
   margin-bottom: 15px;
 }
@@ -42,6 +218,7 @@ input:read-only {
   font-size: 0.9rem;
 }
 
+/* Buttons */
 button {
   width: 100%;
   padding: 10px;
@@ -66,6 +243,12 @@ button {
   background: #dc3545;
   color: white;
 }
+
+.change-password-btn {
+  background: #007bff;
+  color: white;
+}
+
 .title {
   text-align: center;
   font-size: 26px;
@@ -73,4 +256,36 @@ button {
   margin-bottom: 20px;
   color: #6a0dad;
   text-shadow: 2px 2px 4px rgba(106, 13, 173, 0.3);
+}
+/* Right-align order items title for Hebrew */
+.items-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  display: block;
+  color: #444;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .order-table {
+    font-size: 0.85rem;
+  }
+
+  .orders-title {
+    font-size: 1.5rem;
+  }
+
+  .item-row {
+    font-size: 0.85rem;
+  }
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+tr {
+  cursor: pointer;
 }

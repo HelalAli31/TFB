@@ -37,7 +37,7 @@ export class AppComponent {
     this.token = localStorage.getItem('token') || '';
     this.isAdmin = getIsAdmin();
     console.log(this.isAdmin, ' :ADMIN');
-
+    localStorage.setItem('preferredLanguage', 'en');
     // Subscribe to language changes to update RTL class
     this.languageService.currentLanguage$.subscribe((language) => {
       const dir = language.direction;

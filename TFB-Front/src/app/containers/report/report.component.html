@@ -1,0 +1,88 @@
+<div class="report-container" *ngIf="isAdmin">
+  <h2 class="report-title text-center">
+    <mat-icon>assessment</mat-icon>
+    All Orders Report
+  </h2>
+
+  <div class="table-responsive">
+    <table class="order-table" *ngIf="allOrders.length">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Order ID</th>
+          <th>Customer Name</th>
+          <th>City</th>
+          <th>Street</th>
+          <th>Delivery</th>
+          <th>Total</th>
+          <th>Visa</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let order of allOrders; let i = index">
+          <!-- Order Summary Row -->
+          <tr
+            (click)="toggleOrderDetails(order._id, order.cart_id)"
+            [class.active-row]="expandedOrderId === order._id"
+          >
+            <td>{{ i + 1 }}</td>
+            <td>{{ order._id }}</td>
+            <td>
+              {{ order.user_id?.first_name }} {{ order.user_id?.last_name }}
+            </td>
+            <td>{{ order.city }}</td>
+            <td>{{ order.street }}</td>
+            <td>{{ order.delivery_way }}</td>
+            <td>{{ order.total_price }} ₪</td>
+            <td>**** {{ order.last_visa_number }}</td>
+            <td>{{ order.order_date | date : "shortDate" }}</td>
+            <mat-icon
+              class="click-icon"
+              [class.rotated]="expandedOrderId === order._id"
+              >expand_more</mat-icon
+            >
+          </tr>
+
+          <!-- Expanded Order Items Row -->
+          <tr *ngIf="expandedOrderId === order._id">
+            <td colspan="9" class="expanded-row">
+              <div class="order-items-box">
+                <strong class="items-title">🛍️ Order Items:</strong>
+                <ul
+                  *ngIf="orderItemsMap[order._id]?.length; else noItems"
+                  class="items-list"
+                >
+                  <li
+                    *ngFor="let item of orderItemsMap[order._id]"
+                    class="item-row"
+                  >
+                    <span class="product-name">
+                      {{ item.product_id?.name || "Unnamed Product" }}
+                    </span>
+                    <span class="badge">Qty: {{ item.amount }}</span>
+                    <span class="badge">₪{{ item.full_price }}</span>
+                    <span class="badge" *ngIf="item.option"
+                      >Option: {{ item.option }}</span
+                    >
+                    <span class="badge" *ngIf="item.nic"
+                      >Nic: {{ item.nic }}mg</span
+                    >
+                    <span class="badge" *ngIf="item.ice"
+                      >Ice: {{ item.ice }}</span
+                    >
+                  </li>
+                </ul>
+                <ng-template #noItems>
+                  <p class="no-items">No items found for this order.</p>
+                </ng-template>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <p *ngIf="!allOrders.length">No orders found.</p>
+  </div>
+</div>
