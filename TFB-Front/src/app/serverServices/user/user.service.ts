@@ -119,4 +119,23 @@ export class UserService {
       throw error;
     }
   }
+
+  sendContactMessage(
+    name: string,
+    email: string,
+    message: string
+  ): Promise<any> {
+    const payload = { name, email, message };
+
+    return this.httpService
+      .post(`${environment.apiUrl}/send-email`, payload)
+      .toPromise()
+      .catch((error) => {
+        console.error('❌ Error sending contact email:', error);
+        return {
+          success: false,
+          message: 'Failed to send message. Please try again later.',
+        };
+      });
+  }
 }

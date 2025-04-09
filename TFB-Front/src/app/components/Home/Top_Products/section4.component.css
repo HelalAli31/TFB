@@ -56,7 +56,6 @@
   min-height: 340px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .Product_Card:hover {
@@ -87,21 +86,15 @@
   padding: 10px 5px 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex-grow: 1;
   cursor: pointer;
 }
+
 .Product_Info_Area {
-  flex-grow: 1; /* Fills available space */
-}
-.Product_Action_Area {
-  margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-.product-info {
-  margin-bottom: 10px;
+  flex-grow: 1;
+  justify-content: flex-start;
 }
 
 .Product_Name {
@@ -124,12 +117,6 @@
   gap: 5px;
   min-height: 24px;
   flex-direction: row;
-}
-
-@media (max-width: 576px) {
-  .price-container {
-    flex-direction: column;
-  }
 }
 
 .Product_Brand {
@@ -173,6 +160,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: auto; /* This pushes the button to the bottom */
 }
 
 .delete {
@@ -192,6 +180,15 @@
   color: white;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.brand-price-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 1200px) {
@@ -252,6 +249,17 @@
   .Product_Name {
     font-size: 13px;
   }
+  .brand-price-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .Product_Brand {
+    text-align: center;
+  }
+  .price-container {
+    justify-content: center;
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 400px) {
@@ -264,28 +272,5 @@
   }
   .Product_Name {
     font-size: 12px;
-  }
-}
-.brand-price-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-/* On small screens, stack them vertically */
-@media (max-width: 576px) {
-  .brand-price-wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-  .Product_Brand {
-    text-align: center;
-  }
-
-  .price-container {
-    justify-content: center;
   }
 }

@@ -43,31 +43,33 @@
                 </span>
               </div>
             </div>
-            <button
-              *ngIf="isAdmin"
-              class="delete mt-3"
-              [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
-              [disabled]="product.quantity === 0"
-              (click)="openDeleteDialog(product._id, product.name)"
-            >
-              {{ "products.delete" | translate }}
-            </button>
-            <button
-              *ngIf="!isAdmin"
-              class="View_Button"
-              [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
-              [disabled]="product.quantity === 0"
-              (click)="openQuantityDialog(product)"
-            >
-              {{
-                product.quantity === 0
-                  ? ("products.outOfStock" | translate)
-                  : product.isInCart
-                  ? ("products.edit" | translate)
-                  : ("products.addToCart" | translate)
-              }}
-            </button>
           </div>
+
+          <!-- Button is now outside of Product_Info_Area but still inside Product_Details -->
+          <button
+            *ngIf="isAdmin"
+            class="delete"
+            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+            [disabled]="product.quantity === 0"
+            (click)="openDeleteDialog(product._id, product.name)"
+          >
+            {{ "products.delete" | translate }}
+          </button>
+          <button
+            *ngIf="!isAdmin"
+            class="View_Button"
+            [ngClass]="{ Unavailable_Button: product.quantity === 0 }"
+            [disabled]="product.quantity === 0"
+            (click)="openQuantityDialog(product)"
+          >
+            {{
+              product.quantity === 0
+                ? ("products.outOfStock" | translate)
+                : product.isInCart
+                ? ("products.edit" | translate)
+                : ("products.addToCart" | translate)
+            }}
+          </button>
         </div>
       </div>
     </div>

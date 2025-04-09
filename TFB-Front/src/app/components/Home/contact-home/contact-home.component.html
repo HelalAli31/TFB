@@ -65,10 +65,12 @@
 
   <!-- Right Side - Contact Form -->
   <div class="Contact_Form">
-    <form>
+    <form (ngSubmit)="onSubmit()">
       <div class="Input_Group">
         <input
           type="text"
+          [(ngModel)]="name"
+          name="name"
           [placeholder]="'contact.name' | translate"
           required
         />
@@ -76,12 +78,16 @@
       <div class="Input_Group">
         <input
           type="email"
+          [(ngModel)]="email"
+          name="email"
           [placeholder]="'contact.email' | translate"
           required
         />
       </div>
       <div class="Input_Group">
         <textarea
+          [(ngModel)]="message"
+          name="message"
           [placeholder]="'contact.message' | translate"
           required
         ></textarea>
