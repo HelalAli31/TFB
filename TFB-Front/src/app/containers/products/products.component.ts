@@ -5,7 +5,7 @@ import { CartService } from 'src/app/serverServices/cart/cart.service';
 import { MatDialog } from '@angular/material/dialog';
 import { QuantityDialogComponent } from 'src/app/components/PopUpComponents/quantity-dialog/quantity-dialog.component';
 import getIsAdmin from 'src/app/serverServices/Payload/isAdmin';
-import { environment } from '../../../environments/environment'; // Import environment
+import { environment } from '../../../environments/environment';
 import { LanguageService } from 'src/app/serverServices/language.service';
 
 @Component({
@@ -26,10 +26,11 @@ export class ProductsComponent implements OnInit {
   searchValue: string = '';
   selectedCategory: string = 'All';
   selectedBrand: string = 'All';
-  searchResults: any[] = []; // ✅ Store search results separately
+  searchResults: any[] = [];
   public isAdmin: any;
-  topProducts: any = []; // ✅ Store all top product IDs
-  apiUrl = environment.apiUrl; // ✅ Set API base URL from environment
+  topProducts: any = [];
+  apiUrl = environment.apiUrl;
+  loading: boolean = false;
 
   constructor(
     private productService: ProductService,
@@ -43,56 +44,34 @@ export class ProductsComponent implements OnInit {
   private routeSubscription: any;
 
   async ngOnInit() {
-    console.log('LANG: ', await this.languageService.getCurrentLanguage());
-    // Initialize products and categories first
     this.fetchAllProducts().then(() => {
-      // Clean up any existing subscription
       if (this.routeSubscription) {
         this.routeSubscription.unsubscribe();
       }
 
-      // After products are loaded, subscribe to route parameter changes
       this.routeSubscription = this.route.queryParams.subscribe((params) => {
-        console.log('🟡 ROUTE PARAMS:', params);
-
-        // Process the category parameter
         const categoryParam = params['category']
           ? params['category'].trim()
           : 'All';
-        console.log('🔵 Processing category parameter:', categoryParam);
 
         if (categoryParam !== 'All') {
-          // Try to find an exact match first
           const exactMatch = this.categories.find(
             (cat) => cat === categoryParam
           );
           if (exactMatch) {
             this.selectedCategory = exactMatch;
-            console.log(
-              '🔵 Found exact category match:',
-              this.selectedCategory
-            );
           } else {
-            // Try to find a partial match
             const partialMatch = this.findMatchingCategory(categoryParam);
             if (partialMatch) {
               this.selectedCategory = partialMatch;
-              console.log(
-                '🔵 Found partial category match:',
-                this.selectedCategory
-              );
             } else {
               this.selectedCategory = 'All';
-              console.log('🔵 No matching category found, using All');
             }
           }
         } else {
           this.selectedCategory = 'All';
         }
 
-        console.log('🔵 Final selected category:', this.selectedCategory);
-
-        // Now apply the filtering with the correct category
         this.loadProducts();
       });
     });
@@ -101,7 +80,6 @@ export class ProductsComponent implements OnInit {
     this.getTopProducts();
   }
 
-  // Clean up subscription when component is destroyed
   ngOnDestroy() {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
@@ -109,71 +87,56 @@ export class ProductsComponent implements OnInit {
     this.selectedCategory = 'All';
   }
 
-  // Helper method to find a matching category
   findMatchingCategory(searchCategory: string): string | null {
     if (!searchCategory || !this.categories || this.categories.length === 0) {
       return null;
     }
 
     const searchLower = searchCategory.toLowerCase();
-    console.log('🔍 Finding match for:', searchLower);
-    console.log('🔍 Available categories:', this.categories);
-
-    // First try exact match
     const exactMatch = this.categories.find(
       (category) => category.toLowerCase() === searchLower
     );
     if (exactMatch) {
-      console.log('🔍 Found exact match:', exactMatch);
       return exactMatch;
     }
 
-    // Then try partial match
     const partialMatch = this.categories.find(
       (category) =>
         category.toLowerCase().includes(searchLower) ||
         searchLower.includes(category.toLowerCase())
     );
 
-    if (partialMatch) {
-      console.log('🔍 Found partial match:', partialMatch);
-    } else {
-      console.log('🔍 No match found');
-    }
-
     return partialMatch || null;
   }
-
   fetchAllProducts(): Promise<void> {
+    this.loading = true; // Show spinner
     return new Promise((resolve) => {
-      this.productService.getProducts().subscribe(
-        (data: any) => {
-          console.log('📦 All Products fetched:', data.products);
-          this.allProducts = data.products;
-
-          this.extractFilters();
-
-          resolve();
-        },
-        (error) => {
-          console.error('Error fetching products:', error);
-          resolve(); // Resolve even on error to continue the flow
-        }
-      );
+      this.productService
+        .getProducts(1, 1000, this.sortBy, this.order, '', '', true)
+        .subscribe(
+          (data: any) => {
+            this.allProducts = data.products;
+            console.log('ALL PRODUCTS:', this.allProducts);
+            this.extractFilters();
+            this.loading = false; // Hide spinner
+            resolve();
+          },
+          (error) => {
+            console.error('Error fetching products:', error);
+            this.loading = false; // Hide spinner even if error
+            resolve();
+          }
+        );
     });
   }
 
   async openQuantityDialog(product: any) {
-    console.log(`📌 Opening Quantity Dialog for: ${product.name}`);
-
-    // Get existing cart item details
     const cartItems = await this.cartService.getCartItems();
     const existingCartItem = cartItems.find(
       (item) =>
         String(item.product_id?._id || item.product_id) === String(product._id)
     );
 
-    // Pass correct existing quantity, nic, ice, and option
     const dialogRef = this.dialog.open(QuantityDialogComponent, {
       width: '300px',
       data: {
@@ -190,7 +153,6 @@ export class ProductsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log(`📩 Selected Data from Dialog:`, result);
         this.addToCart(
           product,
           result.quantity,
@@ -209,10 +171,7 @@ export class ProductsComponent implements OnInit {
     ice: number,
     option: string
   ) {
-    console.log(`🛒 Adding/Editing Cart Item: ${product.name}`);
-
     if (!product || quantity < 1) {
-      console.error('🚨 Invalid product or quantity!');
       return;
     }
 
@@ -230,7 +189,6 @@ export class ProductsComponent implements OnInit {
           String(product._id);
         const isSameOption = (item.option || '') === (option || '');
 
-        // ✅ Category ID matching
         const categoryId = product.category?._id || product.category;
         const SALT_ID = '67759289eca0466ca85bfac3';
         const TFB120_ID = '67759289eca0466ca85bfaba';
@@ -248,7 +206,6 @@ export class ProductsComponent implements OnInit {
           );
         }
 
-        // Default match for other categories
         return isSameProduct && isSameOption;
       });
 
@@ -257,7 +214,6 @@ export class ProductsComponent implements OnInit {
         : product.price;
 
       if (existingCartItem) {
-        console.log('✏ Updating existing item in cart');
         await this.cartService.editItemAmount(
           existingCartItem._id,
           quantity,
@@ -267,7 +223,6 @@ export class ProductsComponent implements OnInit {
           option
         );
       } else {
-        console.log('🛒 Adding new item to cart');
         await this.cartService.addItemToCart({
           cart_id: cartId,
           product_id: product._id,
@@ -283,10 +238,10 @@ export class ProductsComponent implements OnInit {
       await this.cartService.refreshCart();
       this.loadProducts();
     } catch (error) {
-      console.error('❌ Failed to update cart:', error);
       alert('❌ Error updating cart.');
     }
   }
+
   isCurrentlyOnSale(sale: any): boolean {
     if (!sale?.isOnSale || !sale.saleStartDate || !sale.saleEndDate)
       return false;
@@ -299,19 +254,15 @@ export class ProductsComponent implements OnInit {
   }
 
   extractFilters() {
-    // Extract unique categories - handle categories as objects
     const uniqueCategories = [
       ...new Set(
         this.allProducts
-          .filter((p) => p.category && p.category.name) // Filter out null or invalid categories
+          .filter((p) => p.category && p.category.name)
           .map((p) => p.category.name)
       ),
     ];
 
-    console.log('🔍 Unique category names found:', uniqueCategories);
-
     this.categories = ['All', ...uniqueCategories];
-    console.log('🔍 Updated categories dropdown with:', this.categories);
 
     this.brands = [
       'All',
@@ -324,57 +275,40 @@ export class ProductsComponent implements OnInit {
   async loadProducts() {
     try {
       const cartItems = await this.cartService.getCartItems();
-      console.log('🛒 Current Cart Items:', cartItems);
-
       let filteredProducts =
-        this.searchResults.length > 0
-          ? [...this.searchResults]
-          : [...this.allProducts];
+        this.searchValue.trim() === ''
+          ? [...this.allProducts]
+          : [...this.searchResults];
 
-      console.log('🔍 Selected Category for filtering:', this.selectedCategory);
+      console.log('Initial filtered products:', filteredProducts);
 
-      // Log all available categories from products
-      const availableCategories = filteredProducts.map(
-        (p) => p.category?.name || 'Unknown'
-      );
-      console.log('🔍 Available categories in products:', [
-        ...new Set(availableCategories),
-      ]);
-
-      // Apply filters only when not searching
-      if (this.searchValue.trim() === '') {
-        if (this.selectedCategory !== 'All') {
-          console.log('🔍 Filtering by category:', this.selectedCategory);
-
-          // Filter by category name - comparing with category.name
-          filteredProducts = filteredProducts.filter((product) => {
-            // Get the category name from the category object
-            const categoryName = product.category?.name || '';
-            const matches = categoryName === this.selectedCategory;
-
-            console.log(
-              `Product: ${product.name}, Category: "${categoryName}", Selected: "${this.selectedCategory}", Matches: ${matches}`
-            );
-
-            return matches;
-          });
-        }
-
-        if (this.selectedBrand !== 'All') {
-          filteredProducts = filteredProducts.filter(
-            (product) =>
-              product.brand?.toLowerCase() === this.selectedBrand.toLowerCase()
-          );
-        }
+      // Apply category filter
+      if (this.selectedCategory !== 'All') {
+        filteredProducts = filteredProducts.filter((product) => {
+          if (!product.category) return false;
+          const categoryName = (product.category.name || '')
+            .trim()
+            .toLowerCase();
+          const selectedCategoryName = this.selectedCategory
+            .trim()
+            .toLowerCase();
+          return categoryName === selectedCategoryName;
+        });
       }
 
-      console.log(
-        '🔍 After filtering, product count:',
-        filteredProducts.length
-      );
+      console.log('Filtered products after category filter:', filteredProducts);
 
-      // Apply sorting
-      console.log(`🔄 Sorting by: ${this.sortBy} (${this.order})`);
+      // Apply brand filter
+      if (this.selectedBrand !== 'All') {
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            product.brand?.toLowerCase() === this.selectedBrand.toLowerCase()
+        );
+      }
+
+      console.log('Filtered products after brand filter:', filteredProducts);
+
+      // Sort products
       filteredProducts.sort((a, b) => {
         if (this.sortBy === 'name') {
           return this.order === 'asc'
@@ -396,15 +330,7 @@ export class ProductsComponent implements OnInit {
         return 0;
       });
 
-      console.log(
-        '🔍 After sorting, first few products:',
-        filteredProducts.slice(0, 3).map((p) => p.name)
-      );
-
-      // Rest of your code...
-      // Apply pagination, etc.
-
-      // Update the UI with the filtered and sorted products
+      // Pagination logic
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       this.products = filteredProducts
         .slice(startIndex, startIndex + this.itemsPerPage)
@@ -422,135 +348,82 @@ export class ProductsComponent implements OnInit {
           };
         });
 
-      console.log('✅ Final products to display:', this.products.length);
-
-      // Calculate total pages
       this.totalPages = Math.ceil(filteredProducts.length / this.itemsPerPage);
+      console.log('Filtered Products before filtering:', filteredProducts);
     } catch (error) {
-      console.error('❌ Error loading products:', error);
+      console.error('Error loading products:', error);
     }
   }
 
   addToTopProducts(productId: string) {
-    console.log('ADDDD TO TO1P');
-
     this.productService.getTopProducts().subscribe({
       next: (topProductsData: any) => {
-        console.log('ADDDD TO3 TOP:', topProductsData);
         const topProductIds = (topProductsData || []).map((p: any) => p._id);
-        console.log('Mapped IDs:', topProductIds);
 
         if (topProductIds.includes(productId)) {
           alert('⚠️ This product is already in Top Products!');
           return;
         }
 
-        console.log('ADDDD TO TO2P');
-        this.productService.addTopProduct(productId).subscribe({
-          next: (response) => {
-            console.log('Top product added:', response);
-          },
-          error: (error) => {
-            console.error('Error adding top product:', error);
-          },
-        });
+        this.productService.addTopProduct(productId).subscribe();
       },
-      error: (error) => {
-        console.error('❌ Error fetching top products:', error);
-      },
-      complete: () => {
-        console.log('✅ Completed fetching top products.');
-      },
+      error: (error) => {},
     });
   }
-  // Handle Image Fallback
+
   getProductImage(product: any): string {
     if (!product || !product.name) {
-      console.log('❌ No product found, using default image.');
-      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
+      return `../../../assets/products/default.jpg`;
     }
 
-    // ✅ Check if product has colors
     if (product.details?.options && product.details.options.length > 0) {
-      const option = product.details.options[0]?.option; // Get first option
+      const option = product.details.options[0]?.option;
       if (option) {
         return `${this.apiUrl}/assets/products/${product.name}_${option}.jpg`;
       }
     }
 
-    // ✅ Default case: product without options
     return `${this.apiUrl}/assets/products/${product.name}.jpg`;
   }
 
-  // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
-    console.log(`⚠️ Image failed to load: ${event.target.src}`);
-
-    // Check if we're already using the default image to prevent infinite loop
     if (event.target.src.includes('default.jpg')) {
-      console.log('🛑 Already using default image, stopping error handling');
       return;
     }
 
-    // Check if we're using a color variation and need to try the base image
-    if (
-      event.target.src.includes('_') &&
-      !event.target.src.includes('default.jpg')
-    ) {
-      // Try the base product image without color variation
+    if (event.target.src.includes('_')) {
       const baseImage = `${this.apiUrl}/assets/products/${product.name}.jpg`;
-      console.log(`🔄 Trying base image: ${baseImage}`);
-
-      // Set a flag to track that we've already tried the fallback
       event.target.setAttribute('data-tried-fallback', 'true');
       event.target.src = baseImage;
       return;
     }
 
-    // If we get here, both the color variation and base image failed
-    // or we're not using a color variation - use default image
-    console.log('❌ Using default image as final fallback');
-    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
+    event.target.src = `../../../assets/products/default.jpg`;
   }
 
   getTopProducts() {
     return this.productService.getTopProducts();
   }
-  checkProductIfInTop() {}
 
   searchProducts() {
     if (this.searchValue.trim()) {
-      console.log(`🔍 Searching for: ${this.searchValue}`);
-
       this.productService
         .getProducts(1, 1000, this.sortBy, this.order, 'name', this.searchValue)
         .subscribe((data: any) => {
-          if (data.products.length === 0) {
-            console.warn(
-              '❌ No products found for search term:',
-              this.searchValue
-            );
-            alert('❌ No products match your search.');
-            return;
-          }
-
-          this.searchResults = data.products; // ✅ Store search results separately
-          this.currentPage = 1; // ✅ Reset to first page
+          this.searchResults = data.products;
+          this.currentPage = 1;
           this.totalPages = Math.ceil(
             this.searchResults.length / this.itemsPerPage
           );
           this.loadProducts();
         });
     } else {
-      console.log('🔄 Clearing search, restoring all products');
-      this.searchResults = []; // ✅ Clear search results when search is cleared
-      this.fetchAllProducts(); // ✅ Reload full product list
+      this.searchResults = [];
+      this.fetchAllProducts();
     }
   }
-  changeSorting() {
-    console.log(`🔄 Changing sorting to: ${this.sortBy}`);
 
-    // Parse the sortBy value to determine the field and order
+  changeSorting() {
     if (this.sortBy === 'price_desc') {
       this.sortBy = 'price';
       this.order = 'desc';
@@ -560,21 +433,17 @@ export class ProductsComponent implements OnInit {
     } else if (this.sortBy === 'price' || this.sortBy === 'stock') {
       this.order = 'asc';
     } else {
-      // Default for 'name' and any other values
       this.sortBy = 'name';
       this.order = 'asc';
     }
 
-    console.log(`🔄 Parsed sorting: ${this.sortBy} (${this.order})`);
-
-    this.currentPage = 1; // Reset to first page when sorting changes
+    this.currentPage = 1;
     this.loadProducts();
   }
 
   filterByCategory() {
     this.currentPage = 1;
 
-    // Update the URL to reflect the selected category
     const queryParams =
       this.selectedCategory === 'All'
         ? {}
@@ -582,10 +451,9 @@ export class ProductsComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParams,
-      queryParamsHandling: 'merge', // Keep other query params
+      queryParamsHandling: 'merge',
     });
 
-    // Also apply the filtering directly
     this.loadProducts();
   }
 
@@ -603,6 +471,15 @@ export class ProductsComponent implements OnInit {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.loadProducts();
+
+      setTimeout(() => {
+        console.log(
+          '📄 Products on Page',
+          this.currentPage,
+          ':',
+          this.products
+        );
+      }, 0);
     }
   }
 }

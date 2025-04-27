@@ -36,7 +36,6 @@ export class RegisterComponent implements OnInit {
 
   async signUp() {
     this.messageServer = ''; // Reset message
-    console.log('userForm:', this.userForm);
     if (!this.getValidationValues()) {
       this.messageServer = '❌ Please fill in all required fields correctly.';
 
@@ -45,7 +44,6 @@ export class RegisterComponent implements OnInit {
 
     try {
       const result = await this.userService.signUP(this.userForm.value);
-      console.log('✅ Signup result:', result);
 
       if (result?.user) {
         this.messageServer = '✅ Registration successful!';
@@ -60,10 +58,6 @@ export class RegisterComponent implements OnInit {
 
   getValidationValues(): boolean {
     if (this.userForm.invalid) {
-      console.log('🚨 Form is invalid!', this.userForm.errors);
-      Object.keys(this.userForm.controls).forEach((key) => {
-        console.log(`Field: ${key}, Errors:`, this.userForm.get(key)?.errors);
-      });
       return false;
     }
     return true;

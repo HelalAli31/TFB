@@ -32,8 +32,6 @@ export class EditProductDialogComponent {
 
     @Inject(MAT_DIALOG_DATA) public product: any
   ) {
-    console.log('🛠️ Product received for editing:', this.product);
-
     this.editProductForm = this.fb.group({
       name: [this.product.name, Validators.required],
       brand: [this.product.brand, Validators.required],
@@ -207,10 +205,6 @@ export class EditProductDialogComponent {
       if (file) {
         this.optionImages[optionName] = file; // ✅ Keep spaces in option name
       }
-
-      console.log(
-        `✅ Added option: "${optionName}" with quantity: ${quantity}`
-      );
     } else {
       alert('❌ Please enter a valid option name and quantity.');
     }
@@ -234,9 +228,7 @@ export class EditProductDialogComponent {
     this.productService
       .deleteOptionImage(this.product._id, removedOption)
       .subscribe(
-        (response: any) =>
-          console.log(`✅ Deleted option image: ${removedOption}.jpg`),
-        (error: any) =>
+        (response: any) => (error: any) =>
           console.error(
             `❌ Error deleting option image: ${removedOption}.jpg`,
             error
@@ -263,7 +255,6 @@ export class EditProductDialogComponent {
     const file = event.target.files[0];
     if (file) {
       this.optionImages[option] = file; // ✅ Keep spaces in the option name
-      console.log(`🖼️ New image selected for option: ${option}`);
     }
   }
 

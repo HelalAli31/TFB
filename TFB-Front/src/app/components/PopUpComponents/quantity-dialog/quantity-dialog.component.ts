@@ -26,9 +26,6 @@ export class QuantityDialogComponent {
   ) {}
 
   ngOnInit() {
-    console.log(`📌 Opening Quantity Dialog for: ${this.data.product.name}`);
-    console.log(`🔍 Received Product Data:`, this.data.product);
-
     if (this.data.product.quantity === undefined) {
       console.warn(
         `⚠ Warning: Product "${this.data.product.name}" is missing quantity!`
@@ -41,13 +38,7 @@ export class QuantityDialogComponent {
   }
 
   async checkExistingQuantity() {
-    console.log(
-      '🛒 Checking existing quantity for product:',
-      this.data.product._id
-    );
-
     const cartItems = await this.cartService.getCartItems();
-    console.log('🛒 Cart Items:', cartItems);
 
     // ✅ Find the exact match for product & selected option
     const existingItem = cartItems.find(
@@ -84,7 +75,6 @@ export class QuantityDialogComponent {
     }
 
     this.maxAllowed = this.maxAvailableQuantity;
-    console.log('🛒 Max Stock:', this.maxAvailableQuantity);
   }
 
   adjustValue(type: string, amount: number) {
@@ -106,13 +96,9 @@ export class QuantityDialogComponent {
     }
   }
 
-  onSliderChange() {
-    console.log('🛒 Quantity changed via slider:', this.quantity);
-  }
+  onSliderChange() {}
 
   selectOption(option: string) {
-    console.log(`🎨 Changing selected option to: ${option}`);
-
     this.selectedOption = option; // ✅ Update selected option
     this.existingQuantity = 0; // ✅ Reset quantity before checking
     this.quantity = 1; // ✅ Reset quantity to avoid previous value conflicts
@@ -126,13 +112,6 @@ export class QuantityDialogComponent {
   }
 
   confirmSelection() {
-    console.log('🛒 Confirming selection:', {
-      quantity: this.quantity,
-      ice: this.ice,
-      nic: this.nic,
-      option: this.selectedOption,
-    });
-
     if (this.quantity > this.maxAllowed) {
       alert(`❌ Maximum allowed quantity is ${this.maxAllowed}`);
       return;

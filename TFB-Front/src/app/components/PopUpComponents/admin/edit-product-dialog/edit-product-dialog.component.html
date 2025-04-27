@@ -36,6 +36,20 @@
       <textarea formControlName="description" required></textarea>
     </div>
 
+    <div formGroupName="details">
+      <!-- ✅ Step 2: Add wattage input -->
+      <div class="form-group">
+        <label>Wattage</label>
+        <input type="text" formControlName="wattage" />
+      </div>
+
+      <!-- ✅ Step 3: Add capacity input -->
+      <div class="form-group">
+        <label>Capacity</label>
+        <input type="text" formControlName="capacity" />
+      </div>
+    </div>
+
     <!-- Sale Section -->
     <div class="form-group">
       <label>Sale</label>

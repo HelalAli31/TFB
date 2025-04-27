@@ -33,7 +33,6 @@ export class AdminNavBarComponent implements OnInit {
   // Handle Image Fallback
   getProductImage(product: any): string {
     if (!product || !product.name) {
-      console.log('❌ No product found, using default image.');
       return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
 
@@ -51,11 +50,8 @@ export class AdminNavBarComponent implements OnInit {
 
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
-    console.log(`⚠️ Image failed to load: ${event.target.src}`);
-
     // Check if we're already using the default image to prevent infinite loop
     if (event.target.src.includes('default.jpg')) {
-      console.log('🛑 Already using default image, stopping error handling');
       return;
     }
 
@@ -66,7 +62,6 @@ export class AdminNavBarComponent implements OnInit {
     ) {
       // Try the base product image without color variation
       const baseImage = `${this.apiUrl}/assets/products/${product.name}.jpg`;
-      console.log(`🔄 Trying base image: ${baseImage}`);
 
       // Set a flag to track that we've already tried the fallback
       event.target.setAttribute('data-tried-fallback', 'true');
@@ -76,8 +71,7 @@ export class AdminNavBarComponent implements OnInit {
 
     // If we get here, both the color variation and base image failed
     // or we're not using a color variation - use default image
-    console.log('❌ Using default image as final fallback');
-    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
+    event.target.src = `../../../assets/products/default.jpg`;
   }
 
   searchProducts() {
@@ -86,19 +80,20 @@ export class AdminNavBarComponent implements OnInit {
       return;
     }
 
-    this.productService.getProducts().subscribe((data: any) => {
-      if (Array.isArray(data.products)) {
-        this.searchResults = data.products.filter((product: any) =>
-          product.name.toLowerCase().includes(this.searchValue.toLowerCase())
-        );
-      } else {
-        console.error('Unexpected API response format:', data);
-        this.searchResults = [];
-      }
+    this.productService
+      .getProducts(1, 1000, 'name', 'asc', 'name', this.searchValue, true) // ✅ true for isSearch
+      .subscribe((data: any) => {
+        if (Array.isArray(data.products)) {
+          this.searchResults = data.products;
+        } else {
+          console.error('Unexpected API response format:', data);
+          this.searchResults = [];
+        }
 
-      this.isSearchVisible = this.searchResults.length > 0;
-    });
+        this.isSearchVisible = this.searchResults.length > 0;
+      });
   }
+
   hideSearch() {
     setTimeout(() => {
       this.isSearchVisible = false;

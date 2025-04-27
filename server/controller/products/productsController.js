@@ -112,7 +112,7 @@ async function getAllProducts(
       .sort(sortOption);
 
     // ✅ If searching, do NOT apply pagination
-    if (!isSearch) {
+    if (!isSearch && !value) {
       productsQuery = productsQuery.skip((page - 1) * limit).limit(limit);
     }
 

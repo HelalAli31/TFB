@@ -34,13 +34,15 @@ export class AdminProductManagementComponent implements OnInit {
     this.fetchProducts();
   }
   async fetchProducts() {
-    await this.productService.getProducts().subscribe(
-      (data: any) => {
-        this.products = data.products || [];
-        this.filteredProducts = this.products; // Show all products initially
-      },
-      (error: any) => console.error('❌ Error fetching products:', error)
-    );
+    await this.productService
+      .getProducts(1, 1000, 'name', 'asc', undefined, undefined, true) // ✅ true for isSearch
+      .subscribe(
+        (data: any) => {
+          this.products = data.products || [];
+          this.filteredProducts = this.products; // Show all products initially
+        },
+        (error: any) => console.error('❌ Error fetching products:', error)
+      );
   }
 
   // ✅ Search based on selected type (name, category, brand)
@@ -75,7 +77,6 @@ export class AdminProductManagementComponent implements OnInit {
     await this.categoryService.getCategories().subscribe(
       (data: any) => {
         this.categories = data; // ✅ Store as an array, NOT an object
-        console.log(this.categories);
       },
       (error) => console.error('❌ Error fetching categories:', error)
     );
@@ -112,10 +113,7 @@ export class AdminProductManagementComponent implements OnInit {
   // ✅ Get Category Name by ID
 
   getProductImage(product: any): string {
-    console.log(' ,P:', product.name);
-
     if (!product || !product.name) {
-      console.log('❌ No product found, using default image.');
       return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
     }
 
@@ -133,33 +131,25 @@ export class AdminProductManagementComponent implements OnInit {
 
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
-    console.log(`⚠️ Image failed to load: ${event.target.src}`);
-    console.log('PKKK:', product);
-
     // Check for color variation
 
     // ✅ Final fallback to default image
-    console.log('❌ Both images missing, using default.');
     event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
   }
   openEditDialog(product: any) {
     const editedProduct = { ...product };
 
     if (editedProduct.category && typeof editedProduct.category === 'object') {
-      console.log('⚠️ `category` is an object, extracting `_id` and `name`...');
       editedProduct.category = {
         _id: editedProduct.category._id || '',
         name: editedProduct.category.name || 'Unknown Category',
       };
     } else {
-      console.log('✅ `category` is already an ID:', editedProduct.category);
       editedProduct.category = {
         _id: editedProduct.category,
         name: this.getCategoryName(editedProduct.category), // Get category name if only ID is available
       };
     }
-
-    console.log('🔍 Opening edit dialog with product:', editedProduct);
 
     const dialogRef = this.dialog.open(EditProductDialogComponent, {
       width: '600px',
@@ -219,7 +209,6 @@ export class AdminProductManagementComponent implements OnInit {
     if (confirm('Are you sure you want to delete this product?')) {
       this.productService.deleteProduct(productId).subscribe(
         (response) => {
-          console.log('✅ Product deleted:', response);
           this.fetchProducts(); // Refresh list
         },
         (error) => {

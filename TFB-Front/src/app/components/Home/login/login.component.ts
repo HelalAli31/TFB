@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit {
     this.loginFailed = '';
     try {
       this.token = await this.userService.login(this.username, this.password);
-      console.log('🔑 Token Response:', this.token);
 
       if (this.token.userToken) {
         localStorage.setItem('token', this.token.userToken);

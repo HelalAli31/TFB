@@ -34,17 +34,6 @@ export class Section4Component implements OnInit {
         }
 
         this.topProducts = result;
-        console.log(
-          '✅ Top Products:',
-          JSON.stringify(this.topProducts, null, 2)
-        );
-
-        // 🔹 Log price to ensure sale price is received correctly
-        this.topProducts.forEach((product) => {
-          console.log(
-            `📦 Product: ${product.name}, Price: ${product.price}, Original: ${product.originalPrice}, On Sale: ${product.sale?.isOnSale}`
-          );
-        });
 
         // Fetch cart items to update `isInCart`
         await this.loadCartItems();
@@ -68,8 +57,6 @@ export class Section4Component implements OnInit {
 
           return acc;
         }, {});
-
-        console.log('✅ Grouped Top Products:', this.groupedProducts);
       },
       (error: any) => {
         console.error('❌ Error fetching top products:', error);
@@ -80,17 +67,12 @@ export class Section4Component implements OnInit {
   async loadCartItems() {
     try {
       this.cartItems = await this.cartService.getCartItems();
-      console.log('🛒 Loaded Cart Items:', this.cartItems);
     } catch (error) {
       console.error('❌ Failed to load cart items:', error);
     }
   }
 
   openQuantityDialog(product: any) {
-    console.log(
-      `📌 Opening Quantity Dialog for: ${product.name}, isInCart: ${product.isInCart}`
-    );
-
     this.cartService.getCartItems().then((cartItems) => {
       const existingCartItem = cartItems.find(
         (item: any) =>
@@ -112,18 +94,7 @@ export class Section4Component implements OnInit {
         },
       });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          console.log(`📩 Selected Data from Dialog:`, result);
-          this.addToCart(
-            product,
-            result.quantity,
-            result.nic,
-            result.ice,
-            result.option
-          );
-        }
-      });
+      dialogRef.afterClosed().subscribe((result) => {});
     });
   }
 
@@ -134,8 +105,6 @@ export class Section4Component implements OnInit {
     ice: number,
     option: string
   ) {
-    console.log(`🛒 Adding/Editing Cart Item: ${product.name}`);
-
     if (!product || quantity < 1) {
       console.error('🚨 Invalid product or quantity!');
       return;
@@ -149,7 +118,6 @@ export class Section4Component implements OnInit {
       }
 
       const cartItems = await this.cartService.getCartItems();
-      console.log('🔍 Cart Items Before Adding:', cartItems);
 
       const existingCartItem = cartItems.find(
         (item: any) =>
@@ -162,8 +130,6 @@ export class Section4Component implements OnInit {
         : product.price;
 
       if (existingCartItem) {
-        console.log('✏ Updating existing item in cart');
-
         if (quantity <= product.quantity) {
           await this.cartService.editItemAmount(
             existingCartItem._id,
@@ -180,8 +146,6 @@ export class Section4Component implements OnInit {
           );
         }
       } else {
-        console.log('🛒 Adding new item to cart');
-
         if (quantity > product.quantity) {
           quantity = product.quantity;
           alert(`❌ Maximum ${product.quantity} of ${product.name} allowed.`);
@@ -220,11 +184,9 @@ export class Section4Component implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result: any) => {
-      console.log('Dialog Result:', result);
       if (result === true) {
         this.productService.deleteTopProduct(productId).subscribe(
           (response) => {
-            console.log('Top product deleted:', response);
             this.getTopProducts(); // Refresh the list after adding
           },
           (error) => {
@@ -237,8 +199,7 @@ export class Section4Component implements OnInit {
   // Handle Image Fallback
   getProductImage(product: any): string {
     if (!product || !product.name) {
-      console.log('❌ No product found, using default image.');
-      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
+      return `../../../assets/products/default.jpg`; // Use default image
     }
 
     // ✅ Check if product has colors
@@ -255,8 +216,6 @@ export class Section4Component implements OnInit {
 
   // ✅ Handle Image Fallback if Not Found
   onImageError(event: any, product: any) {
-    console.log(`⚠️ Image failed to load: ${event.target.src}`);
-
     // Check if we're already using the default image to prevent infinite loop
     if (event.target.src.includes('default.jpg')) {
       console.log('🛑 Already using default image, stopping error handling');
@@ -270,7 +229,6 @@ export class Section4Component implements OnInit {
     ) {
       // Try the base product image without color variation
       const baseImage = `${this.apiUrl}/assets/products/${product.name}.jpg`;
-      console.log(`🔄 Trying base image: ${baseImage}`);
 
       // Set a flag to track that we've already tried the fallback
       event.target.setAttribute('data-tried-fallback', 'true');
@@ -280,8 +238,7 @@ export class Section4Component implements OnInit {
 
     // If we get here, both the color variation and base image failed
     // or we're not using a color variation - use default image
-    console.log('❌ Using default image as final fallback');
-    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
+    event.target.src = `../../../assets/products/default.jpg`;
   }
 
   ngOnInit(): void {

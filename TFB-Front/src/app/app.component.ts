@@ -29,15 +29,38 @@ export class AppComponent {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang =
         this.languageService.getCurrentLanguage().code;
-      console.log('Added RTL class to body in AppComponent');
     }
   }
 
   ngOnInit() {
     this.token = localStorage.getItem('token') || '';
     this.isAdmin = getIsAdmin();
-    console.log(this.isAdmin, ' :ADMIN');
     localStorage.setItem('preferredLanguage', 'en');
+
+    const hasReloaded = localStorage.getItem('hasReloadedOnce');
+
+    if (!hasReloaded) {
+      localStorage.setItem('hasReloadedOnce', 'true');
+      location.reload(); // this will reload the site only once
+      return;
+    }
+
+    // 🔐 Continue with your app logic after reload
+    this.token = localStorage.getItem('token') || '';
+    this.isAdmin = getIsAdmin();
+    localStorage.setItem('preferredLanguage', 'en');
+
+    this.languageService.currentLanguage$.subscribe((language) => {
+      const dir = language.direction;
+      document.documentElement.dir = dir;
+      document.documentElement.lang = language.code;
+
+      if (dir === 'rtl') {
+        document.body.classList.add('rtl');
+      } else {
+        document.body.classList.remove('rtl');
+      }
+    });
     // Subscribe to language changes to update RTL class
     this.languageService.currentLanguage$.subscribe((language) => {
       const dir = language.direction;
@@ -50,8 +73,5 @@ export class AppComponent {
         document.body.classList.remove('rtl');
       }
     });
-
-    // Log to check if RTL class is applied
-    console.log('Body has RTL class:', document.body.classList.contains('rtl'));
   }
 }

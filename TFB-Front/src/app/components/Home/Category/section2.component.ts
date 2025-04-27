@@ -28,7 +28,7 @@ export class Section2Component implements OnInit {
     );
   }
   onImageError(event: any) {
-    event.target.src = this.apiUrl + '/assets/categories/default.jpg';
+    event.target.src = '../../../assets/products/default.jpg';
   }
 
   filterByCategory(category: string) {

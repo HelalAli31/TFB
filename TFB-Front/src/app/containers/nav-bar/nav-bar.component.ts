@@ -58,18 +58,18 @@ export class NavBarComponent implements OnInit {
       return;
     }
 
-    this.productService.getProducts().subscribe((data: any) => {
-      if (Array.isArray(data.products)) {
-        this.searchResults = data.products.filter((product: any) =>
-          product.name.toLowerCase().includes(this.searchValue.toLowerCase())
-        );
-      } else {
-        console.error('Unexpected API response format:', data);
-        this.searchResults = [];
-      }
+    this.productService
+      .getProducts(1, 1000, 'name', 'asc', 'name', this.searchValue, true) // ✅ true for isSearch
+      .subscribe((data: any) => {
+        if (Array.isArray(data.products)) {
+          this.searchResults = data.products;
+        } else {
+          console.error('Unexpected API response format:', data);
+          this.searchResults = [];
+        }
 
-      this.isSearchVisible = this.searchResults.length > 0;
-    });
+        this.isSearchVisible = this.searchResults.length > 0;
+      });
   }
 
   hideSearch() {
@@ -96,13 +96,13 @@ export class NavBarComponent implements OnInit {
   }
 
   onImageCateError(event: any) {
-    event.target.src = this.apiUrl + '/assets/categories/default.jpg';
+    event.target.src = '../../../assets/products/default.jpg';
   }
   // Handle Image Fallback
   getProductImage(product: any): string {
     if (!product || !product.name) {
       console.log('❌ No product found, using default image.');
-      return `${this.apiUrl}/assets/products/default.jpg`; // Use default image
+      return `../../../assets/products/default.jpg`; // Use default image
     }
 
     // ✅ Check if product has colors
@@ -145,7 +145,7 @@ export class NavBarComponent implements OnInit {
     // If we get here, both the color variation and base image failed
     // or we're not using a color variation - use default image
     console.log('❌ Using default image as final fallback');
-    event.target.src = `${this.apiUrl}/assets/products/default.jpg`;
+    event.target.src = `../../../assets/products/default.jpg`;
   }
 
   showCategories() {

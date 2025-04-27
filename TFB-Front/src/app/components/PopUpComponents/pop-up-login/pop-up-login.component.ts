@@ -75,7 +75,6 @@ export class PopUpLoginComponent implements OnInit {
   async getLastOrderDate(cartId: string) {
     await this.orderService.getOrder(cartId).then(
       (value: any) => {
-        console.log(value);
         this.lastOrderDate = moment(
           value.order[value.order.length - 1].order_date
         ).format('DD/MM/YYYY');
@@ -100,7 +99,6 @@ export class PopUpLoginComponent implements OnInit {
     );
     this.OpenedCartDetails.totalPrice = totalCartPrice;
     this.OpenedCartDetails.date = moment(data.date).format('DD/MM/YYYY');
-    console.log(this.OpenedCartDetails.date);
   }
 
   async getCart() {
@@ -110,11 +108,9 @@ export class PopUpLoginComponent implements OnInit {
         if (data) {
           this.cartIsOpen = data.cartIsOpen;
           this.cart = value.cart;
-          console.log(this.cart);
           if (this.cartIsOpen === false) {
             this.getLastOrderDate(data._id);
           } else {
-            console.log(data, value);
             this.getOpenedCartDetails(data);
           }
         } else {
