@@ -19,7 +19,7 @@ const allowedOrigins = [
   "https://tfb-bice.vercel.app",
 ];
 app.get("/", (req, res) => {
-  res.send("✅ TFB backend is alive and running on Render!");
+  res.send("✅ TFB backend is alive and running on Render!!");
 });
 //he
 app.use(
@@ -33,7 +33,7 @@ app.use(
       }
     },
     credentials: true, // only if you’re using cookies
-  })
+  }),
 );
 
 const path = require("path");
@@ -56,7 +56,7 @@ cron.schedule("0 0 * * *", async () => {
 app._router.stack.forEach((r) => {
   if (r.route && r.route.path) {
     console.log(
-      `[ROUTE] ${r.route.stack[0].method.toUpperCase()} ${r.route.path}`
+      `[ROUTE] ${r.route.stack[0].method.toUpperCase()} ${r.route.path}`,
     );
   }
 });
@@ -78,7 +78,7 @@ app.post("/send-email", async (req, res) => {
   console.log("GMAIL_USER:", process.env.GMAIL_USER);
   console.log(
     "GMAIL_PASSWORD:",
-    process.env.GMAIL_PASSWORD ? "✅ Password Loaded" : "❌ MISSING"
+    process.env.GMAIL_PASSWORD ? "✅ Password Loaded" : "❌ MISSING",
   );
 
   const transporter = nodemailer.createTransport({
