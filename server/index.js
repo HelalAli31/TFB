@@ -9,6 +9,7 @@ const userRoute = require("./routes/auth");
 const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes//orders");
 const nodemailer = require("nodemailer");
+const { getImageUrl, isCloudinaryConfigured } = require("./config/cloudinary");
 
 //Routes
 const app = express();
@@ -61,17 +62,26 @@ app._router.stack.forEach((r) => {
   }
 });
 
-// imageas to render
-const persistentAssetsDir = "/mnt/data/assets";
-const fs = require("fs-extra");
-fs.ensureDirSync(persistentAssetsDir);
-app.use("/assets", express.static(persistentAssetsDir));
-const localAssetsDir = path.join(__dirname, "persistent-assets");
+// Redirect uploaded assets to Cloudinary, then serve committed fallback assets.
+const localAssetsDir = path.join(__dirname, "assets");
+app.get("/assets/:folder/:fileName", (req, res, next) => {
+  const cloudinaryFolders = ["products", "categories", "sliders"];
 
-if (fs.existsSync(localAssetsDir)) {
-  fs.copySync(localAssetsDir, persistentAssetsDir, { overwrite: false });
-  console.log("✅ Copied initial assets to persistent storage.");
-}
+  if (
+    !isCloudinaryConfigured ||
+    !cloudinaryFolders.includes(req.params.folder) ||
+    req.params.fileName === "default.jpg"
+  ) {
+    return next();
+  }
+
+  try {
+    return res.redirect(302, getImageUrl(req.params.folder, req.params.fileName));
+  } catch (error) {
+    return next(error);
+  }
+});
+app.use("/assets", express.static(localAssetsDir));
 
 app.post("/send-email", async (req, res) => {
   const { name, email, message } = req.body;

@@ -1,9 +1,8 @@
 const productModel = require("../../models/productSchema");
 const categoryModel = require("../../models/categorySchema");
 const TopProductsModel = require("../../models/topProductsSchema");
-const fs = require("fs-extra");
 const path = require("path");
-const fse = require("fs-extra"); // Ensure directory creation
+const { uploadBuffer } = require("../../config/cloudinary");
 
 async function getTopProducts() {
   try {
@@ -144,11 +143,6 @@ const addProduct = async (productData, mainImage, optionImages) => {
     }
     console.log("📝 Processed product name:", productName);
 
-    // ✅ Define product images directory
-    const productImagesDir = path.join("/mnt/data/assets/products");
-    await fse.ensureDir(productImagesDir);
-    console.log("📂 Ensured product image directory exists:", productImagesDir);
-
     // ✅ Convert details to JSON object if needed
     if (!productData.details) {
       productData.details = {};
@@ -187,13 +181,8 @@ const addProduct = async (productData, mainImage, optionImages) => {
           continue;
         }
 
-        // ✅ Save image with spaces intact
-        const optionImagePath = path.join(
-          productImagesDir,
-          `${productName}_${optionName}.jpg`
-        );
-        await fs.writeFile(optionImagePath, file.buffer);
-        console.log(`✅ Option image saved: ${optionImagePath}`);
+        await uploadBuffer(file, "products", `${productName}_${optionName}.jpg`);
+        console.log(`✅ Option image uploaded: ${productName}_${optionName}.jpg`);
 
         // ✅ Store option data in `details`
         optionDetailsArray.push({ option: optionName });
@@ -206,9 +195,8 @@ const addProduct = async (productData, mainImage, optionImages) => {
       }
     } else if (mainImage) {
       // ✅ Only save `name.jpg` if no option variations exist
-      const mainImagePath = path.join(productImagesDir, `${productName}.jpg`);
-      await fs.writeFile(mainImagePath, mainImage.buffer);
-      console.log(`✅ Main image saved at: ${mainImagePath}`);
+      await uploadBuffer(mainImage, "products", `${productName}.jpg`);
+      console.log(`✅ Main image uploaded: ${productName}.jpg`);
     } else {
       console.log("⚠️ No images provided.");
     }
