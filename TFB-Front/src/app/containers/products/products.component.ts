@@ -189,15 +189,12 @@ export class ProductsComponent implements OnInit {
           String(product._id);
         const isSameOption = (item.option || '') === (option || '');
 
-        const categoryId = product.category?._id || product.category;
-        const SALT_ID = '67759289eca0466ca85bfac3';
-        const TFB120_ID = '67759289eca0466ca85bfaba';
+        const categoryName =
+          typeof product.category === 'string'
+            ? product.category
+            : product.category?.name || '';
 
-        if (categoryId === SALT_ID) {
-          return isSameProduct && isSameOption && item.ice === ice;
-        }
-
-        if (categoryId === TFB120_ID) {
+        if (categoryName.toLowerCase().includes('liquid')) {
           return (
             isSameProduct &&
             isSameOption &&

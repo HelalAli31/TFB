@@ -112,8 +112,12 @@
 
     <!-- Product Image Upload -->
     <div class="form-group">
-      <label>Product Image</label>
-      <input type="file" (change)="onFileSelected($event)" />
+      <label>Product Image (optional)</label>
+      <input
+        type="file"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+      />
       <img *ngIf="previewImage" [src]="previewImage" class="preview-img" />
     </div>
 

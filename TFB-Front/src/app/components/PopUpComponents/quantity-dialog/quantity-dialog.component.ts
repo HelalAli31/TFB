@@ -37,6 +37,14 @@ export class QuantityDialogComponent {
     this.checkExistingQuantity();
   }
 
+  isLiquidProduct(): boolean {
+    const category = this.data.product?.category;
+    const categoryName =
+      typeof category === 'string' ? category : category?.name || '';
+
+    return categoryName.toLowerCase().includes('liquid');
+  }
+
   async checkExistingQuantity() {
     const cartItems = await this.cartService.getCartItems();
 
@@ -117,10 +125,12 @@ export class QuantityDialogComponent {
       return;
     }
 
+    const liquidProduct = this.isLiquidProduct();
+
     this.dialogRef.close({
       quantity: this.quantity,
-      ice: this.ice,
-      nic: this.nic,
+      ice: liquidProduct ? this.ice : null,
+      nic: liquidProduct ? this.nic : null,
       option: this.selectedOption,
     });
   }

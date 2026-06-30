@@ -47,9 +47,7 @@
   </div>
 
   <!-- 🔹 NIC + ICE -->
-  <ng-container
-    *ngIf="data.product.category?._id == '67759289eca0466ca85bfaba'"
-  >
+  <ng-container *ngIf="isLiquidProduct()">
     <h3>{{ "quantityDialog.nicotine" | translate }}</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('nic', -1)">➖</button>
@@ -65,26 +63,6 @@
       <button class="editQuantity" (click)="adjustValue('nic', 1)">➕</button>
     </div>
 
-    <h3>{{ "quantityDialog.ice" | translate }}</h3>
-    <div class="quantity-selector">
-      <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>
-      <input
-        type="range"
-        min="0"
-        max="10"
-        [(ngModel)]="ice"
-        (input)="onSliderChange()"
-        class="quantity-slider"
-      />
-      <span class="quantity-box">{{ ice }}</span>
-      <button class="editQuantity" (click)="adjustValue('ice', 1)">➕</button>
-    </div>
-  </ng-container>
-
-  <!-- 🔹 Only ICE -->
-  <ng-container
-    *ngIf="data.product.category?._id === '67759289eca0466ca85bfac3'"
-  >
     <h3>{{ "quantityDialog.ice" | translate }}</h3>
     <div class="quantity-selector">
       <button class="editQuantity" (click)="adjustValue('ice', -1)">➖</button>

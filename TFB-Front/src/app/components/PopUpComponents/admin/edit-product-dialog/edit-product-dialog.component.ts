@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { ProductService } from 'src/app/serverServices/productService/product.service';
 import { CategoryService } from 'src/app/serverServices/categoryService/category.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit-product-dialog',
@@ -32,6 +33,8 @@ export class EditProductDialogComponent {
 
     @Inject(MAT_DIALOG_DATA) public product: any
   ) {
+    this.previewImage = `${environment.apiUrl}/assets/products/${this.product.name}.jpg`;
+
     this.editProductForm = this.fb.group({
       name: [this.product.name, Validators.required],
       brand: [this.product.brand, Validators.required],
