@@ -155,6 +155,10 @@ export class ProductDetailComponent implements OnInit {
       width: '300px',
       data: {
         product,
+        categoryName:
+          typeof product.category === 'string'
+            ? product.category
+            : product.category?.name || '',
         existingQuantity: this.existingQuantity,
         selectedOption: this.selectedOption,
         maxAvailableQuantity: this.maxAvailableQuantity, // ✅ Pass max quantity

@@ -84,6 +84,10 @@ export class Section4Component implements OnInit {
         width: '300px',
         data: {
           product,
+          categoryName:
+            typeof product.category === 'string'
+              ? product.category
+              : product.category?.name || '',
           existingQuantity: existingCartItem?.amount || 0,
           nic: existingCartItem?.nic || 0,
           ice: existingCartItem?.ice || 0,

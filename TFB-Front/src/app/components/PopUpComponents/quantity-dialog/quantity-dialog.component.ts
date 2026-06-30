@@ -40,9 +40,10 @@ export class QuantityDialogComponent {
   isLiquidProduct(): boolean {
     const category = this.data.product?.category;
     const categoryName =
-      typeof category === 'string' ? category : category?.name || '';
+      this.data.categoryName ||
+      (typeof category === 'string' ? category : category?.name || '');
 
-    return categoryName.toLowerCase().includes('liquid');
+    return String(categoryName).toLowerCase().includes('liquid');
   }
 
   async checkExistingQuantity() {

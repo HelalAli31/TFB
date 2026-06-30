@@ -141,6 +141,9 @@ export class ProductsComponent implements OnInit {
       width: '300px',
       data: {
         product,
+        categoryName:
+          product.category?.name ||
+          (this.selectedCategory !== 'All' ? this.selectedCategory : ''),
         existingQuantity: existingCartItem?.amount || 0,
         nic: existingCartItem?.nic || 0,
         ice: existingCartItem?.ice || 0,
