@@ -323,6 +323,7 @@ router.put(
       }
 
       const newName = updatedData.name || product.name;
+      const uploadedFiles = req.files || {};
 
       updatedData.sale = {
         isOnSale: updatedData.isOnSale === "true",
@@ -342,8 +343,8 @@ router.put(
         updatedData.sale.saleEndDate = null;
       }
 
-      if (req.files.image) {
-        await uploadBuffer(req.files.image[0], "products", `${newName}.jpg`);
+      if (uploadedFiles.image?.[0]) {
+        await uploadBuffer(uploadedFiles.image[0], "products", `${newName}.jpg`);
       } else if (product.name !== newName) {
         try {
           await renameImage("products", `${product.name}.jpg`, `${newName}.jpg`);
@@ -352,8 +353,8 @@ router.put(
         }
       }
 
-      if (req.files.optionImages) {
-        for (const file of req.files.optionImages) {
+      if (uploadedFiles.optionImages?.length) {
+        for (const file of uploadedFiles.optionImages) {
           const optionName = path.parse(file.originalname).name.trim();
           await uploadBuffer(file, "products", `${newName}_${optionName}.jpg`);
         }
